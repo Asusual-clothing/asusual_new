@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Orders</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="/styles/footer.css">
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <link rel="stylesheet" href="/styles/allorder.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+</head>
+<body class="app">
+    <!-- Notification Bar -->
+    <div class="notification-bar">
+        <span class="notification-text"></span>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="As-navbar">
+        <div class="As-container">
+          <ul class="As-nav-links">
+            <li>
+              <a href="/"><i class="fas fa-home"></i> <span>Home</span></a>
+            </li>
+            <li>
+              <a href="/about"
+                ><i class="fas fa-info-circle"></i> <span>About Us</span></a
+              >
+            </li>
+            <li>
+              <a href="/Products"
+                ><i class="fas fa-box"></i> <span>All Products</span></a
+              >
+            </li>
+            <li>
+              <a href="/orders/all-orders"
+                ><i class="fa fa-shirt"></i><span>Your Orders</span></a
+              >
+            </li>
+            <li>
+              <a href="/contact"
+                ><i class="fas fa-phone"></i><span>Contact Us</span></a
+              >
+            </li>
+          </ul>
+          <div class="As-logo">
+            <a href="/"
+              ><img
+                src="/assests/horizontalLogo-removebg-preview.png"
+                alt="Logo"
+            /></a>
+          </div>
+          <div class="AS-nav-btn">
+            <% if (user) { %>
+              <li>
+                <a href="/cart" class="cart-icon">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span>Cart</span>
+                  <% if (cartCount > 0) { %>
+                    <span class="cart-count"><%= cartCount %></span>
+                  <% } %>
+                </a>
+              </li>
+            <!-- Dropdown for logged-in users -->
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown">
+              <div class="profile-trigger">
+                <li>
+                  <a href="#"
+                    ><i class="fas fa-user-circle"></i><span>Profile</span></a
+                  >
+                </li>
+              </div>
+              <div class="profile-details">
+                <p><i class="fas fa-user"></i> Name: <%= user.name %></p>
+                <p><i class="fas fa-envelope"></i> Email: <%= user.email %></p>
+                <p>
+                  <i class="fas fa-phone"></i> Phone: <%= user.phone || 'N/A' %>
+                </p>
+                <p>
+                  <i class="fas fa-calendar"></i> Member Since: <%=
+                  user.createdAt ? new Date(user.createdAt).toDateString() :
+                  'N/A' %>
+                </p>
+              </div>
+            </div>
+            <li>
+              <a href="/logout"
+                ><i class="fas fa-sign-out-alt"></i><span>Logout</span>
+              </a>
+            </li>
+
+            <% } else { %>
+            <!-- Sign-up link for guests -->
+            <li>
+              <a href="/signup"
+                ><i class="fas fa-user-plus"></i> <span>Sign-Up</span></a
+              >
+            </li>
+            <% } %>
+          </div>
+
+          <div class="As-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </nav>
+
+    <main class="orders-section">
+        <% if (orders.length === 0) { %>
+            <div class="no-orders">
+                <p class="no-orders-text">You have no orders yet.</p>
+                <a href="/products" class="shop-btn">Start Shopping</a>
+            </div>
+        <% } else { %>
+            <div class="orders-list">
+                <% orders.forEach(order => { %>
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <h3>Order #: <span class="order-id"><%= order._id %></span></h3>
+                                <p class="order-status">
+                                    <span class="status-label">Status:</span> 
+                                    <span class="status-<%= order.status %>">
+                                        <%= order.status %>
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="order-meta">
+                                <p class="order-date">Order Date: <%= new Date(order.createdAt).toLocaleString() %></p>
+                                <p class="order-total">Total: <span class="total-amount">₹<%= order.totalAmount.toFixed(2) %></span></p>
+                            </div>
+                        </div>
+
+                        <div class="order-items">
+                            <h4 class="items-title">Items</h4>
+                            <div class="items-list">
+                                <% order.items.forEach(item => { %>
+                                    <div class="order-item">
+                                        <% if (item.product) { %>
+                                            <img src="<%= item.product.images[0] %>" alt="<%= item.product.name %>" class="item-image" />
+                                        <% } else { %>
+                                            <div class="item-image-placeholder">
+                                                <i class="fas fa-box-open"></i>
+                                            </div>
+                                        <% } %>
+                                        <div class="item-details">
+                                            <p class="item-name">
+                                                <%= item.product ? item.product.name : 'Item not found' %>
+                                            </p>
+                                            <div class="item-meta">
+                                                <p><span class="meta-label">Size:</span> <%= item.size %></p>
+                                                <p><span class="meta-label">Qty:</span> <%= item.quantity %></p>
+                                                <p><span class="meta-label">Price:</span> ₹<%= item.priceAtPurchase.toFixed(2) %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        </div>
+                        
+                        <div class="order-footer">
+                          <% const allProductsAvailable = order.items.every(item => item.product); %>
+                          <% if (allProductsAvailable) { %>
+                              <a href="/user-orders/<%= order._id.toString() %>" class="details-btn">
+                                  View Details
+                              </a>
+                          <% } else { %>
+                              <span class="details-btn disabled-btn" title="Some items are no longer available">
+                                  View Details Unavailable
+                              </span>
+                          <% } %>
+                      </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer__parralax">
+        <div class="footer__parralax-trees"></div>
+        <div class="footer__parralax-moto"></div>
+        <div class="footer__parralax-secondplan"></div>
+        <div class="footer__parralax-premierplan"></div>
+        <div class="footer__parralax-voiture"></div>
+      </div>
+      <div class="container">
+        <div class="footer__columns">
+          <div class="footer__col">
+            <h3 class="footer__col-title">
+              <i data-feather="shopping-bag"></i> <span>About</span>
+            </h3>
+            <nav class="footer__nav">
+              <ul class="footer__nav-list">
+                <li class="footer__nav-item">
+                  <a href="/about" class="/about">
+                    About Us
+                  </a>
+                </li>
+                <li class="footer__nav-item">
+                  <a href="/contact" class="/contact">
+                    Contact Us
+                  </a>
+                </li>
+                <li class="footer__nav-item">
+                  <a href="/Terms-and-conditions" class="/Terms-and-conditions">
+                    Terms & Conditions
+                  </a>
+                </li>
+                <li class="footer__nav-item">
+                  <a href="/privacy_policy" class="footer__nav-link">
+                    Privacy Policy
+                  </a>
+                </li>
+
+              </ul>
+            </nav>
+          </div>
+          <div class="footer__col">
+            <h3 class="footer__col-title">
+              <i data-feather="share-2"></i> <span>Find Us</span>
+            </h3>
+            <nav class="footer__nav">
+              <ul class="footer__nav-list">
+                <li class="footer__nav-item">
+                  <a href class="footer__nav-link">
+                    <i data-feather="youtube"></i><span>Youtube</span>
+                  </a>
+                </li>
+                <li class="footer__nav-item">
+                  <a href class="footer__nav-link">
+                    <i data-feather="facebook"></i><span>Facebook</span>
+
+                  </a>
+                </li>
+                <li class="footer__nav-item">
+                  <a href="https://www.instagram.com/as_usual.clothing/"
+                    class="footer__nav-link">
+                    <i
+                      data-feather="instagram"></i><span>Instagram</span>
+
+                  </a>
+                </li>
+                <li class="footer__nav-item footer-nav-email">
+                  <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
+                    <!-- <i data-feather="mail"></i> -->
+                    <i data-feather="at-sign"></i>
+                    <span>asusualclothing@gmail.com</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer__col_last">
+            <h3 class="footer__col-title">
+              <i data-feather="send"></i> <span>Enquiry</span>
+            </h3>
+            <nav class="footer__nav">
+              <ul class="footer__nav-list">
+                <li class="footer__nav-item">
+                  <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
+                    <!-- <i data-feather="mail"></i> -->
+                    <i data-feather="at-sign"></i>
+                    <span>asusualclothing@gmail.com</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        
+      </div>
+    </footer>
+    
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        feather.replace();
+    </script>
+    <script src="scripts/script.js"></script>
+</body>
+</html>

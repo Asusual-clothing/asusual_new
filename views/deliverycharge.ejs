@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add-Testimonials</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="min-h-screen flex flex-col md:flex-row">  
+
+
+     <div class="bg-indigo-800 text-white w-full md:w-64 p-4">
+            <div class="mb-8 p-4 border-b border-indigo-700">
+                <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+                <p class="text-indigo-300 text-sm">AsUsual</p>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="/products/add-product" class="flex items-center space-x-2 p-3 rounded-lg bg-indigo-700 transition">
+                    <i class="fas fa-plus w-5"></i>
+                    <span>Add Product</span>
+                </a>
+                <a href="/products/edit-product" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                    <i class="fas fa-edit w-5"></i>
+                    <span>Edit Quantity</span>
+                </a>
+                <a href="/posters/edit-poster" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                    <i class="fas fa-image w-5"></i>
+                    <span>Edit Posters</span>
+                </a>
+                <a href="/coupons" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                    <i class="fas fa-tag w-5"></i>
+                    <span>Add Coupon</span>
+                </a>
+                <a href="/admin/contacts" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                    <i class="fas fa-envelope w-5"></i>
+                    <span>Contact Requests</span>
+                </a>
+                <a href="/orders" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                    <i class="fas fa-shopping-bag w-5"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="/admin/testimonials" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                    <i class="fas fa-shopping-bag w-5"></i>
+                    <span>Testimonial</span>
+                </a>
+                <a href="/admin/delivery-cost" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                    <i class="fas fa-shopping-bag w-5"></i>
+                    <span>Delivery Charge</span>
+                </a>
+            </nav>
+            
+            <div class="mt-auto pt-4 border-t border-indigo-700">
+                <button onclick="handleLogout()" class="flex items-center space-x-2 w-full p-3 rounded-lg hover:bg-indigo-700 transition text-red-300 hover:text-red-200">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+     <div class="max-w-md mx-auto mt-12 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+  <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Set Delivery Cost</h1>
+  <form method="POST" action="/admin/delivery-cost" class="space-y-4">
+    <div>
+      <label for="cost" class="block text-gray-700 font-medium mb-2">Delivery Cost (in ₹):</label>
+      <input 
+        type="number" 
+        name="cost" 
+        id="cost" 
+        value="<%= delivery.cost %>" 
+        required 
+        min="0"
+        class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+    <button 
+      type="submit" 
+      class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+    >
+      Save
+    </button>
+  </form>
+</div>
+
+  </div>
+
+</body>
+</html>

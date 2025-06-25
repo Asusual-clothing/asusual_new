@@ -1,0 +1,382 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap");
+/* html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  padding-top: 300px;
+  } */
+  
+  .container .footer-container {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    font-family: "Open Sans", sans-serif;
+
+}
+
+.footer__col {
+  margin-right: 200px;
+}
+.footer__col_last {
+  margin-right: 50px;
+}
+
+.footer {
+  position: relative;
+  margin-top: 10%;
+  /* padding: 3rem 0; */
+  color: #fff;
+  background: #000;
+  width: 100%;
+  /* margin-top: auto; */
+}
+.footer__columns {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 5.2rem;
+}
+.footer__col-title {
+  font-size: 1.6rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+}
+.footer__col-title * ~ span {
+  margin-left: 1rem;
+  
+    font-weight: bold;
+}
+.footer a {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+}
+.footer a * ~ span {
+  margin-left: 1rem;
+}
+.footer__nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  list-style: none;
+}
+.footer__copyrights {
+  padding-top: 3rem;
+  margin-top: 3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.footer__copyrights p {
+  display: flex;
+}
+.footer__copyrights p a {
+  margin-left: 0.5rem;
+}
+.footer-nav-email {
+  display: none;
+}
+.footer__nav-item:hover {
+  color: #790101; /* hover:text-[#870000] */
+  filter: drop-shadow(0 0 6px #8b2e2e); /* hover:drop-shadow-[0_0_6px_#903b3b] */
+  text-decoration: underline; /* hover:underline */
+  text-underline-offset: 4px; /* hover:underline-offset-4 */
+  transform: scale(1.05); /* hover:scale-105 */
+}
+@keyframes parralax {
+  0% {
+    background-position: 260px;
+  }
+  100% {
+    background-position: -10000vw;
+  }
+}
+@keyframes moto {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  5% {
+    transform: translateY(0) rotate(-5deg);
+  }
+  25% {
+    transform: translateY(60px) rotate(-20deg);
+  }
+  49% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  51% {
+    transform: translateY(0) rotate(1deg);
+  }
+  75% {
+    transform: translateY(60px) rotate(20deg);
+  }
+  80% {
+    transform: translateY(60px) rotate(0deg);
+  }
+  98% {
+    transform: translateY(0) rotate(0);
+  }
+}
+@keyframes voiture {
+  0% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(0);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+.footer__parralax {
+  position: absolute;
+  left: 0;
+  top: -94px;
+  height: 150px;
+  width: 100%;
+  overflow: hidden;
+}
+.footer__parralax-premierplan {
+  background-position: 260px;
+}
+.footer__parralax-trees,
+.footer__parralax-premierplan,
+.footer__parralax-secondplan {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat-x;
+  background-position-y: 100% !important;
+  animation: parralax 600s linear infinite;
+}
+.footer__parralax-moto {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  margin-left: -250px;
+  height: 180px;
+  width: 150px;
+  /* background: url(https://i.ibb.co/JCGfFJd/moto-net.gif); */
+  background: url(https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/c383c563741941.5cf42b23dc6b2.gif);
+  background-repeat: no-repeat;
+  transform-origin: 50% 80%;
+  animation: moto 5s linear infinite;
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: multiply;
+  z-index: 2;
+  /* border:2px solid black; */
+}
+.footer__parralax-voiture {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: scaleX(-1);
+  margin-left: 250px;
+  margin-bottom: -13px;
+  height: 114px;
+  width: 206px;
+  background: url(../assests/ninja.gif);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: multiply;
+  animation: voiture 1s linear infinite;
+  /* transform: rotate(180deg); */
+  transform: scaleX(-1);
+}
+.footer__parralax-trees {
+  background-image: url(../assests/Tree.png);
+  bottom: -60px;
+  animation-duration: 1000s;
+  z-index: 1;
+}
+.footer__parralax-premierplan {
+  background-image: url(../assests/premierplanv3.png);
+  animation-duration: 500s;
+}
+.footer__parralax-secondplan {
+  background-image: url(../assests/second-plan.png);
+  animation-duration: 600s;
+}
+
+/* this is reponsive css for the footer */
+/* Responsive CSS for Mobile and Tablet */
+
+@media (max-width: 768px) {
+  /* General adjustments */
+  .container .footer-container {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  .footer {
+    margin-top: 5%;
+    /* padding: 2rem 0; */
+  }
+
+  .footer__columns {
+    /* flex-direction: column; */
+    /* gap: 2rem; */
+        margin-left: 22px;
+    padding: 4rem 0 0 0;
+    
+  }
+
+  .footer__col-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .footer__nav-list {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .footer__copyrights {
+    padding-top: 2rem;
+    margin-top: 2rem;
+  }
+
+  .footer__copyrights p {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer__copyrights p a {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
+  /* Adjustments for parallax elements */
+  .footer__parralax {
+    height: 100px;
+    top: -60px;
+  }
+
+  .footer__parralax-moto {
+    height: 120px;
+    width: 100px;
+    margin-left: -100px;
+    bottom: 5px;
+  }
+
+  .footer__parralax-voiture {
+    height: 80px;
+    width: 140px;
+    margin-left: 100px;
+    bottom: 5px;
+    transform: scaleX(-1);
+  }
+
+  .footer__parralax-trees,
+  .footer__parralax-premierplan,
+  .footer__parralax-secondplan {
+    background-size: auto 80px;
+  }
+
+  /* Animation speed adjustments */
+  .footer__parralax-trees {
+    animation-duration: 800s;
+  }
+
+  .footer__parralax-premierplan {
+    animation-duration: 400s;
+  }
+
+  .footer__parralax-secondplan {
+    animation-duration: 500s;
+  }
+  .footer-nav-email {
+    display: block;
+  }
+  .footer__col_last {
+    display: none;
+  }
+  .footer__nav-link i {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-nav-email {
+    display: block;
+  }
+  .footer__col_last {
+    display: none;
+  }
+
+  /* Further adjustments for smaller mobile devices */
+  .footer__col-title * ~ span {
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  .footer__col-title {
+    margin-bottom: 0;
+    margin-left: 9px;
+  }
+  .footer__nav-link i {
+    display: none;
+  }
+  .footer__nav-list {
+    gap: 0.8rem;
+    margin-left: -4px;
+  }
+
+  .footer__parralax {
+    height: 80px;
+    top: -40px;
+  }
+
+  .footer__parralax-moto {
+    height: 90px;
+    width: 70px;
+    margin-left: -126px;
+    bottom: 3px;
+  }
+  .footer__col {
+    margin-right: 3px;
+    margin-top: 19px;
+  }
+
+  .footer__parralax-voiture {
+    height: 60px;
+    width: 100px;
+    margin-left: 50px;
+    bottom: 3px;
+    margin-bottom: -7px;
+    transform: scaleX(1);
+  }
+
+  .footer__parralax-trees,
+  .footer__parralax-premierplan,
+  .footer__parralax-secondplan {
+    background-size: auto 60px;
+  }
+  .footer__nav-link svg {
+    display: none;
+  }
+}
+@media (min-width: 1280px) {
+  .container {
+      max-width: 1280px;
+      margin-left: 116px;
+  }
+}
+@media (max-width: 768px) {
+    .footer__nav {
+font-size: small;
+        
+    }
+}

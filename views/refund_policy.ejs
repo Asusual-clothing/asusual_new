@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Return & Refund Policy | AsUsual Clothing</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+
+    <link
+
+      rel="stylesheet"
+
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+
+    />
+
+  <link rel="stylesheet" href="styles/styles.css">
+
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <link rel="stylesheet" href="styles/navbar.css">
+
+  <style>
+
+    ul.custom-bullet {
+
+      list-style: none;
+
+      padding-left: 0;
+
+    }
+
+    ul.custom-bullet li::before {
+
+      content: "◆";
+
+      color: #fff;
+
+      display: inline-block;
+
+      width: 1em;
+
+      margin-right: 0.4em;
+
+    }
+
+    .policy-highlight {
+
+      border-left: 4px solid #3B82F6;
+
+      padding-left: 1rem;
+
+      margin: 1rem 0;
+
+    }
+
+    .policy-emoji {
+
+      font-size: 1.2rem;
+
+      margin-right: 0.5rem;
+
+    }
+
+  </style>
+
+</head>
+
+<body class="bg-black text-white fzont-sans m-0 p-0">
+
+     <!-- Page Loader -->
+
+     <div id="page-loader" class="page-loader">
+
+      <h1 class="slide-in">AsUsual</h1>
+
+      <div class="spinner"></div>
+
+    </div>
+
+  <div class="notification-bar">
+
+    <span class="notification-text"> </span>
+
+  </div>
+
+  <!-- this is the responsive navbar -->
+
+  <nav class="As-navbar">
+
+    <div class="As-container">
+
+      <ul class="As-nav-links">
+
+        <li>
+
+          <a href="/"><I class="fas fa-home"></I> <span>Home</span></a>
+
+        </li>
+
+        <li>
+
+          <a href="/about"
+
+            ><I class="fas fa-info-circle"></I> <span>About Us</span></a
+
+          >
+
+        </li>
+
+        <li>
+
+          <a href="/Products"
+
+            ><I class="fas fa-box"></I> <span>All Products</span></a
+
+          >
+
+        </li>
+
+        <li>
+
+          <a href="/orders/all-orders"
+
+            ><I class="fa fa-shirt"></I><span>Your Orders</span></a
+
+          >
+
+        </li>
+
+        <li>
+
+          <a href="/contact"
+
+            ><I class="fas fa-phone"></I><span>Contact Us</span></a
+
+          >
+
+        </li>
+
+      </ul>
+
+      <div class="As-logo">
+
+        <a href="/"
+
+          ><img
+
+            src="assests/horizontalLogo-removebg-preview.png"
+
+            alt="Logo"
+
+        /></a>
+
+      </div>
+
+      <div class="AS-nav-btn">
+
+        <% if (user) { %>
+
+          <li>
+
+            <a href="/cart" class="cart-icon">
+
+              <I class="fas fa-shopping-cart"></I>
+
+              <span>Cart</span>
+
+              <% if (cartCount > 0) { %>
+
+                <span class="cart-count"><%= cartCount %></span>
+
+              <% } %>
+
+            </a>
+
+          </li>
+
+       
+
+        <!-- Dropdown for logged-in users -->
+
+        <!-- Profile Dropdown -->
+
+        <div class="profile-dropdown">
+
+          <div class="profile-trigger">
+
+            <li>
+
+              <a href="#"
+
+                ><I class="fas fa-user-circle"></I><span>Profile</span></a
+
+              >
+
+            </li>
+
+          </div>
+
+          <div class="profile-details">
+
+            <p><I class="fas fa-user"></I> Name: <%= user.name %></p>
+
+            <p><I class="fas fa-envelope"></I> Email: <%= user.email %></p>
+
+            <p>
+
+              <I class="fas fa-phone"></I> Phone: <%= user.phone || 'N/A' %>
+
+            </p>
+
+            <p>
+
+              <I class="fas fa-calendar"></I> Member Since: <%=
+
+              user.createdAt ? new Date(user.createdAt).toDateString() :
+
+              'N/A' %>
+
+            </p>
+
+          </div>
+
+        </div>
+
+        <li>
+
+          <a href="/logout"
+
+            ><I class="fas fa-sign-out-alt"></I><span>Logout</span>
+
+          </a>
+
+        </li>
+
+
+
+        <% } else { %>
+
+        <!-- Sign-up link for guests -->
+
+        <li>
+
+          <a href="/signup"
+
+            ><I class="fas fa-user-plus"></I> <span>Sign-Up</span></a
+
+          >
+
+        </li>
+
+        <% } %>
+
+      </div>
+
+
+
+      <div class="As-hamburger">
+
+        <span></span>
+
+        <span></span>
+
+        <span></span>
+
+      </div>
+
+    </div>
+
+  </nav>
+
+  <!-- Download Button -->
+
+  <div class="fixed bottom-4 right-4 z-50">
+
+    <button onclick="downloadPDF()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg">
+
+      Download PDF
+
+    </button>
+
+  </div>
+
+
+
+  <div class="w-full px-4 py-6 max-w-4xl mx-auto">
+
+    <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center text-white">Return & Refund Policy</h1>
+
+    <p class="text-center text-xl mb-12">Style It Casual, As Usual.</p>
+
+    <p class="text-center mb-12">We want you to love your purchase from As Usual. In case you're not satisfied, we offer a simple return and exchange process. Kindly read the policy below:</p>
+
+
+
+    <div class="space">
+
+      <section class="bg-gray-900 p-6 rounded-t-2xl shadow-lg">
+
+        <h2 class="text-xl font-semibold mb-4">1. General Satisfaction Guarantee</h2>
+
+        <p>We stand by the quality of our products with a 100% Satisfaction Guarantee.</p>
+
+        <p>However, specific return policies may apply to heavily discounted items or during promotional campaigns.</p>
+
+      </section>
+
+
+
+      <section class="bg-gray-800 p-6 shadow-lg">
+
+        <h2 class="text-xl font-semibold mb-4">2. Final Sale Items</h2>
+
+        <p>Products purchased from our Final Sale section are non-returnable and non-exchangeable.</p>
+
+      </section>
+
+
+
+      <section class="bg-gray-900 p-6 shadow-lg">
+
+        <h2 class="text-xl font-semibold mb-4">3. Important Points</h2>
+
+        
+
+        <div class="policy-highlight bg-gray-800 p-4 rounded-lg mb-4">
+
+          <p class="font-semibold text-green-400 flex items-center">
+
+            <span class="policy-emoji">✅</span> Defective or Wrong Item:
+
+          </p>
+
+          <ul class="custom-bullet space-y-1 ml-8">
+
+            <li>Eligible for Free Exchange or Replacement, no additional charges.</li>
+
+            <li>Subject to stock availability.</li>
+
+          </ul>
+
+        </div>
+
+
+
+        <div class="policy-highlight bg-gray-800 p-4 rounded-lg">
+
+          <p class="font-semibold text-red-400 flex items-center">
+
+            <span class="policy-emoji">🚫</span> No Exchange for:
+
+          </p>
+
+          <ul class="custom-bullet space-y-1 ml-8">
+
+            <li>Change of mind or request for a different product.</li>
+
+            <li>Size issues — No size exchange currently available. Please refer to the Size Chart carefully before ordering.</li>
+
+          </ul>
+
+        </div>
+
+      </section>
+
+
+
+      <section class="bg-gray-800 p-6 shadow-lg">
+
+        <h2 class="text-xl font-semibold mb-4">4. Return Process</h2>
+
+        <ul class="custom-bullet space-y-2">
+
+          <li>Reverse Pick-up will be attempted twice.</li>
+
+          <li>If both attempts fail, customers must send the product to our company address at their own expense.</li>
+
+          <li>Reverse Pick-up is subject to service availability in your area pin code.</li>
+
+        </ul>
+
+        <p class="mt-4 font-semibold">Important: All tags, accessories (such as zippers), and original packaging must be included with the return. Missing items may delay or affect the approval of your return, exchange, or refund.</p>
+
+      </section>
+
+
+
+      <section class="bg-gray-900 p-6 shadow-lg">
+
+        <h2 class="text-xl font-semibold mb-4">5. Exchange & Refund Details</h2>
+
+        <ul class="custom-bullet space-y-2">
+
+          <li>Products that have already been exchanged once are not eligible for further exchange or refund.</li>
+
+          <li>Delivery charges and discount coupon amounts are non-refundable.</li>
+
+          <li>For prepaid orders, a 3% processing fee will be deducted for refunds.</li>
+
+          <li>Refunds will be initiated within 24 hours of receiving and verifying the returned product.</li>
+
+        </ul>
+
+      </section>
+
+
+
+      <section class="bg-gray-800 p-6 shadow-lg">
+
+        <h2 class="text-xl font-semibold mb-4">6. Timeframe for Returns</h2>
+
+        <p>Return or exchange requests must be made within 48 hours of receiving your order. Requests beyond this period will not be accepted.</p>
+
+      </section>
+
+
+
+      <section class="bg-gray-900 p-6 shadow-lg">
+
+        <h2 class="text-xl font-semibold mb-4">7. Reverse Pick-up Conditions</h2>
+
+        <ul class="custom-bullet space-y-2">
+
+          <li>Reverse Pick-up is provided wherever feasible.</li>
+
+          <li>Only one reverse pick-up attempt per order will be provided.</li>
+
+          <li>If Reverse Pick-up is not available in your area, you will need to ship the product via a reliable courier service.</li>
+
+          <li>Customers are required to pay applicable Reverse Pick-up Charges (RTO).</li>
+
+        </ul>
+
+      </section>
+
+
+
+      <section class="bg-gray-800 p-6 rounded-bl-xl rounded-br-xl shadow-lg mb-12">
+
+        <h2 class="text-xl font-semibold mb-4">8. Contact & Support</h2>
+
+        <ul class="custom-bullet space-y-2">
+
+          <li class="flex items-center"><span class="policy-emoji">📧</span> Email: <a href="mailto:asusualclothing@gmail.com" class="text-blue-400 underline ml-2">asusualclothing@gmail.com</a></li>
+
+          <li class="flex items-center"><span class="policy-emoji">📱</span> WhatsApp: <span class="ml-2">9509184407</span></li>
+
+          <li class="flex items-center"><span class="policy-emoji">📸</span> Instagram: <a href="https://instagram.com/as_usual.clothing" target="_blank" class="text-blue-400 underline ml-2">@as_usual.clothing</a></li>
+
+        </ul>
+
+        <p class="mt-4">If you have further questions, feel free to reach out. We are here to assist you.</p>
+
+      </section>
+
+    </div>
+
+  </div>
+
+
+
+  <footer class="footer">
+
+    <div class="footer__parallax">
+
+      <div class="footer__parallax-trees"></div>
+
+      <div class="footer__parallax-moto"></div>
+
+      <div class="footer__parallax-secondplan"></div>
+
+      <div class="footer__parallax-premierplan"></div>
+
+      <div class="footer__parallax-voiture"></div>
+
+    </div>
+
+    <div class="container">
+
+      <div class="footer__columns">
+
+        <div class="footer__col">
+
+          <h3 class="footer__col-title">
+
+            <I data-feather="shopping-bag"></I> <span>About</span>
+
+          </h3>
+
+          <nav class="footer__nav">
+
+            <ul class="footer__nav-list">
+
+              <li class="footer__nav-item">
+
+                <a href="/about" class="/about">
+
+                  About Us
+
+                </a>
+
+              </li>
+
+              <li class="footer__nav-item">
+
+                <a href="/contact" class="/contact">
+
+                  Contact Us
+
+                </a>
+
+              </li>
+
+              <li class="footer__nav-item">
+
+                <a href="/Terms-and-conditions" class="/Terms-and-conditions">
+
+                  Terms & Conditions
+
+                </a>
+
+              </li>
+
+              <li class="footer__nav-item">
+
+                <a href="/privacy_policy" class="footer__nav-link">
+
+                  Privacy Policy
+
+                </a>
+
+              </li>
+
+
+
+            </ul>
+
+          </nav>
+
+        </div>
+
+        <div class="footer__col">
+
+          <h3 class="footer__col-title">
+
+            <I data-feather="share-2"></I> <span>Find Us</span>
+
+          </h3>
+
+          <nav class="footer__nav">
+
+            <ul class="footer__nav-list">
+
+              <li class="footer__nav-item">
+
+                <a href class="footer__nav-link">
+
+                  <I data-feather="youtube"></I><span>Youtube</span>
+
+                </a>
+
+              </li>
+
+              <li class="footer__nav-item">
+
+                <a href class="footer__nav-link">
+
+                  <I data-feather="facebook"></I><span>Facebook</span>
+
+
+
+                </a>
+
+              </li>
+
+              <li class="footer__nav-item">
+
+                <a href="https://www.instagram.com/as_usual.clothing/"
+
+                  class="footer__nav-link">
+
+                  <I
+
+                    data-feather="Instagram"></I><span>Instagram</span>
+
+
+
+                </a>
+
+              </li>
+
+              <li class="footer__nav-item footer-nav-email">
+
+                <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
+
+                  <!-- <I data-feather="mail"></I> -->
+
+                  <I data-feather="at-sign"></I>
+
+                  <span>asusualclothing@gmail.com</span>
+
+                </a>
+
+              </li>
+
+            </ul>
+
+          </nav>
+
+        </div>
+
+        <div class="footer__col_last">
+
+          <h3 class="footer__col-title">
+
+            <I data-feather="send"></I> <span>Enquiry</span>
+
+          </h3>
+
+          <nav class="footer__nav">
+
+            <ul class="footer__nav-list">
+
+              <li class="footer__nav-item">
+
+                <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
+
+                  <!-- <I data-feather="mail"></I> -->
+
+                  <I data-feather="at-sign"></I>
+
+                  <span>asusualclothing@gmail.com</span>
+
+                </a>
+
+              </li>
+
+            </ul>
+
+          </nav>
+
+        </div>
+
+      </div>
+
+      
+
+    </div>
+
+  </footer>
+
+  <!-- PDF Generation Script -->
+
+  <script>
+
+    function downloadPDF() {
+
+      const element = document.querySelector(".space");
+
+      const opt = {
+
+        margin:       0.5,
+
+        filename:     'Return_Refund_Policy_AsUsual.pdf',
+
+        image:        { type: 'jpeg', quality: 0.98 },
+
+        html2canvas:  { scale: 2 },
+
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+
+      };
+
+      html2pdf().set(opt).from(element).save();
+
+    }
+
+  </script>
+
+  <script src="scripts/script.js"></script>
+
+  <script src="https://unpkg.com/feather-icons"></script>
+
+      <script>
+
+        feather.replace();
+
+      </script>
+
+      
+
+    <script>
+
+      window.addEventListener("load", function () {
+
+        const loader = document.getElementById("page-loader");
+
+        if (loader) {
+
+          loader.classList.add("fade-out");
+
+          setTimeout(() => (loader.style.display = "none"), 500);
+
+        }
+
+      });
+
+    </script>
+
+</body>
+
+</html>

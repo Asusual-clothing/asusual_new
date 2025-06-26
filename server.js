@@ -294,6 +294,14 @@ app.use(async (req, res, next) => {
     res.render("contactUs");
   });
 
+  app.get("/Shipping-policy", (req,res)=>{
+    res.render("shipping_policy");
+  })
+  
+  app.get("/Refund-policy", (req,res)=>{
+    res.render("refund_policy");
+  })
+
   app.get("/logout", (req, res) => {
     req.session.destroy((err) => {
       if (err) {

@@ -78,11 +78,9 @@ router.post("/process-order", async (req, res) => {
     const merchantOrderId = uuidv4();
     const redirectUrl = `${process.env.BASE_URL}/payment/payment-callback?merchantOrderId=${merchantOrderId}&orderId=${pendingOrder._id}`;
 
-    const amountInPaise = Math.round(totalAmount * 100);  
-
     const request = StandardCheckoutPayRequest.builder()
       .merchantOrderId(merchantOrderId)
-      .amount(amountInPaise.toString())
+      .amount(totalAmount.toString())
       .redirectUrl(redirectUrl)
       .build();
 

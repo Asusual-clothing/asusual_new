@@ -113,13 +113,16 @@ router.get("/payment-callback", async (req, res) => {
   try {
     const { merchantOrderId, orderId } = req.query;
 
+    console.log("🟡 Callback triggered:", { merchantOrderId, orderId });
+
     if (!merchantOrderId || !orderId) {
       return res.status(400).send("Missing parameters");
     }
 
-    // Verify payment status
+    // Verify payment with PhonePe
     const response = await client.getOrderStatus(merchantOrderId);
     const status = response.state;
+    console.log("🟢 Payment status from PhonePe:", status);
 
     const order = await Order.findById(orderId);
     if (!order) {
@@ -127,23 +130,68 @@ router.get("/payment-callback", async (req, res) => {
     }
 
     if (status === "COMPLETED") {
-      order.paymentStatus = "Paid"; // Make sure this matches your enum exactly
+      order.paymentStatus = "Paid";
       await order.save();
+      console.log("✅ Order marked as Paid");
 
-      // Clear cart
+      // 🧠 SIZE MAPPING
+      const sizeMap = {
+        XS: 'xsmall',
+        S: 'small',
+        M: 'medium',
+        L: 'large',
+        XL: 'xlarge',
+        XXL: 'xxlarge'
+      };
+
+      // 🔁 Reduce stock for each product in the order
+      for (const item of order.items) {
+        const { product, size, quantity } = item;
+        const mappedSize = sizeMap[size.toUpperCase()];
+        const sizeKey = `sizes.${mappedSize}`;
+
+        console.log("🔧 Attempting to reduce stock:", {
+          product,
+          originalSize: size,
+          mappedSize,
+          quantity,
+          sizeKey
+        });
+
+        if (!mappedSize) {
+          console.warn(`⚠️ Unknown size '${size}'. Skipping product: ${product}`);
+          continue;
+        }
+
+        const result = await Product.updateOne(
+          { _id: product, [sizeKey]: { $gte: quantity } },
+          { $inc: { [sizeKey]: -quantity } }
+        );
+
+        if (result.modifiedCount === 0) {
+          console.warn(`⚠️ Stock not reduced for ${product} - not enough quantity or invalid size`);
+        } else {
+          console.log(`✅ Stock reduced for product ${product} - size ${mappedSize}`);
+        }
+      }
+
+      // 🧹 Clear cart
       const cart = await Cart.findOne({ user: order.user });
       if (cart) {
-        await clearCart(cart);
+        await cart.deleteOne(); // or use custom clearCart() function
+        console.log("🗑️ Cart cleared after successful payment");
       }
 
       return res.redirect(`${process.env.BASE_URL}/payment/order-success/${orderId}`);
     } else {
-      order.paymentStatus = "Failed"; // Make sure this matches your enum exactly
+      order.paymentStatus = "Failed";
       await order.save();
+      console.log("❌ Payment failed - order updated");
+
       return res.redirect(`${process.env.BASE_URL}/payment/order-failed/${orderId}`);
     }
   } catch (error) {
-    console.error("Error in payment callback:", error);
+    console.error("🔥 Error in payment callback:", error);
     return res.redirect(`${process.env.BASE_URL}/payment-error`);
   }
 });

@@ -80,7 +80,7 @@ router.post("/process-order", async (req, res) => {
 
     const request = StandardCheckoutPayRequest.builder()
       .merchantOrderId(merchantOrderId)
-      .amount(totalAmount.toString())
+      .amount((totalAmount*100).toString())
       .redirectUrl(redirectUrl)
       .build();
 
@@ -134,7 +134,7 @@ router.get("/payment-callback", async (req, res) => {
         await clearCart(cart);
       }
 
-      return res.redirect(`${process.env.BASE_URL}/order-success/${orderId}`);
+      return res.redirect(`${process.env.BASE_URL}/payment/order-success/${orderId}`);
     } else {
       order.paymentStatus = "Failed"; // Make sure this matches your enum exactly
       await order.save();
@@ -195,5 +195,16 @@ async function clearCart(cart) {
   cart.discountAmount = 0;
   await cart.save();
 }
+
+
+// Route to handle payment error
+router.get("/order-success/:orderId", (req, res) => {
+  res.render("order-success", { orderId: req.params.orderId });
+});
+// Route to handle payment error
+router.get("/payment/order-failed/:orderId", (req, res) => {
+  res.render("order-failed", { orderId: req.params.orderId });
+});
+
 
 module.exports = router;

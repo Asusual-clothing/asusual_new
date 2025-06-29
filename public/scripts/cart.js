@@ -46,85 +46,71 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Cashfree Payment Button Handler
-    document.getElementById('cashfree-payment-btn')?.addEventListener('click', async function () {
-        const button = this;
-        button.disabled = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    // Submit Order Form (for both COD and Online Payment)
+    const shippingFormElement = document.getElementById('shipping-form');
+    if (shippingFormElement) {
+        shippingFormElement.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const button = document.getElementById('cashfree-payment-btn');
+            const originalButtonContent = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-        try {
-            // Get shipping details
-            const shippingAddress = {
-                line1: document.getElementById('shipping-line1').value,
-                line2: document.getElementById('shipping-line2').value,
-                city: document.getElementById('shipping-city').value,
-                state: document.getElementById('shipping-state').value,
-                postalCode: document.getElementById('shipping-postalCode').value,
-                country: document.getElementById('shipping-country').value,
-                contactNumber: document.getElementById('shipping-contactNumber').value
-            };
+            try {
+                // Get shipping details
+                const shippingAddress = {
+                    line1: document.getElementById('shipping-line1').value,
+                    line2: document.getElementById('shipping-line2').value,
+                    city: document.getElementById('shipping-city').value,
+                    state: document.getElementById('shipping-state').value,
+                    postalCode: document.getElementById('shipping-postalCode').value,
+                    country: document.getElementById('shipping-country').value,
+                    contactNumber: document.getElementById('shipping-contactNumber').value
+                };
 
-            // Validate shipping details
-            if (!shippingAddress.line1 || !shippingAddress.city ||
-                !shippingAddress.state || !shippingAddress.postalCode ||
-                !shippingAddress.country || !shippingAddress.contactNumber) {
-                throw new Error('Please fill in all required fields');
-            }
+                // Validate shipping details
+                if (!shippingAddress.line1 || !shippingAddress.city ||
+                    !shippingAddress.state || !shippingAddress.postalCode ||
+                    !shippingAddress.country || !shippingAddress.contactNumber) {
+                    throw new Error('Please fill in all required shipping details');
+                }
 
-            // Get cart total
-            const totalAmount = parseFloat(document.querySelector(".total-line span:last-child").textContent.replace('Rs ', ''));
+                // Get cart total
+                const totalAmount = parseFloat(document.querySelector(".total-line span:last-child").textContent.replace('Rs ', ''));
 
-            // 1. Create order in database
-            const orderResponse = await fetch('/orders/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    shippingAddress,
-                    paymentMethod: 'cashfree',
-                    amount: totalAmount,
-                    items: getCartItemsData()
-                })
-            });
-
-            const orderData = await orderResponse.json();
-
-            if (!orderData.success) {
-                throw new Error(orderData.message || 'Failed to create order');
-            }
-
-            // 2. Initiate Cashfree payment
-            const paymentResponse = await fetch('/payment/cashfree/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    orderId: orderData.order._id,
-                    amount: totalAmount,
-                    customerName: orderData.customer.name,
-                    customerEmail: orderData.customer.email,
-                    customerPhone: shippingAddress.contactNumber
-                })
-            });
-
-            const paymentData = await paymentResponse.json();
-
-            // 3. Redirect to Cashfree payment page
-            if (paymentData.payment_link) {
-                // Use Cashfree's JS SDK to open payment modal
-                const cashfree = new window.Cashfree();
-                cashfree.checkout({
-                    paymentSessionId: paymentData.payment_link, // This is now payment_session_id
-                    returnUrl: `/payment/verify?order_id=${orderId}`
+                // Process the order (always online payment)
+                const response = await fetch('/payment/process-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        shippingAddress,
+                        amount: totalAmount
+                    }),
+                    credentials: 'include'
                 });
-            } else {
-                throw new Error('Failed to generate payment link');
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to process order');
+                }
+
+                // Always redirect to payment gateway
+                console.log('Redirecting to payment gateway:', result.checkoutPageUrl);
+                window.location.href = result.checkoutPageUrl;
+
+            } catch (error) {
+                console.error('Order Error:', error);
+                showNotification(error.message, 'error');
+                button.disabled = false;
+                button.innerHTML = originalButtonContent;
             }
-        } catch (error) {
-            console.error('Payment Error:', error);
-            showNotification(error.message, 'error');
-            button.disabled = false;
-            button.textContent = 'Pay with Cashfree';
-        }
-    });
+        });
+    }
+
 
     // Function to get cart items data
     function getCartItemsData() {
@@ -135,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
             price: parseFloat(item.dataset.price)
         }));
     }
-
 
     // Function to update cart totals
     function updateCart() {
@@ -274,25 +259,21 @@ document.addEventListener("DOMContentLoaded", function () {
     // Check for payment return on page load
     function checkPaymentReturn() {
         const urlParams = new URLSearchParams(window.location.search);
-        const orderId = urlParams.get('order_id');
+        const paymentStatus = urlParams.get('paymentStatus');
+        const orderId = urlParams.get('orderId');
 
-        if (orderId) {
-            showNotification('Verifying your payment...', 'info');
-            fetch(`/payment/verify?order_id=${orderId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = `/confirmation/${orderId}`;
-                    } else {
-                        showNotification('Payment verification failed', 'error');
-                        window.location.href = '/cart';
-                    }
-                })
-                .catch(error => {
-                    console.error('Verification Error:', error);
-                    showNotification('Payment verification error', 'error');
-                    window.location.href = '/cart';
-                });
+        if (paymentStatus && orderId) {
+            if (paymentStatus === 'success') {
+                showNotification('Payment successful! Your order has been placed.', 'success');
+                setTimeout(() => {
+                    window.location.href = `/order-success/${orderId}`;
+                }, 2000);
+            } else {
+                showNotification('Payment failed. Please try again.', 'error');
+                setTimeout(() => {
+                    window.location.href = `/order-failed/${orderId}`;
+                }, 2000);
+            }
         }
     }
 

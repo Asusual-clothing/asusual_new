@@ -60,12 +60,12 @@ const OrderSchema = new mongoose.Schema({
   },
   paymentMethod: { 
     type: String, 
-    enum: ['COD', 'Credit Card', 'PayPal', 'Bank Transfer', 'Wallet','cashfree'], 
+    enum: ['COD', 'Credit Card', 'PayPal', 'Bank Transfer', 'Wallet','ONLINE'], 
     required: true 
   },
   paymentStatus: {
     type: String,
-    enum: ['Pending', 'Completed', 'Failed', 'Refunded'],
+    enum: ['Pending', 'Paid', 'Failed', 'Refunded'],
     default: 'Pending'
   },
   shippingAddress: {

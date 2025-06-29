@@ -92,12 +92,12 @@
       <nav class="As-navbar">
         <div class="As-container">
           <ul class="As-nav-links">
-            <li style="font-weight: bold;">AS USUAL CLOTHING</li>
+            <li class="blinking-text">AS USUAL CLOTHING</li>
             <li style="height: 25px; border-left: 2px solid black; margin: 0 15px;"></li>
 
-            <li>
+            <!-- <li>
               <a href="/"><i class="fas fa-home"></i> <span>Home</span></a>
-            </li>
+            </li> -->
             <li>
               <a href="/about"
                 ><i class="fas fa-info-circle"></i> <span>About Us</span></a
@@ -185,11 +185,13 @@
         </div>
       </nav>
       <!-- this is slider of poster  -->
+
       <div
         class="slider"
         id="slider"
         style="--img-prev: url(<%=posters[posters.length-1]||''%>)"
       >
+
         <div class="slider__content" id="slider-content">
           <div class="slider__images">
             <% if (posters && posters.length> 0) { %> <%

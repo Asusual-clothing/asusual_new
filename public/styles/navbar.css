@@ -24,6 +24,19 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   width: 100%;
 }
+.blinking-text {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #fff;
+  text-shadow: 0 0 5px rgb(255, 0, 0), 0 0 10px rgb(0, 7, 7), 0 0 20px rgb(255, 0, 0);
+  animation: blink 1s infinite;
+  letter-spacing: 2px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
 
 /* Container Layout */
 .As-container {

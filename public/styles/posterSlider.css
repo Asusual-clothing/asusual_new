@@ -60,6 +60,9 @@ body {
   pointer-events: none;
   transform: translateZ(var(--z-distance));
 }
+.title{
+  text-align: center;
+}
 .slider__images {
   overflow: hidden;
   position: static;

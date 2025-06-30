@@ -206,7 +206,7 @@ router.get("/all-orders", async (req, res) => {
       };
     });
 
-    res.render("allorders", {
+    res.render("userallorders", {
       orders: ordersWithStatus,
       user: req.user,
       cartCount: req.session.cartCount || 0,
@@ -216,6 +216,29 @@ router.get("/all-orders", async (req, res) => {
     res.status(500).render("error", { message: "Error fetching your orders" });
   }
 });
+
+// DELETE route for order deletion
+router.post('/delete/:orderId', async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        
+        // Find and delete the order
+        const deletedOrder = await Order.findByIdAndDelete(orderId);
+        
+        if (!deletedOrder) {
+            req.flash('error', 'Order not found');
+            return res.redirect('/orders');
+        }
+        
+        req.flash('success', 'Order deleted successfully');
+        res.redirect('/orders');
+    } catch (error) {
+        console.error('Error deleting order:', error);
+        req.flash('error', 'Error deleting order');
+        res.redirect('/orders');
+    }
+});
+
 
 // Order details (admin)
 router.get("/:id", async (req, res) => {

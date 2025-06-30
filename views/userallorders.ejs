@@ -124,7 +124,7 @@
                             <div class="order-info">
                                 <h3>Order #: <span class="order-id"><%= order._id %></span></h3>
                                 <p class="order-status">
-                                    <span class="status-label">Status:</span> 
+                                    <span class="status-label">Delivery Status:</span> 
                                     <span class="status-<%= order.status %>">
                                         <%= order.status %>
                                     </span>
@@ -133,7 +133,12 @@
                             <div class="order-meta">
                                 <p class="order-date">Order Date: <%= new Date(order.createdAt).toLocaleString() %></p>
                                 <p class="order-total">Total: <span class="total-amount">₹<%= order.totalAmount.toFixed(2) %></span></p>
-                            </div>
+                                 <p class="payment-status">
+                                    <span class="status-label">Payment Status:</span> 
+                                    <span class="status-<%= order.paymentStatus.toLowerCase() %>">
+                                    <%= order.paymentStatus %>
+                                    </span>
+                              </div>
                         </div>
 
                         <div class="order-items">
@@ -166,7 +171,7 @@
                         <div class="order-footer">
                           <% const allProductsAvailable = order.items.every(item => item.product); %>
                           <% if (allProductsAvailable) { %>
-                              <a href="/user-orders/<%= order._id.toString() %>" class="details-btn">
+                              <a href="/orders/all-orders/<%= order._id.toString() %>" class="details-btn">
                                   View Details
                               </a>
                           <% } else { %>

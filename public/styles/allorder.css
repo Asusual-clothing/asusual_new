@@ -17,6 +17,30 @@ body {
     width: 100%;
   }
   
+  .payment-status {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.status-pending {
+    color: #ff9800;
+    font-weight: bold;
+}
+
+.status-paid {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.status-failed {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.status-refunded {
+    color: #2196f3;
+    font-weight: bold;
+}
   /* Empty Orders State */
   .no-orders {
     background-color: #2a2a2a;

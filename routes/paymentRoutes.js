@@ -23,10 +23,12 @@ const client = StandardCheckoutClient.getInstance(clientId, clientSecret, client
 // Integrated Payment and Order Placement Route
 router.post("/process-order", async (req, res) => {
   try {
+    console.log("Processing order request...");
     const userId = req.user?._id || req.session.userId;
-    const { shippingAddress } = req.body; // Removed paymentMethod since we only have online
+    const { shippingAddress } = req.body;
 
     if (!userId) {
+      console.error("Authentication failed - no user ID found");
       return res.status(401).json({ success: false, message: "Not authenticated" });
     }
 
@@ -35,7 +37,13 @@ router.post("/process-order", async (req, res) => {
       .populate("items.product")
       .populate("appliedCoupon");
 
-    if (!cart || cart.items.length === 0) {
+    if (!cart) {
+      console.error("No cart found for user:", userId);
+      return res.status(400).json({ success: false, message: "Cart not found" });
+    }
+
+    if (cart.items.length === 0) {
+      console.error("Empty cart for user:", userId);
       return res.status(400).json({ success: false, message: "Cart is empty" });
     }
 
@@ -43,6 +51,7 @@ router.post("/process-order", async (req, res) => {
     if (cart.appliedCoupon?.useonce) {
       const user = await User.findById(userId);
       if (user.useoncecoupon.includes(cart.appliedCoupon.code)) {
+        console.error("Coupon already used by user:", cart.appliedCoupon.code);
         return res.status(400).json({
           success: false,
           message: "This coupon can only be used once per user and has already been used",
@@ -61,6 +70,13 @@ router.post("/process-order", async (req, res) => {
     const discountAmount = cart.discountAmount || 0;
     const totalAmount = subtotal - discountAmount + shippingFee;
 
+    console.log("Order totals calculated:", {
+      subtotal,
+      shippingFee,
+      discountAmount,
+      totalAmount
+    });
+
     // Create pending order record
     const pendingOrder = await createOrder(
       userId,
@@ -69,10 +85,12 @@ router.post("/process-order", async (req, res) => {
       discountAmount,
       shippingFee,
       totalAmount,
-      "ONLINE", // Hardcoded to online payment
+      "ONLINE",
       "Pending",
       shippingAddress
     );
+
+    console.log("Pending order created:", pendingOrder._id);
 
     // Generate payment request
     const merchantOrderId = uuidv4();
@@ -80,18 +98,26 @@ router.post("/process-order", async (req, res) => {
 
     const amountInPaise = Math.round(totalAmount * 100);  
 
+    console.log("Preparing payment request:", {
+      merchantOrderId,
+      amountInPaise,
+      redirectUrl
+    });
+
     const request = StandardCheckoutPayRequest.builder()
       .merchantOrderId(merchantOrderId)
       .amount(amountInPaise.toString())
       .redirectUrl(redirectUrl)
-      .build();
+      .build();
 
     const response = await client.pay(request);
+    console.log("Payment gateway response:", response);
 
     // Store payment ID with the order
     pendingOrder.paymentId = merchantOrderId;
     await pendingOrder.save();
 
+    console.log("Order processed successfully, redirecting to payment gateway");
     return res.json({
       success: true,
       checkoutPageUrl: response.redirectUrl,
@@ -100,10 +126,16 @@ router.post("/process-order", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error processing order:", error);
+    console.error("🔥 Error processing order:", {
+      message: error.message,
+      stack: error.stack,
+      requestBody: req.body,
+      userId: req.user?._id || req.session.userId
+    });
     res.status(500).json({
       success: false,
       message: "An error occurred while processing the order",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -116,6 +148,7 @@ router.get("/payment-callback", async (req, res) => {
     console.log("🟡 Callback triggered:", { merchantOrderId, orderId });
 
     if (!merchantOrderId || !orderId) {
+      console.error("Missing parameters in callback");
       return res.status(400).send("Missing parameters");
     }
 
@@ -126,6 +159,7 @@ router.get("/payment-callback", async (req, res) => {
 
     const order = await Order.findById(orderId);
     if (!order) {
+      console.error("Order not found:", orderId);
       return res.status(404).send("Order not found");
     }
 
@@ -134,7 +168,7 @@ router.get("/payment-callback", async (req, res) => {
       await order.save();
       console.log("✅ Order marked as Paid");
 
-      // 🧠 SIZE MAPPING
+      // Size mapping
       const sizeMap = {
         XS: 'xsmall',
         S: 'small',
@@ -144,7 +178,7 @@ router.get("/payment-callback", async (req, res) => {
         XXL: 'xxlarge'
       };
 
-      // 🔁 Reduce stock for each product in the order
+      // Reduce stock for each product in the order
       for (const item of order.items) {
         const { product, size, quantity } = item;
         const mappedSize = sizeMap[size.toUpperCase()];
@@ -175,10 +209,10 @@ router.get("/payment-callback", async (req, res) => {
         }
       }
 
-      // 🧹 Clear cart
+      // Clear cart
       const cart = await Cart.findOne({ user: order.user });
       if (cart) {
-        await cart.deleteOne(); // or use custom clearCart() function
+        await cart.deleteOne();
         console.log("🗑️ Cart cleared after successful payment");
       }
 
@@ -191,10 +225,15 @@ router.get("/payment-callback", async (req, res) => {
       return res.redirect(`${process.env.BASE_URL}/payment/order-failed/${orderId}`);
     }
   } catch (error) {
-    console.error("🔥 Error in payment callback:", error);
+    console.error("🔥 Error in payment callback:", {
+      message: error.message,
+      stack: error.stack,
+      queryParams: req.query
+    });
     return res.redirect(`${process.env.BASE_URL}/payment-error`);
   }
 });
+
 // Helper function to create an order
 async function createOrder(
   userId,
@@ -207,54 +246,50 @@ async function createOrder(
   paymentStatus,
   shippingAddress
 ) {
-  const orderItems = cart.items.map((item) => ({
-    product: item.product._id,
-    quantity: item.quantity,
-    size: item.size,
-    priceAtPurchase: item.product.price,
-  }));
+  try {
+    const orderItems = cart.items.map((item) => ({
+      product: item.product._id,
+      quantity: item.quantity,
+      size: item.size,
+      priceAtPurchase: item.product.price,
+    }));
 
-  const newOrder = new Order({
-    user: userId,
-    cart: cart._id,
-    items: orderItems,
-    subtotal,
-    discountAmount,
-    shippingFee,
-    totalAmount,
-    paymentMethod,
-    paymentStatus,
-    shippingAddress,
-    couponUsed: cart.appliedCoupon?._id,
-  });
-
-  if (cart.appliedCoupon?.useonce) {
-    await User.findByIdAndUpdate(userId, {
-      $addToSet: { useoncecoupon: cart.appliedCoupon.code },
+    const newOrder = new Order({
+      user: userId,
+      cart: cart._id,
+      items: orderItems,
+      subtotal,
+      discountAmount,
+      shippingFee,
+      totalAmount,
+      paymentMethod,
+      paymentStatus,
+      shippingAddress,
+      couponUsed: cart.appliedCoupon?._id,
     });
+
+    if (cart.appliedCoupon?.useonce) {
+      await User.findByIdAndUpdate(userId, {
+        $addToSet: { useoncecoupon: cart.appliedCoupon.code },
+      });
+    }
+
+    await newOrder.save();
+    return newOrder;
+  } catch (error) {
+    console.error("Error in createOrder helper:", error);
+    throw error;
   }
-
-  await newOrder.save();
-  return newOrder;
 }
 
-// Helper function to clear cart
-async function clearCart(cart) {
-  cart.items = [];
-  cart.appliedCoupon = null;
-  cart.discountAmount = 0;
-  await cart.save();
-}
-
-
-// Route to handle payment error
+// Route to handle payment success
 router.get("/order-success/:orderId", (req, res) => {
   res.render("order-success", { orderId: req.params.orderId });
 });
-// Route to handle payment error
+
+// Route to handle payment failure
 router.get("/payment/order-failed/:orderId", (req, res) => {
   res.render("order-failed", { orderId: req.params.orderId });
 });
-
 
 module.exports = router;

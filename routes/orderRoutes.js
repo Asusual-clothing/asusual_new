@@ -243,10 +243,9 @@ router.post('/delete/:orderId', async (req, res) => {
 // Order details (admin)
 router.get("/:id", async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate(
-      "items.product",
-      "name images price description"
-    );
+     const order = await Order.findById(req.params.id)
+      .populate("items.product", "name images price description")
+      .populate("user", "name email");
 
     if (!order) {
       return res.status(404).render("error", { message: "Order not found" });

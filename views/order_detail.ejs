@@ -82,16 +82,23 @@
                 <!-- Order Summary -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <!-- Order Information -->
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h4 class="text-lg font-medium text-gray-800 mb-3 border-b pb-2">Order Information</h4>
-                        <div class="space-y-2">
-                            <p class="text-sm"><span class="font-medium">Order #:</span>
-                                <%= order._id.toString() %>
-                            </p>
-                            <p class="text-sm"><span class="font-medium">Date:</span>
-                                <%= new Date(order.createdAt).toLocaleString('en-IN', { day: 'numeric' , month: 'short'
-                                    , year: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
-                            </p>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                <h4 class="text-lg font-medium text-gray-800 mb-3 border-b pb-2">Order Information</h4>
+                <div class="space-y-2">
+                    <% if (order.user) { %>
+                        <p class="text-sm"><span class="font-medium">Customer:</span> <%= order.user.name %></p>
+                        <p class="text-sm"><span class="font-medium">Customer's email:</span> <%= order.user.email %></p>
+                    <% } %>
+                    <p class="text-sm"><span class="font-medium">Order #:</span> <%= order._id.toString() %></p>
+                    <p class="text-sm"><span class="font-medium">Date:</span> 
+                        <%= new Date(order.createdAt).toLocaleString('en-IN', { 
+                            day: 'numeric', 
+                            month: 'short', 
+                            year: 'numeric', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        }) %>
+                    </p>
                             <p class="text-sm flex items-center">
                                 <span class="font-medium">Status:</span>
                                 <span class="ml-2 px-2 py-1 rounded-full text-xs font-medium 

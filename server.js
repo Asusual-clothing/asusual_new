@@ -132,6 +132,8 @@ app.use(async (req, res, next) => {
   const userRoutes = require("./routes/userRoutes");
   const posterRoutes = require("./routes/posterRoutes");
   // const product_detail = require("./routes/product_detail")
+  const sitemapRoute = require('./routes/sitemap');
+
 
   // Use routes
   app.use("/admin", adminRoutes);
@@ -143,6 +145,8 @@ app.use(async (req, res, next) => {
   app.use("/products", productRoutes);
   app.use("/user", userRoutes);
   app.use("/posters", posterRoutes);
+  app.use('/', sitemapRoute);
+
   // app.use("/product_details", product_detail)
   function generateOTP() {
     return randomstring.generate({ length: 4, charset: "numeric" });

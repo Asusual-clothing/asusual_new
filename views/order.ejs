@@ -77,7 +77,20 @@
                         class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition flex items-center gap-2">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </a>
+                    <div class="relative">
+        <div class="flex items-center">
+          <input type="text" id="orderSearch" placeholder="Search by Order ID..." 
+            class="flex-1 pl-4 pr-10 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          <button id="searchButton" class="px-4 py-2 bg-indigo-600 text-white rounded-r-md hover:bg-indigo-700 transition">
+            <i class="fas fa-search"></i>
+          </button>
+          <button id="clearSearch" class="ml-2 px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition hidden">
+            <i class="fas fa-times"></i> Clear
+          </button>
+        </div>
+      </div>
                 </div>
+
 
                 <% if (orders.length===0) { %>
                     <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md text-center">
@@ -205,5 +218,77 @@
         </div>
     </div>
 </body>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('orderSearch');
+    const searchButton = document.getElementById('searchButton');
+    const clearButton = document.getElementById('clearSearch');
+    const orderCards = document.querySelectorAll('.border.border-gray-200.rounded-lg');
+    const noOrdersDiv = document.querySelector('.bg-blue-50.border-l-4.border-blue-400');
 
+    function performSearch() {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      let hasMatches = false;
+      
+      // Search through all order cards
+      orderCards.forEach(card => {
+        const orderId = card.querySelector('h3.text-lg').textContent.toLowerCase();
+        if (orderId.includes(searchTerm)) {
+          card.style.display = 'block';
+          hasMatches = true;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show/hide clear button
+      if (searchTerm.length > 0) {
+        clearButton.classList.remove('hidden');
+      } else {
+        clearButton.classList.add('hidden');
+      }
+
+      // Show no results message if needed
+      const noResultsDiv = document.getElementById('noResultsMessage');
+      
+      if (!hasMatches && searchTerm.length > 0) {
+        if (!noResultsDiv) {
+          const messageDiv = document.createElement('div');
+          messageDiv.id = 'noResultsMessage';
+          messageDiv.className = 'bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md text-center';
+          messageDiv.innerHTML = `
+            <p class="text-lg text-yellow-700">No orders found matching "${searchTerm}"</p>
+          `;
+          document.querySelector('.space-y-6').prepend(messageDiv);
+        }
+        
+        // Hide the "no orders" message if present
+        if (noOrdersDiv) noOrdersDiv.style.display = 'none';
+      } else {
+        if (noResultsDiv) noResultsDiv.remove();
+        if (noOrdersDiv) noOrdersDiv.style.display = 'block';
+      }
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', function() {
+      // Search after a small delay (debounce)
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = setTimeout(performSearch, 300);
+    });
+
+    searchButton.addEventListener('click', performSearch);
+    
+    clearButton.addEventListener('click', function() {
+      searchInput.value = '';
+      performSearch();
+      this.classList.add('hidden');
+    });
+
+    // Also search when pressing Enter
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') performSearch();
+    });
+  });
+</script>
 </html>

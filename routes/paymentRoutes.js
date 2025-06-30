@@ -288,7 +288,7 @@ router.get("/order-success/:orderId", (req, res) => {
 });
 
 // Route to handle payment failure
-router.get("/payment/order-failed/:orderId", (req, res) => {
+router.get("/order-failed/:orderId", (req, res) => {
   res.render("order-failed", { orderId: req.params.orderId });
 });
 

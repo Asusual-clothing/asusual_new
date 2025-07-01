@@ -86,6 +86,37 @@ router.post("/add-to-cart", async (req, res) => {
   }
 });
 
+
+router.get("/check-stock/:productId/:size", async (req, res) => {
+  try {
+    const { productId, size } = req.params;
+    
+    // Validate inputs
+    if (!productId || !size) {
+      return res.status(400).json({ error: 'Product ID and size are required' });
+    }
+
+    // Find the product
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Check stock for the selected size
+    const sizeKey = size.toLowerCase();
+    const availableStock = product.sizes[sizeKey] || 0;
+
+    res.json({ 
+      success: true,
+      availableStock,
+      size,
+      productName: product.name
+    });
+  } catch (error) {
+    console.error('Error checking stock:', error);
+    res.status(500).json({ error: 'Error checking product stock' });
+  }
+});
 // View cart
 router.get("/", async (req, res) => {
   try {
@@ -116,6 +147,15 @@ router.get("/", async (req, res) => {
     if (cart) {
       if (!cart.items) cart.items = [];
 
+      // Add stock information to each cart item
+      for (const item of cart.items) {
+        if (item.product) {
+          // Get the available stock for the selected size
+          const sizeKey = item.size.toLowerCase();
+          item.availableStock = item.product.sizes[sizeKey] || 0;
+        }
+      }
+
       if (cart.appliedCoupon) {
         const now = new Date();
         const user = await User.findById(userId);
@@ -145,6 +185,7 @@ router.get("/", async (req, res) => {
       }, 0);
     }
     const cartCount = cart.items ? cart.items.length : 0;
+    
     res.render("cart", {
       user,
       cart,
@@ -160,7 +201,7 @@ router.get("/", async (req, res) => {
     res.status(500).render("cart", {
       user: { name: "Guest" },
       cart: { items: [] },
-        cartCount: 0,
+      cartCount: 0,
       deliveryCost: 5.0,
       discountAmount: 0,
       subtotal: 0,

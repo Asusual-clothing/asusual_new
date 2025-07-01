@@ -104,7 +104,9 @@ OrderSchema.virtual('productDetails', {
 });
 
 // Indexes
-OrderSchema.index({ user: 1, status: 1 });
-OrderSchema.index({ createdAt: -1 });
+OrderSchema.index(
+  { user: 1, cart: 1, paymentStatus: 1 },
+  { unique: true, partialFilterExpression: { paymentStatus: "Pending" } }
+);
 
 module.exports = mongoose.model('Order', OrderSchema);

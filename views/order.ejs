@@ -133,6 +133,7 @@
                                             <form action="/orders/update-status/<%= order._id %>" method="POST"
                                                 class="flex items-center gap-2">
                                                 <div class="relative">
+                                                    <p>Delivery status</p>
                                                     <select name="status" class="appearance-none pl-3 pr-8 py-2 rounded-md text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-150 cursor-pointer
                                                 <%= order.status === 'Pending' ? 'bg-amber-50 text-amber-800' : 
                                                    order.status === 'Processing' ? 'bg-blue-50 text-blue-800' :

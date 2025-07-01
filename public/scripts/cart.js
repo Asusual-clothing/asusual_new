@@ -3,14 +3,45 @@ document.addEventListener("DOMContentLoaded", function () {
     updateCart();
 
     // Event delegation for dynamic elements
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', async function (e) {
         // Quantity increase
         if (e.target.classList.contains('increase')) {
             const quantityElem = e.target.parentElement.querySelector('.cart-quantity');
-            const newQuantity = parseInt(quantityElem.textContent) + 1;
-            quantityElem.textContent = newQuantity;
-            updateCart();
-            updateQuantityInDatabase(quantityElem, newQuantity);
+            const cartItem = e.target.closest('.cart-item');
+            const productId = cartItem.dataset.productId;
+            const size = cartItem.dataset.size;
+            
+            try {
+                // First check available stock
+                const response = await fetch(`/cart/check-stock/${productId}/${encodeURIComponent(size)}`);
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to check stock');
+                }
+
+                const currentQuantity = parseInt(quantityElem.textContent);
+                
+                // Only increase if stock is available
+                if (data.availableStock > currentQuantity) {
+                    const newQuantity = currentQuantity + 1;
+                    quantityElem.textContent = newQuantity;
+                    updateCart();
+                    updateQuantityInDatabase(quantityElem, newQuantity);
+                    
+                    // Hide any previous message
+                    const messageElem = e.target.parentElement.querySelector('.quantity-message');
+                    messageElem.style.display = 'none';
+                } else {
+                    // Show message that maximum quantity reached
+                    const messageElem = e.target.parentElement.querySelector('.quantity-message');
+                    messageElem.textContent = `No more items available in this size`;
+                    messageElem.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error checking stock:', error);
+                showNotification('Error checking product availability', 'error');
+            }
         }
 
         // Quantity decrease
@@ -22,6 +53,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 quantityElem.textContent = newQuantity;
                 updateCart();
                 updateQuantityInDatabase(quantityElem, newQuantity);
+                
+                // Hide any previous message when decreasing
+                const messageElem = e.target.parentElement.querySelector('.quantity-message');
+                messageElem.style.display = 'none';
             }
         }
 

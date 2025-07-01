@@ -373,6 +373,7 @@
                             <button type="button" onclick="changeQuantity(-1)">-</button>
                             <input type="text" id="quantity" name="quantity" value="1" readonly>
                             <button type="button" onclick="changeQuantity(1)">+</button>
+                            <p id="quantity-message" class="quantity-message"></p>
                         </div>
                         
                         <button type="submit" name="action" value="add" class="btn add-to-cart">Add to Cart</button>
@@ -499,68 +500,128 @@ AsHamburger.addEventListener('click', () => {
 });
         // Function to handle size selection
         function selectSize(size) {
-            const selectedSizeInput = document.getElementById("selected-size");
-            selectedSizeInput.value = size;
+      const selectedSizeInput = document.getElementById("selected-size");
+      selectedSizeInput.value = size;
 
-            // Highlight the selected size button
-            document.querySelectorAll(".size-button").forEach(button => {
-                button.classList.remove("selected");
-            });
-            document.querySelector(`.size-button[data-size="${size}"]`).classList.add("selected");
-        }
+      // Highlight the selected size button
+      document.querySelectorAll(".size-button").forEach(button => {
+          button.classList.remove("selected");
+      });
+      document.querySelector(`.size-button[data-size="${size}"]`).classList.add("selected");
+      
+      // Update max quantity based on selected size
+      updateMaxQuantity(size);
+  }
 
-        // Add event listeners to size buttons
-        document.querySelectorAll(".size-button").forEach(button => {
-            button.addEventListener("click", () => {
-                const size = button.getAttribute("data-size");
-                selectSize(size);
-            });
-        });
-
-        // Function to change quantity
-        function changeQuantity(change) {
+  // Function to update max quantity based on selected size
+  function updateMaxQuantity(size) {
+    const sizes = {
+        'XS': <%= product.sizes.xsmall || 0 %>,
+        'S': <%= product.sizes.small || 0 %>,
+        'M': <%= product.sizes.medium || 0 %>,
+        'L': <%= product.sizes.large || 0 %>,
+        'XL': <%= product.sizes.xlarge || 0 %>,
+        'XXL': <%= product.sizes.xxlarge || 0 %>
+    };
+    
+    const maxQuantity = sizes[size] || 0;
     const quantityInput = document.getElementById('quantity');
-    const displayInput = document.getElementById('quantityDisplay');
+    const quantityMessage = document.getElementById("quantity-message");
+    
+    // If current quantity exceeds max, set to max
+    if (parseInt(quantityInput.value) > maxQuantity) {
+        quantityInput.value = maxQuantity;
+        quantityMessage.textContent = `Maximum ${maxQuantity} items available in this size`;
+        quantityMessage.style.display = "block";
+    } else {
+        quantityMessage.style.display = "none";
+    }
+}
+
+  // Function to change quantity with size availability check
+function changeQuantity(change) {
+    const selectedSize = document.getElementById("selected-size").value;
+    const quantityMessage = document.getElementById("quantity-message");
+    
+    if (!selectedSize) {
+        quantityMessage.textContent = "Please select a size first";
+        quantityMessage.style.display = "block";
+        return;
+    }
+
+    const quantityInput = document.getElementById('quantity');
     let current = parseInt(quantityInput.value);
-    if (current <= 1 && change === -1) return;
+    
+    // Get max available quantity for selected size
+    const sizes = {
+        'XS': <%= product.sizes.xsmall || 0 %>,
+        'S': <%= product.sizes.small || 0 %>,
+        'M': <%= product.sizes.medium || 0 %>,
+        'L': <%= product.sizes.large || 0 %>,
+        'XL': <%= product.sizes.xlarge || 0 %>,
+        'XXL': <%= product.sizes.xxlarge || 0 %>
+    };
+    const maxQuantity = sizes[selectedSize] || 0;
+
+    if (change === -1) {
+        if (current <= 1) return;
+        quantityMessage.style.display = "none"; // Hide message when decreasing
+    }
+    
+    if (change === 1) {
+        if (current >= maxQuantity) {
+            quantityMessage.textContent = `Maximum ${maxQuantity} items available in this size`;
+            quantityMessage.style.display = "block";
+            return;
+        }
+        quantityMessage.style.display = "none"; // Hide message when increasing below max
+    }
+    
     current += change;
     quantityInput.value = current;
-    displayInput.value = current;
 }
 
 
-        // Function to validate form submission
-        document.querySelector("form").addEventListener("submit", function (event) {
-            const selectedSize = document.getElementById("selected-size").value;
-            const quantity = parseInt(document.getElementById("quantity").value);
+  // Add event listeners to size buttons
+  document.querySelectorAll(".size-button").forEach(button => {
+      button.addEventListener("click", () => {
+          const size = button.getAttribute("data-size");
+          selectSize(size);
+      });
+  });
 
-            if (!selectedSize) {
-                event.preventDefault();
-                alert("Please select a size before adding to cart.");
-                return;
-            }
+  // Function to validate form submission
+  document.querySelector("form").addEventListener("submit", function (event) {
+      const selectedSize = document.getElementById("selected-size").value;
+      const quantity = parseInt(document.getElementById("quantity").value);
 
-            if (isNaN(quantity) || quantity < 1) {
-                event.preventDefault();
-                alert("Please select a valid quantity.");
-            }
-        });
+      if (!selectedSize) {
+          event.preventDefault();
+          alert("Please select a size before adding to cart.");
+          return;
+      }
 
-        // Function to toggle product images
-        function toggleImage(index) {
-            const displayImage = document.querySelector(".display_image img");
-            displayImage.src = document.querySelectorAll(".change_image img")[index].src;
-        }
+      if (isNaN(quantity) || quantity < 1) {
+          event.preventDefault();
+          alert("Please select a valid quantity.");
+      }
+  });
 
-        // Initially, show the first image
-        toggleImage(0);
+  // Function to toggle product images
+  function toggleImage(index) {
+      const displayImage = document.querySelector(".display_image img");
+      displayImage.src = document.querySelectorAll(".change_image img")[index].src;
+  }
 
-        // Add event listeners to change image when clicked
-        document.querySelectorAll(".change_image img").forEach((img, index) => {
-            img.addEventListener("click", () => {
-                toggleImage(index);
-            });
-        });
+  // Initially, show the first image
+  toggleImage(0);
+
+  // Add event listeners to change image when clicked
+  document.querySelectorAll(".change_image img").forEach((img, index) => {
+      img.addEventListener("click", () => {
+          toggleImage(index);
+      });
+  });
     </script>
      <script src="https://unpkg.com/feather-icons"></script>
      <script>

@@ -303,6 +303,78 @@
     <script>
         feather.replace();
     </script>
+   <script>
+      const AsHamburger = document.querySelector('.As-hamburger');
+const AsNavLinks = document.querySelector('.As-nav-links');
+
+AsHamburger.addEventListener('click', () => {
+  AsNavLinks.classList.toggle('active');
+});
+        // Function to handle size selection
+        function selectSize(size) {
+            const selectedSizeInput = document.getElementById("selected-size");
+            selectedSizeInput.value = size;
+
+            // Highlight the selected size button
+            document.querySelectorAll(".size-button").forEach(button => {
+                button.classList.remove("selected");
+            });
+            document.querySelector(`.size-button[data-size="${size}"]`).classList.add("selected");
+        }
+
+        // Add event listeners to size buttons
+        document.querySelectorAll(".size-button").forEach(button => {
+            button.addEventListener("click", () => {
+                const size = button.getAttribute("data-size");
+                selectSize(size);
+            });
+        });
+
+        // Function to change quantity
+        function changeQuantity(change) {
+    const quantityInput = document.getElementById('quantity');
+    const displayInput = document.getElementById('quantityDisplay');
+    let current = parseInt(quantityInput.value);
+    if (current <= 1 && change === -1) return;
+    current += change;
+    quantityInput.value = current;
+    displayInput.value = current;
+}
+
+
+        // Function to validate form submission
+        document.querySelector("form").addEventListener("submit", function (event) {
+            const selectedSize = document.getElementById("selected-size").value;
+            const quantity = parseInt(document.getElementById("quantity").value);
+
+            if (!selectedSize) {
+                event.preventDefault();
+                alert("Please select a size before adding to cart.");
+                return;
+            }
+
+            if (isNaN(quantity) || quantity < 1) {
+                event.preventDefault();
+                alert("Please select a valid quantity.");
+            }
+        });
+
+        // Function to toggle product images
+        function toggleImage(index) {
+            const displayImage = document.querySelector(".display_image img");
+            displayImage.src = document.querySelectorAll(".change_image img")[index].src;
+        }
+
+        // Initially, show the first image
+        toggleImage(0);
+
+        // Add event listeners to change image when clicked
+        document.querySelectorAll(".change_image img").forEach((img, index) => {
+            img.addEventListener("click", () => {
+                toggleImage(index);
+            });
+        });
+    </script>
 
 </body>
 </html>

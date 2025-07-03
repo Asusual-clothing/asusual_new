@@ -220,21 +220,23 @@ router.post("/apply-coupon", async (req, res) => {
       return res.redirect("/cart");
     }
 
+    const trimmedCode = couponCode.trim();
     const userId = req.user?._id || req.session.userId;
+
     if (!userId) {
       req.session.couponMessage = "Please login to apply coupons";
       return res.redirect("/auth/login");
     }
 
     const coupon = await Coupon.findOne({
-      code: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
+      code: trimmedCode,
       active: true,
       expiryDate: { $gte: new Date() },
     });
 
     if (!coupon) {
       const expiredCoupon = await Coupon.findOne({
-        code: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
+        code: trimmedCode,
         expiryDate: { $lt: new Date() },
       });
 
@@ -244,7 +246,7 @@ router.post("/apply-coupon", async (req, res) => {
       }
 
       const inactiveCoupon = await Coupon.findOne({
-        code: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
+        code: trimmedCode,
         active: false,
       });
 

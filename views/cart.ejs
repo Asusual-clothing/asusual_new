@@ -608,44 +608,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event delegation for dynamic elements
     document.addEventListener('click', async function (e) {
-        // Quantity increase
-        if (e.target.classList.contains('increase')) {
-            const quantityElem = e.target.parentElement.querySelector('.cart-quantity');
-            const cartItem = e.target.closest('.cart-item');
-            const productId = cartItem.dataset.productId;
-            const size = cartItem.dataset.size;
+    // Quantity increase
+    if (e.target.classList.contains('increase')) {
+        const quantityElem = e.target.parentElement.querySelector('.cart-quantity');
+        const cartItem = e.target.closest('.cart-item');
+        const productId = cartItem.dataset.productId;
+        const size = cartItem.dataset.size;
+        const currentQuantity = parseInt(quantityElem.textContent);
+        
+        try {
+            const response = await fetch(`/cart/check-stock/${productId}/${encodeURIComponent(size)}`);
+            const data = await response.json();
             
-            try {
-                const response = await fetch(`/cart/check-stock/${productId}/${encodeURIComponent(size)}`);
-                const data = await response.json();
-                
-                if (!data.success) {
-                    throw new Error(data.error || 'Failed to check stock');
-                }
-
-                const currentQuantity = parseInt(quantityElem.textContent);
-                
-                if (data.availableStock > currentQuantity) {
-                    const newQuantity = currentQuantity + 1;
-                    quantityElem.textContent = newQuantity;
-                    updateCart();
-                    updateQuantityInDatabase(quantityElem, newQuantity);
-                    
-                    // Hide any previous message
-                    const messageElem = e.target.parentElement.querySelector('.quantity-message');
-                    messageElem.style.display = 'none';
-                } else {
-                    // Show message that maximum quantity reached
-                    const messageElem = e.target.parentElement.querySelector('.quantity-message');
-                    messageElem.textContent = `No more items available in this size`;
-                    messageElem.style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Error checking stock:', error);
-                showNotification('Error checking product availability', 'error');
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to check stock');
             }
-        }
 
+            const availableStock = data.availableStock || 0;
+            
+            if (availableStock > currentQuantity) {
+                const newQuantity = currentQuantity + 1;
+                quantityElem.textContent = newQuantity;
+                updateCart();
+                await updateQuantityInDatabase(quantityElem, newQuantity);
+                
+                // Hide any previous message
+                const messageElem = e.target.parentElement.querySelector('.quantity-message');
+                messageElem.style.display = 'none';
+            } else {
+                // Show message that maximum quantity reached
+                const messageElem = e.target.parentElement.querySelector('.quantity-message');
+                messageElem.textContent = `Only ${availableStock} items available in this size`;
+                messageElem.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error checking stock:', error);
+            showNotification('Error checking product availability', 'error');
+            
+            // Show error message to user
+            const messageElem = e.target.parentElement.querySelector('.quantity-message');
+            messageElem.textContent = 'Error checking stock availability';
+            messageElem.style.display = 'block';
+        }
+    }
         // Quantity decrease
         if (e.target.classList.contains('decrease')) {
             const quantityElem = e.target.parentElement.querySelector('.cart-quantity');

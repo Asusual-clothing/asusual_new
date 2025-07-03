@@ -90,26 +90,41 @@ router.post("/add-to-cart", async (req, res) => {
 router.get("/check-stock/:productId/:size", async (req, res) => {
   try {
     const { productId, size } = req.params;
-    
+
     // Validate inputs
     if (!productId || !size) {
       return res.status(400).json({ error: 'Product ID and size are required' });
     }
 
-    // Find the product
+    // Size short → full mapping
+    const sizeMap = {
+      xs: "xsmall",
+      s: "small",
+      m: "medium",
+      l: "large",
+      xl: "xlarge",
+      xxl: "xxlarge"
+    };
+
+    const normalizedSize = size.toLowerCase();
+    const sizeKey = sizeMap[normalizedSize] || normalizedSize;
+
+    // Find product
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    // Check stock for the selected size
-    const sizeKey = size.toLowerCase();
-    const availableStock = product.sizes[sizeKey] || 0;
+    // Debug logs
+    console.log('Product sizes:', product.sizes);
+    console.log('Requested sizeKey:', sizeKey);
 
-    res.json({ 
+    const availableStock = product.sizes?.[sizeKey] ?? 0;
+
+    return res.json({
       success: true,
       availableStock,
-      size,
+      size: sizeKey,
       productName: product.name
     });
   } catch (error) {
@@ -117,6 +132,8 @@ router.get("/check-stock/:productId/:size", async (req, res) => {
     res.status(500).json({ error: 'Error checking product stock' });
   }
 });
+
+
 // View cart
 router.get("/", async (req, res) => {
   try {

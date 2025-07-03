@@ -10,25 +10,32 @@ document.addEventListener("DOMContentLoaded", function () {
             const cartItem = e.target.closest('.cart-item');
             const productId = cartItem.dataset.productId;
             const size = cartItem.dataset.size;
-            
+
             try {
                 // First check available stock
+                console.log('--- Increase clicked ---');
+                console.log('Product ID:', productId);
+                console.log('Size:', size);
+
                 const response = await fetch(`/cart/check-stock/${productId}/${encodeURIComponent(size)}`);
                 const data = await response.json();
-                
+
+                console.log('Stock check response:', data);
+
+
                 if (!data.success) {
                     throw new Error(data.error || 'Failed to check stock');
                 }
 
                 const currentQuantity = parseInt(quantityElem.textContent);
-                
+
                 // Only increase if stock is available
                 if (data.availableStock > currentQuantity) {
                     const newQuantity = currentQuantity + 1;
                     quantityElem.textContent = newQuantity;
                     updateCart();
                     updateQuantityInDatabase(quantityElem, newQuantity);
-                    
+
                     // Hide any previous message
                     const messageElem = e.target.parentElement.querySelector('.quantity-message');
                     messageElem.style.display = 'none';
@@ -53,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 quantityElem.textContent = newQuantity;
                 updateCart();
                 updateQuantityInDatabase(quantityElem, newQuantity);
-                
+
                 // Hide any previous message when decreasing
                 const messageElem = e.target.parentElement.querySelector('.quantity-message');
                 messageElem.style.display = 'none';
@@ -84,9 +91,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Submit Order Form (for both COD and Online Payment)
     const shippingFormElement = document.getElementById('shipping-form');
     if (shippingFormElement) {
-        shippingFormElement.addEventListener('submit', async function(e) {
+        shippingFormElement.addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const button = document.getElementById('cashfree-payment-btn');
             const originalButtonContent = button.innerHTML;
             button.disabled = true;

@@ -60,6 +60,10 @@ router.get("/signup", (req, res) => {
   res.render("signup2");
 });
 
+router.get("/forget-password", (req, res) => {
+  res.render("forget_password", { message: "No user found with that email." });
+});
+
 // Generate OTP
 router.post("/generate-otp", async (req, res) => {
   const { email } = req.body;

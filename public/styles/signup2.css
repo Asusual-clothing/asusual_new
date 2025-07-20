@@ -275,5 +275,5 @@ button:disabled {
   animation: blinkRed 1s infinite;
   color: red !important;
   transform: scale(1) !important;
-  margin: 30px 0 !important;
+  margin: 11px 0 !important;
 }

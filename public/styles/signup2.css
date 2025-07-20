@@ -37,7 +37,7 @@ body {
 .login {
   position: relative;
   width: 100%;
-  height: 85%;
+  height: 80%;
   padding: 20px;
   box-sizing: border-box;
   background: #fff;
@@ -253,4 +253,27 @@ button:disabled {
   background: #cccccc;
   cursor: not-allowed;
   transform: none;
+}
+/* Blinking animation */
+@keyframes blinkRed {
+  0% {
+    color: red;
+    opacity: 1;
+  }
+  50% {
+    color: red;
+    opacity: 0.3;
+  }
+  100% {
+    color: red;
+    opacity: 1;
+  }
+}
+
+/* Apply blinking only to signup label */
+.signup label {
+  animation: blinkRed 1s infinite;
+  color: red !important;
+  transform: scale(1) !important;
+  margin: 30px 0 !important;
 }

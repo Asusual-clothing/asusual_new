@@ -384,3 +384,27 @@ body {
   }
 }
 /* Add this to your existing CSS */
+/* Blinking red text effect */
+/* Blinking red effect when Sign Up is disabled */
+@keyframes blinkRed {
+  0% { color: red; opacity: 1; }
+  50% { color: #ff4d4d; opacity: 0.6; }
+  100% { color: red; opacity: 1; }
+}
+
+#signUp:disabled {
+  animation: blinkRed 1s infinite;
+  background-color: #fff0f0;
+  border: 1px solid red;
+  color: red;
+  cursor: not-allowed;
+  font-weight: bold;
+}
+
+/* Zoom and color change when Sign Up is enabled and hovered */
+#signUp:hover:enabled {
+  transform: scale(1.1);
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  background-color: #6e0404;
+  color: white;
+}

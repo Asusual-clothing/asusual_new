@@ -277,3 +277,14 @@ button:disabled {
   transform: scale(1) !important;
   margin: 11px 0 !important;
 }
+
+/* Arrow styling */
+.arrow-icon {
+  transition: transform 0.3s ease;
+  margin-left: 8px;
+}
+
+/* When signup is visible (i.e., #chk is checked), rotate the arrow UP */
+#chk:checked ~ .signup .signup-toggle-label .arrow-icon {
+  transform: rotate(180deg);
+}

@@ -31,6 +31,10 @@ const OrderSchema = new mongoose.Schema({
       type: Number, 
       required: true,
       min: [0, 'Price cannot be negative']
+    },
+    color:{
+      type: String,
+      required:true
     }
   }],
   subtotal: { 

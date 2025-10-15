@@ -25,7 +25,7 @@ const Coupon = require("../models/CouponSchema");
 // Configure multer with increased file size limit
 const uploads = multer({
   storage: multer.memoryStorage(),
-  limits: { 
+  limits: {
     fileSize: 50 * 1024 * 1024, // 50MB limit per file
     files: 7 // Maximum 7 files (front, back, and up to 5 additional images)
   }
@@ -104,12 +104,14 @@ router.post(
   ]),
   async (req, res) => {
     try {
-      // Validate required fields
-      const { name, description, MRP, price, brand, bestseller, color, category } = req.body;
-      if (!name || !description || !price ||!MRP|| !category) {
+      const { name, description, MRP, price, brand, bestseller, category } = req.body;
+      let { color } = req.body;
+
+      // Ensure required fields are provided
+      if (!name || !description || !price || !MRP || !category) {
         return res.status(400).json({
           success: false,
-          message: "Missing required fields"
+          message: "Missing required fields",
         });
       }
 
@@ -117,11 +119,16 @@ router.post(
       if (!req.files || !req.files["front_images"] || !req.files["back_image"]) {
         return res.status(400).json({
           success: false,
-          message: "Front and back images are required"
+          message: "Front and back images are required",
         });
       }
 
-      // Process sizes
+      // Ensure color is always an array
+      if (!color) color = [];
+      if (!Array.isArray(color)) color = [color]; // Convert single color to array
+      color = color.filter(c => c && c.trim() !== ""); // Clean empty values
+
+      // Process sizes safely
       const sizes = {
         xsmall: parseInt(req.body.sizes?.xsmall) || 0,
         small: parseInt(req.body.sizes?.small) || 0,
@@ -131,48 +138,44 @@ router.post(
         xxlarge: parseInt(req.body.sizes?.xxlarge) || 0,
       };
 
-      // Enhanced Cloudinary upload function with error handling
+      // Helper function to upload to Cloudinary
       const uploadToCloudinary = async (file) => {
-  try {
-    // Compress image if over 9MB
-    let optimizedBuffer = file.buffer;
-    if (file.size > 9 * 1024 * 1024) {
-      optimizedBuffer = await sharp(file.buffer)
-        .jpeg({ quality: 80 }) // or .png({ compressionLevel: 8 })
-        .toBuffer();
-    }
+        try {
+          let optimizedBuffer = file.buffer;
+          if (file.size > 9 * 1024 * 1024) {
+            optimizedBuffer = await sharp(file.buffer)
+              .jpeg({ quality: 80 })
+              .toBuffer();
+          }
 
-    return await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'auto',
-          quality: 'auto:good', // Slightly reduced quality for large files
-          chunk_size: 20 * 1024 * 1024,
-        },
-        (error, result) => {
-          if (error) reject(new Error(`Upload failed: ${error.message}`));
-          else resolve(result);
+          return await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+              {
+                resource_type: "auto",
+                quality: "auto:good",
+                chunk_size: 20 * 1024 * 1024,
+              },
+              (error, result) => {
+                if (error) reject(new Error(`Upload failed: ${error.message}`));
+                else resolve(result);
+              }
+            );
+
+            const readableStream = new Readable();
+            readableStream.push(optimizedBuffer);
+            readableStream.push(null);
+            readableStream.pipe(uploadStream);
+          });
+        } catch (error) {
+          console.error("Upload error:", error);
+          throw error;
         }
-      );
+      };
 
-      const readableStream = new Readable();
-      readableStream.push(optimizedBuffer);
-      readableStream.push(null);
-      readableStream.pipe(uploadStream);
-    });
-  } catch (error) {
-    console.error('Upload error:', error);
-    throw error;
-  }
-};
-
-      // Upload front image
+      // Upload images
       const frontImageResult = await uploadToCloudinary(req.files["front_images"][0]);
-
-      // Upload back image
       const backImageResult = await uploadToCloudinary(req.files["back_image"][0]);
 
-      // Upload additional images if they exist
       let additionalImagesResults = [];
       if (req.files["images"] && req.files["images"].length > 0) {
         additionalImagesResults = await Promise.all(
@@ -185,24 +188,23 @@ router.post(
             }
           })
         );
-        // Filter out any failed uploads
-        additionalImagesResults = additionalImagesResults.filter(img => img !== null);
+        additionalImagesResults = additionalImagesResults.filter((img) => img !== null);
       }
 
-      // Create product
+      // Create product document
       const product = new Product({
         name,
         description,
-        sizes,
         MRP,
         price,
         brand,
-        color,
+        color, // Array of strings
         category,
-        bestseller: bestseller === "on",
+        sizes,
+        bestseller: bestseller === "true" || bestseller === "on",
         front_image: frontImageResult.secure_url,
         back_image: backImageResult.secure_url,
-        images: additionalImagesResults.map(img => img.secure_url),
+        images: additionalImagesResults.map((img) => img.secure_url),
       });
 
       await product.save();
@@ -211,19 +213,19 @@ router.post(
         success: true,
         message: "Product added successfully",
         productId: product._id,
-        product: product // Optional: return the full product data
+        product,
       });
-
     } catch (error) {
       console.error("Error adding product:", error);
       return res.status(500).json({
         success: false,
         message: "Failed to add product",
-        error: error.message
+        error: error.message,
       });
     }
   }
 );
+
 
 
 router.get("/", async (req, res) => {
@@ -235,10 +237,14 @@ router.get("/", async (req, res) => {
     const availableColors = [
       ...new Set(
         products
-          .map((p) => p.color?.toLowerCase())
-          .filter((color) => color)
+          .flatMap((p) =>
+            Array.isArray(p.color) ? p.color.map((c) => c.toLowerCase()) :
+              typeof p.color === "string" ? [p.color.toLowerCase()] :
+                []
+          )
       ),
     ];
+
 
     // Get user data if logged in
     const userId = req.session.userId || req.cookies.userId;

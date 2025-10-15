@@ -2,44 +2,44 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="description" content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
-  <meta name="keywords" content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
-    <title>
-        <%= product.name %> - Product Page
-    </title>
-      <!-- Favicons -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
+  <meta name="keywords"
+    content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
+  <title>
+    <%= product.name %> - Product Page
+  </title>
+  <!-- Favicons -->
   <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
   <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
   <link rel="manifest" href="/assests/site.webmanifest">
   <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" href="/styles/product_detail.css">
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-  />
-    <link rel="stylesheet" href="/styles/styles.css">
-    <link rel="stylesheet" href="/styles/footer.css">
-    <link rel="stylesheet" href="/styles/navbar.css">
+  <link rel="stylesheet" href="/styles/product_detail.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/styles/footer.css">
+  <link rel="stylesheet" href="/styles/navbar.css">
 </head>
 <style>
   .As-navbar {
     margin-bottom: 81px;
   }
+
   .footer__columns {
     margin-top: 18px;
- 
-}
+
+  }
 </style>
 
 <body>
-     <!-- Page Loader -->
-     <div id="page-loader" class="page-loader">
-      <h1 class="slide-in">AsUsual</h1>
-      <div class="spinner"></div>
-    </div>
+  <!-- Page Loader -->
+  <div id="page-loader" class="page-loader">
+    <h1 class="slide-in">AsUsual</h1>
+    <div class="spinner"></div>
+  </div>
   <div class="notification-bar">
     <span class="notification-text"> </span>
   </div>
@@ -51,32 +51,20 @@
           <a href="/"><i class="fas fa-home"></i> <span>Home</span></a>
         </li>
         <li>
-          <a href="/about"
-            ><i class="fas fa-info-circle"></i> <span>About Us</span></a
-          >
+          <a href="/about"><i class="fas fa-info-circle"></i> <span>About Us</span></a>
         </li>
         <li>
-          <a href="/Products"
-            ><i class="fas fa-box"></i> <span>All Products</span></a
-          >
+          <a href="/Products"><i class="fas fa-box"></i> <span>All Products</span></a>
         </li>
         <li>
-          <a href="/orders/all-orders"
-            ><i class="fa fa-shirt"></i><span>Your Orders</span></a
-          >
+          <a href="/orders/all-orders"><i class="fa fa-shirt"></i><span>Your Orders</span></a>
         </li>
         <li>
-          <a href="/contact"
-            ><i class="fas fa-phone"></i><span>Contact Us</span></a
-          >
+          <a href="/contact"><i class="fas fa-phone"></i><span>Contact Us</span></a>
         </li>
       </ul>
       <div class="As-logo">
-        <a href="/"
-          ><img
-            src="/assests/horizontalLogo-removebg-preview.png"
-            alt="Logo"
-        /></a>
+        <a href="/"><img src="/assests/horizontalLogo-removebg-preview.png" alt="Logo" /></a>
       </div>
       <div class="AS-nav-btn">
         <% if (user) { %>
@@ -84,49 +72,47 @@
             <a href="/cart" class="cart-icon">
               <i class="fas fa-shopping-cart"></i>
               <span>Cart</span>
-              <% if (cartCount > 0) { %>
-                <span class="cart-count"><%= cartCount %></span>
-              <% } %>
+              <% if (cartCount> 0) { %>
+                <span class="cart-count">
+                  <%= cartCount %>
+                </span>
+                <% } %>
             </a>
           </li>
-       
-        <!-- Dropdown for logged-in users -->
-        <!-- Profile Dropdown -->
-        <div class="profile-dropdown">
-          <div class="profile-trigger">
-            <li>
-              <a href="#"
-                ><i class="fas fa-user-circle"></i><span>Profile</span></a
-              >
-            </li>
-          </div>
-          <div class="profile-details">
-            <p><i class="fas fa-user"></i> Name: <%= user.name %></p>
-            <p><i class="fas fa-envelope"></i> Email: <%= user.email %></p>
-            <p>
-              <i class="fas fa-phone"></i> Phone: <%= user.phone || 'N/A' %>
-            </p>
-            <p>
-              <i class="fas fa-calendar"></i> Member Since: <%=
-              user.createdAt ? new Date(user.createdAt).toDateString() :
-              'N/A' %>
-            </p>
-          </div>
-        </div>
-        <li>
-          <a href="/logout"
-            ><i class="fas fa-sign-out-alt"></i><span>Logout</span>
-          </a>
-        </li>
 
-        <% } else { %>
-        <!-- Sign-up link for guests -->
-        <li>
-          <a href="/signup"
-            ><i class="fas fa-user-plus"></i> <span>Sign-Up</span></a
-          >
-        </li>
-        <% } %>
+          <!-- Dropdown for logged-in users -->
+          <!-- Profile Dropdown -->
+          <div class="profile-dropdown">
+            <div class="profile-trigger">
+              <li>
+                <a href="#"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+              </li>
+            </div>
+            <div class="profile-details">
+              <p><i class="fas fa-user"></i> Name: <%= user.name %>
+              </p>
+              <p><i class="fas fa-envelope"></i> Email: <%= user.email %>
+              </p>
+              <p>
+                <i class="fas fa-phone"></i> Phone: <%= user.phone || 'N/A' %>
+              </p>
+              <p>
+                <i class="fas fa-calendar"></i> Member Since: <%= user.createdAt ? new
+                  Date(user.createdAt).toDateString() : 'N/A' %>
+              </p>
+            </div>
+          </div>
+          <li>
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span>
+            </a>
+          </li>
+
+          <% } else { %>
+            <!-- Sign-up link for guests -->
+            <li>
+              <a href="/signup"><i class="fas fa-user-plus"></i> <span>Sign-Up</span></a>
+            </li>
+            <% } %>
       </div>
 
       <div class="As-hamburger">
@@ -136,507 +122,548 @@
       </div>
     </div>
   </nav>
-    <div class="product_details_container">
-        <!-- Left Section: Scrollable Image Gallery -->
-        <div class="image-gallery">
-          <div class="image-scroll">
-              <% if (product && product.images && product.images.length> 0) { %>
-                  <div class="display_image">
-                      <img src="<%= product.images[0] %>" alt="<%= product.name %>"
-                          style="max-width: 100%;">
-                  </div>
-                  <div class="change_image">
-                      <% for(let i=0; i < product.images.length; i++) { %>
-                          <img src="<%= product.images[i] %>" alt="<%= product.name %>"
-                              style="max-width: 100px; height: auto; cursor: pointer; margin-right: 10px;">
-                          <% } %>
-                  </div>
-                  <% } else { %>
-                      <p>No images available</p>
-                      <% } %>
+  <div class="product_details_container">
+    <!-- Left Section: Scrollable Image Gallery -->
+    <div class="image-gallery">
+      <div class="image-scroll">
+        <% if (product && product.images && product.images.length> 0) { %>
+          <div class="display_image">
+            <img src="<%= product.images[0] %>" alt="<%= product.name %>" style="max-width: 100%;">
           </div>
+          <div class="change_image">
+            <% for(let i=0; i < product.images.length; i++) { %>
+              <img src="<%= product.images[i] %>" alt="<%= product.name %>"
+                style="max-width: 100px; height: auto; cursor: pointer; margin-right: 10px;">
+              <% } %>
+          </div>
+          <% } else { %>
+            <p>No images available</p>
+            <% } %>
       </div>
-      
-      <style>
-          .image-gallery {
-              max-width: 100%;
-          }
-          
-          .display_image {
-              margin-bottom: 15px;
-          }
-          
-          .change_image {
-              display: flex;
-              overflow-x: auto;
-              gap: 10px;
-              padding-bottom: 10px; /* Space for scrollbar */
-          }
-          
-          .change_image img {
-              flex: 0 0 auto;
-              border: 1px solid #ddd;
-              transition: border 0.3s;
-          }
-          
-          .change_image img:hover {
-              border: 1px solid #999;
-          }
-          
-          /* Style the scrollbar (optional) */
-          .change_image::-webkit-scrollbar {
-              height: 5px;
-          }
-          
-          .change_image::-webkit-scrollbar-track {
-              background: #f1f1f1;
-          }
-          
-          .change_image::-webkit-scrollbar-thumb {
-              background: #888;
-          }
-          
-          .change_image::-webkit-scrollbar-thumb:hover {
-              background: #555;
-          }
-      </style>
-      
-      <script>
-          // Optional: Add click handler to change main image when thumbnails are clicked
-          document.querySelectorAll('.change_image img').forEach(thumb => {
-              thumb.addEventListener('click', function() {
-                  const mainImage = document.querySelector('.display_image img');
-                  mainImage.src = this.src;
-              });
-          });
-      </script>
+    </div>
 
-        <!-- Right Section: Product Details -->
-        <div class="product-details">
-          <h1 style="margin-bottom: 17px;">
-            <%= product.name %>
-          </h1>
-          <p class="MRP2">₹<%= product.MRP %></p>
-            <p class="price">₹<%= product.price %>
-            </p>
+    <style>
+      .image-gallery {
+        max-width: 100%;
+      }
+
+      .display_image {
+        margin-bottom: 15px;
+      }
+
+      .change_image {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding-bottom: 10px;
+        /* Space for scrollbar */
+      }
+
+      .change_image img {
+        flex: 0 0 auto;
+        border: 1px solid #ddd;
+        transition: border 0.3s;
+      }
+
+      .change_image img:hover {
+        border: 1px solid #999;
+      }
+
+      /* Style the scrollbar (optional) */
+      .change_image::-webkit-scrollbar {
+        height: 5px;
+      }
+
+      .change_image::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      .change_image::-webkit-scrollbar-thumb {
+        background: #888;
+      }
+
+      .change_image::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    </style>
+
+    <script>
+      // Optional: Add click handler to change main image when thumbnails are clicked
+      document.querySelectorAll('.change_image img').forEach(thumb => {
+        thumb.addEventListener('click', function () {
+          const mainImage = document.querySelector('.display_image img');
+          mainImage.src = this.src;
+        });
+      });
+    </script>
+
+    <div class="product-details">
+      <h1>
+        <%= product.name %>
+      </h1>
+      <p class="MRP2">₹<%= product.MRP %>
+      </p>
+      <p class="price">₹<%= product.price %>
+      </p>
+      <hr>
+
+      <h2>Category:</h2>
+      <p>
+        <%= product.category %>
+      </p>
+
+      <!-- Size Chart -->
+      <details>
+        <summary>Size Chart</summary>
+        <% if (product.category && product.category.toLowerCase().includes('oversize')) { %>
+          <table class="size-chart">
+            <thead>
+              <tr>
+                <th>Size</th>
+                <th>Chest</th>
+                <th>Shoulder</th>
+                <th>Length</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>S</td>
+                <td>44"</td>
+                <td>21"</td>
+                <td>29"</td>
+              </tr>
+              <tr>
+                <td>M</td>
+                <td>46"</td>
+                <td>22"</td>
+                <td>29.5"</td>
+              </tr>
+              <tr>
+                <td>L</td>
+                <td>48"</td>
+                <td>23"</td>
+                <td>30"</td>
+              </tr>
+              <tr>
+                <td>XL</td>
+                <td>50"</td>
+                <td>24"</td>
+                <td>30.5"</td>
+              </tr>
+            </tbody>
+          </table>
+          <% } else { %>
+            <table class="size-chart">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>Chest</th>
+                  <th>Shoulder</th>
+                  <th>Length</th>
+                  <th>Sleeve</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>S</td>
+                  <td>38"</td>
+                  <td>17.5"</td>
+                  <td>27"</td>
+                  <td>8"</td>
+                </tr>
+                <tr>
+                  <td>M</td>
+                  <td>40"</td>
+                  <td>18.5"</td>
+                  <td>28"</td>
+                  <td>8.5"</td>
+                </tr>
+                <tr>
+                  <td>L</td>
+                  <td>42"</td>
+                  <td>19"</td>
+                  <td>29"</td>
+                  <td>9"</td>
+                </tr>
+                <tr>
+                  <td>XL</td>
+                  <td>44"</td>
+                  <td>20"</td>
+                  <td>30"</td>
+                  <td>10"</td>
+                </tr>
+                <tr>
+                  <td>XXL</td>
+                  <td>46"</td>
+                  <td>21"</td>
+                  <td>31"</td>
+                  <td>10.5"</td>
+                </tr>
+              </tbody>
+            </table>
+            <% } %>
+      </details>
+      <hr>
+
+      <!-- Color Options -->
+      <h2><label for="color-select">Available Colors:</label></h2>
+      <% if (product.color && product.color.length> 0) { %>
+        <select id="color-select" name="color" required>
+          <option value="">-- Select Color --</option>
+          <% product.color.forEach(clr=> { %>
+            <option value="<%= clr.trim() %>">
+              <%= clr.trim() %>
+            </option>
+            <% }) %>
+        </select>
+        <% } else { %>
+          <p>No colors available.</p>
+          <% } %>
             <hr>
 
-           <p><h2>Category:</h2><%= product.category %></p>
-           
-
-
-            <details>
-              <!-- Add this debug line right before your condition -->
-
-                <summary>Size Chart</summary>
-               <% if (product.category && product.category.toLowerCase().includes('oversize')) { %>
-                    <!-- First table for oversized products -->
-                    <table class="size-chart">
-                        <thead>
-                            <tr>
-                                <th>Size</th>
-                                <th>Chest</th>
-                                <th>Shoulder</th>
-                                <th>Length</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>S</td>
-                                <td>44"</td>
-                                <td>21"</td>
-                                <td>29"</td>
-                            </tr>
-                            <tr>
-                                <td>M</td>
-                                <td>46"</td>
-                                <td>22"</td>
-                                <td>29.5"</td>
-                            </tr>
-                            <tr>
-                                <td>L</td>
-                                <td>48"</td>
-                                <td>23"</td>
-                                <td>30"</td>
-                            </tr>
-                            <tr>
-                                <td>XL</td>
-                                <td>50"</td>
-                                <td>24"</td>
-                                <td>30.5"</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                <% } else { %>
-                    <!-- Second table for regular products -->
-                    <table class="size-chart">
-                        <thead>
-                            <tr>
-                                <th>Size</th>
-                                <th>Chest</th>
-                                <th>Shoulder</th>
-                                <th>Length</th>
-                                <th>Sleeve length</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>S</td>
-                                <td>38"</td>
-                                <td>17.5"</td>
-                                <td>27"</td>
-                                <td>8"</td>
-                            </tr>
-                            <tr>
-                                <td>M</td>
-                                <td>40"</td>
-                                <td>18.5"</td>
-                                <td>28"</td>
-                                <td>8.5"</td>
-                            </tr>
-                            <tr>
-                                <td>L</td>
-                                <td>42"</td>
-                                <td>19"</td>
-                                <td>29"</td>
-                                <td>9"</td>
-                            </tr>
-                            <tr>
-                                <td>XL</td>
-                                <td>44"</td>
-                                <td>20"</td>
-                                <td>30"</td>
-                                <td>10"</td>
-                            </tr>
-                            <tr>
-                                <td>XXL</td>
-                                <td>46"</td>
-                                <td>21"</td>
-                                <td>31"</td>
-                                <td>10.5"</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                <% } %>
-            </details>
-            <hr>
-
-            <h2><label>Available sizes:</label></h2>
+            <!-- Sizes -->
+            <h2>Available Sizes:</h2>
             <div class="size-options">
-  <% const sizes = product.sizes || {}; %>
-  <% const isOutOfStock = 
-    (!sizes.xsmall || sizes.xsmall <= 0) &&
-    (!sizes.small || sizes.small <= 0) &&
-    (!sizes.medium || sizes.medium <= 0) &&
-    (!sizes.large || sizes.large <= 0) &&
-    (!sizes.xlarge || sizes.xlarge <= 0) &&
-    (!sizes.xxlarge || sizes.xxlarge <= 0); %>
+              <% const sizes=product.sizes || {}; %>
+                <% const isOutOfStock=Object.values(sizes).every(qty=> qty <= 0); %>
 
-  <% if (isOutOfStock) { %>
-    <p class="out-of-stock">Sorry, the product is currently unavailable.</p>
-  <% } else { %>
-    <% if (sizes.xsmall > 0) { %>
-      <button class="size-button" data-size="XS">XS</button>
-    <% } %>
-    <% if (sizes.small > 0) { %>
-      <button class="size-button" data-size="S">S</button>
-    <% } %>
-    <% if (sizes.medium > 0) { %>
-      <button class="size-button" data-size="M">M</button>
-    <% } %>
-    <% if (sizes.large > 0) { %>
-      <button class="size-button" data-size="L">L</button>
-    <% } %>
-    <% if (sizes.xlarge > 0) { %>
-      <button class="size-button" data-size="XL">XL</button>
-    <% } %>
-    <% if (sizes.xxlarge > 0) { %>
-      <button class="size-button" data-size="XXL">XXL</button>
-    <% } %>
-  <% } %>
-</div>
-
-
-
+                    <% if (isOutOfStock) { %>
+                      <p class="out-of-stock">Sorry, this product is currently unavailable.</p>
+                      <% } else { %>
+                        <% if (sizes.xsmall> 0) { %><button class="size-button" data-size="XS">XS</button>
+                          <% } %>
+                            <% if (sizes.small> 0) { %><button class="size-button" data-size="S">S</button>
+                              <% } %>
+                                <% if (sizes.medium> 0) { %><button class="size-button" data-size="M">M</button>
+                                  <% } %>
+                                    <% if (sizes.large> 0) { %><button class="size-button" data-size="L">L</button>
+                                      <% } %>
+                                        <% if (sizes.xlarge> 0) { %><button class="size-button"
+                                            data-size="XL">XL</button>
+                                          <% } %>
+                                            <% if (sizes.xxlarge> 0) { %><button class="size-button"
+                                                data-size="XXL">XXL</button>
+                                              <% } %>
+                                                <% } %>
+            </div>
             <hr>
 
             <!-- Quantity Counter and Add to Cart Button -->
             <div class="cart-actions">
-                <div class="quantity-selector">
-                    <form action="/cart/add-to-cart" method="POST">
-                        <input type="hidden" name="userId" value="<%= user._id %>">
-                        <input type="hidden" name="productId" value="<%= product.id %>">
-                        <input type="hidden" id="selected-size" name="size" value="">
-                        <!-- Hidden input for selected size -->
+              <form action="/cart/add-to-cart" method="POST">
+                <input type="hidden" name="userId" value="<%= user?._id || '' %>" />
+                <input type="hidden" name="productId" value="<%= product.id %>" />
+                <input type="hidden" id="selected-size" name="size" value="" />
+                <input type="hidden" id="selected-color" name="color" value="" />
 
-                        <div class="quantity-controls">
-                            <button type="button" onclick="changeQuantity(-1)">-</button>
-                            <input type="text" id="quantity" name="quantity" value="1" readonly>
-                            <button type="button" onclick="changeQuantity(1)">+</button>
-                            <p id="quantity-message" class="quantity-message"></p>
-                        </div>
-                        
-                        <button type="submit" name="action" value="add" class="btn add-to-cart">Add to Cart</button>
-                    </form>
+                <div class="quantity-controls">
+                  <button type="button" onclick="changeQuantity(-1)">-</button>
+                  <input type="text" id="quantity" name="quantity" value="1" readonly />
+                  <button type="button" onclick="changeQuantity(1)">+</button>
+                  <p id="quantity-message" class="quantity-message"></p>
                 </div>
-            </div>
 
+                <button type="submit" name="action" value="add" class="btn add-to-cart">Add to Cart</button>
+              </form>
+            </div>
+            <hr>
 
             <h2>Description</h2>
             <p class="price">
-                <%= product.description %>
+              <%= product.description %>
             </p>
-        </div>
     </div>
-        <!-- footer  -->
-        <footer class="footer">
-          <div class="footer__parralax">
-            <div class="footer__parralax-trees"></div>
-            <div class="footer__parralax-moto"></div>
-            <div class="footer__parralax-secondplan"></div>
-            <div class="footer__parralax-premierplan"></div>
-            <div class="footer__parralax-voiture"></div>
-          </div>
-          <div class="container">
-            <div class="footer__columns">
-              <div class="footer__col">
-                <h3 class="footer__col-title">
-                  <i data-feather="shopping-bag"></i> <span>About</span>
-                </h3>
-                <nav class="footer__nav">
-                  <ul class="footer__nav-list">
-                    <li class="footer__nav-item">
-                      <a href="/about" class="/about">
-                        About Us
-                      </a>
-                    </li>
-                    <li class="footer__nav-item">
-                      <a href="/contact" class="/contact">
-                        Contact Us
-                      </a>
-                    </li>
-                    <li class="footer__nav-item">
-                      <a href="/Terms-and-conditions" class="/Terms-and-conditions">
-                        Terms & Conditions
-                      </a>
-                    </li>
-                    <li class="footer__nav-item">
-                      <a href="/privacy_policy" class="footer__nav-link">
-                        Privacy Policy
-                      </a>
-                    </li>
-                    <li class="footer__nav-item">
-                    <a href="/Refund-policy" class="footer__nav-link">
-                      Refund Policy
-                    </a>
-                  </li>
-  
-                  </ul>
-                </nav>
-              </div>
-              <div class="footer__col">
-                <h3 class="footer__col-title">
-                  <i data-feather="share-2"></i> <span>Find Us</span>
-                </h3>
-                <nav class="footer__nav">
-                  <ul class="footer__nav-list">
-                    <li class="footer__nav-item">
-                      <a href class="footer__nav-link">
-                        <i data-feather="youtube"></i><span>Youtube</span>
-                      </a>
-                    </li>
-                    <li class="footer__nav-item">
-                      <a href class="footer__nav-link">
-                        <i data-feather="facebook"></i><span>Facebook</span>
-  
-                      </a>
-                    </li>
-                    <li class="footer__nav-item">
-                      <a href="https://www.instagram.com/as_usual.clothing/"
-                        class="footer__nav-link">
-                        <i
-                          data-feather="instagram"></i><span>Instagram</span>
-  
-                      </a>
-                    </li>
-                    <li class="footer__nav-item footer-nav-email">
-                      <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
-                        <!-- <i data-feather="mail"></i> -->
-                        <i data-feather="at-sign"></i>
-                        <span>asusualclothing@gmail.com</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-              <div class="footer__col_last">
-                <h3 class="footer__col-title">
-                  <i data-feather="send"></i> <span>Enquiry</span>
-                </h3>
-                <nav class="footer__nav">
-                  <ul class="footer__nav-list">
-                    <li class="footer__nav-item">
-                      <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
-                        <!-- <i data-feather="mail"></i> -->
-                        <i data-feather="at-sign"></i>
-                        <span>asusualclothing@gmail.com</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
-            
-          </div>
-        </footer>
+  </div>
 
-    <script>
-      const AsHamburger = document.querySelector('.As-hamburger');
-const AsNavLinks = document.querySelector('.As-nav-links');
 
-AsHamburger.addEventListener('click', () => {
-  AsNavLinks.classList.toggle('active');
-});
-        // Function to handle size selection
-        function selectSize(size) {
+  <h2>Description</h2>
+  <p class="price">
+    <%= product.description %>
+  </p>
+  </div>
+  </div>
+  <!-- footer  -->
+  <footer class="footer">
+    <div class="footer__parralax">
+      <div class="footer__parralax-trees"></div>
+      <div class="footer__parralax-moto"></div>
+      <div class="footer__parralax-secondplan"></div>
+      <div class="footer__parralax-premierplan"></div>
+      <div class="footer__parralax-voiture"></div>
+    </div>
+    <div class="container">
+      <div class="footer__columns">
+        <div class="footer__col">
+          <h3 class="footer__col-title">
+            <i data-feather="shopping-bag"></i> <span>About</span>
+          </h3>
+          <nav class="footer__nav">
+            <ul class="footer__nav-list">
+              <li class="footer__nav-item">
+                <a href="/about" class="/about">
+                  About Us
+                </a>
+              </li>
+              <li class="footer__nav-item">
+                <a href="/contact" class="/contact">
+                  Contact Us
+                </a>
+              </li>
+              <li class="footer__nav-item">
+                <a href="/Terms-and-conditions" class="/Terms-and-conditions">
+                  Terms & Conditions
+                </a>
+              </li>
+              <li class="footer__nav-item">
+                <a href="/privacy_policy" class="footer__nav-link">
+                  Privacy Policy
+                </a>
+              </li>
+              <li class="footer__nav-item">
+                <a href="/Refund-policy" class="footer__nav-link">
+                  Refund Policy
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+        </div>
+        <div class="footer__col">
+          <h3 class="footer__col-title">
+            <i data-feather="share-2"></i> <span>Find Us</span>
+          </h3>
+          <nav class="footer__nav">
+            <ul class="footer__nav-list">
+              <li class="footer__nav-item">
+                <a href class="footer__nav-link">
+                  <i data-feather="youtube"></i><span>Youtube</span>
+                </a>
+              </li>
+              <li class="footer__nav-item">
+                <a href class="footer__nav-link">
+                  <i data-feather="facebook"></i><span>Facebook</span>
+
+                </a>
+              </li>
+              <li class="footer__nav-item">
+                <a href="https://www.instagram.com/as_usual.clothing/" class="footer__nav-link">
+                  <i data-feather="instagram"></i><span>Instagram</span>
+
+                </a>
+              </li>
+              <li class="footer__nav-item footer-nav-email">
+                <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
+                  <!-- <i data-feather="mail"></i> -->
+                  <i data-feather="at-sign"></i>
+                  <span>asusualclothing@gmail.com</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div class="footer__col_last">
+          <h3 class="footer__col-title">
+            <i data-feather="send"></i> <span>Enquiry</span>
+          </h3>
+          <nav class="footer__nav">
+            <ul class="footer__nav-list">
+              <li class="footer__nav-item">
+                <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
+                  <!-- <i data-feather="mail"></i> -->
+                  <i data-feather="at-sign"></i>
+                  <span>asusualclothing@gmail.com</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+  <script>
+    // ===============================
+    // 🟡 SYNC SELECTED COLOR
+    // ===============================
+    const colorSelect = document.getElementById("color-select");
+    if (colorSelect) {
+      colorSelect.addEventListener("change", () => {
+        const selectedColorInput = document.getElementById("selected-color");
+        selectedColorInput.value = colorSelect.value.trim();
+      });
+    }
+
+    // ===============================
+    // 🟡 HAMBURGER MENU TOGGLE
+    // ===============================
+    const AsHamburger = document.querySelector(".As-hamburger");
+    const AsNavLinks = document.querySelector(".As-nav-links");
+    if (AsHamburger && AsNavLinks) {
+      AsHamburger.addEventListener("click", () => {
+        AsNavLinks.classList.toggle("active");
+      });
+    }
+
+    // ===============================
+    // 🟡 SIZE SELECTION LOGIC
+    // ===============================
+    function selectSize(size) {
       const selectedSizeInput = document.getElementById("selected-size");
+      const allButtons = document.querySelectorAll(".size-button");
+
+      // Update hidden input
       selectedSizeInput.value = size;
 
-      // Highlight the selected size button
-      document.querySelectorAll(".size-button").forEach(button => {
-          button.classList.remove("selected");
-      });
-      document.querySelector(`.size-button[data-size="${size}"]`).classList.add("selected");
-      
-      // Update max quantity based on selected size
+      // Highlight active button
+      allButtons.forEach((button) => button.classList.remove("selected"));
+      const selectedButton = document.querySelector(`.size-button[data-size="${size}"]`);
+      if (selectedButton) selectedButton.classList.add("selected");
+
+      // Update quantity limit
       updateMaxQuantity(size);
-  }
+    }
 
-  // Function to update max quantity based on selected size
-  function updateMaxQuantity(size) {
-    const sizes = {
-        'XS': <%= product.sizes.xsmall || 0 %>,
-        'S': <%= product.sizes.small || 0 %>,
-        'M': <%= product.sizes.medium || 0 %>,
-        'L': <%= product.sizes.large || 0 %>,
-        'XL': <%= product.sizes.xlarge || 0 %>,
-        'XXL': <%= product.sizes.xxlarge || 0 %>
-    };
-    
-    const maxQuantity = sizes[size] || 0;
-    const quantityInput = document.getElementById('quantity');
-    const quantityMessage = document.getElementById("quantity-message");
-    
-    // If current quantity exceeds max, set to max
-    if (parseInt(quantityInput.value) > maxQuantity) {
+    // ===============================
+    // 🟡 UPDATE MAX QUANTITY
+    // ===============================
+    function updateMaxQuantity(size) {
+      const sizeStock = {
+        XS: <%= product.sizes.xsmall || 0 %>,
+        S: <%= product.sizes.small || 0 %>,
+        M: <%= product.sizes.medium || 0 %>,
+        L: <%= product.sizes.large || 0 %>,
+        XL: <%= product.sizes.xlarge || 0 %>,
+        XXL: <%= product.sizes.xxlarge || 0 %>,
+      };
+
+      const maxQuantity = sizeStock[size] || 0;
+      const quantityInput = document.getElementById("quantity");
+      const quantityMessage = document.getElementById("quantity-message");
+      const currentQuantity = parseInt(quantityInput.value);
+
+      if (currentQuantity > maxQuantity) {
         quantityInput.value = maxQuantity;
-        quantityMessage.textContent = `Maximum ${maxQuantity} items available in this size`;
+        quantityMessage.textContent = `Maximum ${maxQuantity} items available in this size.`;
         quantityMessage.style.display = "block";
-    } else {
+      } else {
         quantityMessage.style.display = "none";
-    }
-}
-
-  // Function to change quantity with size availability check
-function changeQuantity(change) {
-    const selectedSize = document.getElementById("selected-size").value;
-    const quantityMessage = document.getElementById("quantity-message");
-    
-    if (!selectedSize) {
-        quantityMessage.textContent = "Please select a size first";
-        quantityMessage.style.display = "block";
-        return;
+      }
     }
 
-    const quantityInput = document.getElementById('quantity');
-    let current = parseInt(quantityInput.value);
-    
-    // Get max available quantity for selected size
-    const sizes = {
-        'XS': <%= product.sizes.xsmall || 0 %>,
-        'S': <%= product.sizes.small || 0 %>,
-        'M': <%= product.sizes.medium || 0 %>,
-        'L': <%= product.sizes.large || 0 %>,
-        'XL': <%= product.sizes.xlarge || 0 %>,
-        'XXL': <%= product.sizes.xxlarge || 0 %>
-    };
-    const maxQuantity = sizes[selectedSize] || 0;
-
-    if (change === -1) {
-        if (current <= 1) return;
-        quantityMessage.style.display = "none"; // Hide message when decreasing
-    }
-    
-    if (change === 1) {
-        if (current >= maxQuantity) {
-            quantityMessage.textContent = `Maximum ${maxQuantity} items available in this size`;
-            quantityMessage.style.display = "block";
-            return;
-        }
-        quantityMessage.style.display = "none"; // Hide message when increasing below max
-    }
-    
-    current += change;
-    quantityInput.value = current;
-}
-
-
-  // Add event listeners to size buttons
-  document.querySelectorAll(".size-button").forEach(button => {
-      button.addEventListener("click", () => {
-          const size = button.getAttribute("data-size");
-          selectSize(size);
-      });
-  });
-
-  // Function to validate form submission
-  document.querySelector("form").addEventListener("submit", function (event) {
+    // ===============================
+    // 🟡 CHANGE QUANTITY (with stock check)
+    // ===============================
+    function changeQuantity(change) {
       const selectedSize = document.getElementById("selected-size").value;
-      const quantity = parseInt(document.getElementById("quantity").value);
+      const quantityMessage = document.getElementById("quantity-message");
+      const quantityInput = document.getElementById("quantity");
 
       if (!selectedSize) {
+        quantityMessage.textContent = "Please select a size first.";
+        quantityMessage.style.display = "block";
+        return;
+      }
+
+      const sizeStock = {
+        XS: <%= product.sizes.xsmall || 0 %>,
+        S: <%= product.sizes.small || 0 %>,
+        M: <%= product.sizes.medium || 0 %>,
+        L: <%= product.sizes.large || 0 %>,
+        XL: <%= product.sizes.xlarge || 0 %>,
+        XXL: <%= product.sizes.xxlarge || 0 %>,
+      };
+
+      const maxQuantity = sizeStock[selectedSize] || 0;
+      let current = parseInt(quantityInput.value);
+
+      if (change === -1 && current > 1) {
+        current--;
+        quantityMessage.style.display = "none";
+      } else if (change === 1) {
+        if (current >= maxQuantity) {
+          quantityMessage.textContent = `Maximum ${maxQuantity} items available in this size.`;
+          quantityMessage.style.display = "block";
+          return;
+        }
+        current++;
+        quantityMessage.style.display = "none";
+      }
+
+      quantityInput.value = current;
+    }
+
+    // ===============================
+    // 🟡 ADD EVENT LISTENERS TO SIZE BUTTONS
+    // ===============================
+    document.querySelectorAll(".size-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const size = button.getAttribute("data-size");
+        selectSize(size);
+      });
+    });
+
+    // ===============================
+    // 🟡 FORM VALIDATION ON SUBMIT
+    // ===============================
+    const addToCartForm = document.querySelector("form");
+    if (addToCartForm) {
+      addToCartForm.addEventListener("submit", (event) => {
+        const selectedSize = document.getElementById("selected-size").value;
+        const selectedColor = document.getElementById("selected-color").value;
+        const quantity = parseInt(document.getElementById("quantity").value);
+
+        if (!selectedColor) {
+          event.preventDefault();
+          alert("Please select a color before adding to cart.");
+          return;
+        }
+        if (!selectedSize) {
           event.preventDefault();
           alert("Please select a size before adding to cart.");
           return;
-      }
-
-      if (isNaN(quantity) || quantity < 1) {
+        }
+        if (isNaN(quantity) || quantity < 1) {
           event.preventDefault();
           alert("Please select a valid quantity.");
-      }
-  });
-
-  // Function to toggle product images
-  function toggleImage(index) {
-      const displayImage = document.querySelector(".display_image img");
-      displayImage.src = document.querySelectorAll(".change_image img")[index].src;
-  }
-
-  // Initially, show the first image
-  toggleImage(0);
-
-  // Add event listeners to change image when clicked
-  document.querySelectorAll(".change_image img").forEach((img, index) => {
-      img.addEventListener("click", () => {
-          toggleImage(index);
-      });
-  });
-    </script>
-     <script src="https://unpkg.com/feather-icons"></script>
-     <script>
-       feather.replace();
-     </script>
-     
-    <script>
-      window.addEventListener("load", function () {
-        const loader = document.getElementById("page-loader");
-        if (loader) {
-          loader.classList.add("fade-out");
-          setTimeout(() => (loader.style.display = "none"), 500);
         }
       });
-    </script>
-    
+    }
+
+    // ===============================
+    // 🟡 PRODUCT IMAGE GALLERY
+    // ===============================
+    function toggleImage(index) {
+      const displayImage = document.querySelector(".display_image img");
+      const galleryImages = document.querySelectorAll(".change_image img");
+      if (displayImage && galleryImages[index]) {
+        displayImage.src = galleryImages[index].src;
+      }
+    }
+
+    // Initialize default image
+    toggleImage(0);
+
+    // Add click event for thumbnails
+    document.querySelectorAll(".change_image img").forEach((img, index) => {
+      img.addEventListener("click", () => toggleImage(index));
+    });
+  </script>
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script>
+    feather.replace();
+  </script>
+
+  <script>
+    window.addEventListener("load", function () {
+      const loader = document.getElementById("page-loader");
+      if (loader) {
+        loader.classList.add("fade-out");
+        setTimeout(() => (loader.style.display = "none"), 500);
+      }
+    });
+  </script>
+
   <script src="scripts/script.js"></script>
 </body>
 

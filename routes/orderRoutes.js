@@ -70,8 +70,9 @@ router.post("/place-order", async (req, res) => {
       quantity: item.quantity,
       size: item.size,
       priceAtPurchase: item.product.price,
+      color: item.color
     }));
-
+    console.log("=>",orderItems)
     const subtotal = cart.items.reduce(
       (total, item) => total + item.product.price * item.quantity,
       0
@@ -342,6 +343,7 @@ router.post("/create", async (req, res) => {
         quantity: item.quantity,
         size: item.size,
         priceAtPurchase: item.price,
+        color: item.color
       })),
       subtotal: amount + discountAmount - shippingFee,
       discountAmount,

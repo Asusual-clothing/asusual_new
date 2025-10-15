@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="description" content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
-  <meta name="keywords" content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
-      <!-- Favicons -->
-  <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
-  <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
-  <link rel="manifest" href="/assests/site.webmanifest">
-  <meta name="theme-color" content="#ffffff">
+    <meta name="description"
+        content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
+    <meta name="keywords"
+        content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
+    <!-- Favicons -->
+    <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
+    <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
+    <link rel="manifest" href="/assests/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
     <title>Add Product</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col md:flex-row">
         <!-- Sidebar -->
@@ -23,17 +27,20 @@
                 <h1 class="text-2xl font-bold">Admin Dashboard</h1>
                 <p class="text-indigo-300 text-sm">AsUsual</p>
             </div>
-            
+
             <nav class="space-y-2">
-                <a href="/products/add-product" class="flex items-center space-x-2 p-3 rounded-lg bg-indigo-700 transition">
+                <a href="/products/add-product"
+                    class="flex items-center space-x-2 p-3 rounded-lg bg-indigo-700 transition">
                     <i class="fas fa-plus w-5"></i>
                     <span>Add Product</span>
                 </a>
-                <a href="/products/edit-product" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                <a href="/products/edit-product"
+                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
                     <i class="fas fa-edit w-5"></i>
                     <span>Edit Quantity</span>
                 </a>
-                <a href="/posters/edit-poster" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                <a href="/posters/edit-poster"
+                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
                     <i class="fas fa-image w-5"></i>
                     <span>Edit Posters</span>
                 </a>
@@ -41,7 +48,8 @@
                     <i class="fas fa-tag w-5"></i>
                     <span>Add Coupon</span>
                 </a>
-                <a href="/admin/contacts" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                <a href="/admin/contacts"
+                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
                     <i class="fas fa-envelope w-5"></i>
                     <span>Contact Requests</span>
                 </a>
@@ -49,32 +57,36 @@
                     <i class="fas fa-shopping-bag w-5"></i>
                     <span>Orders</span>
                 </a>
-                <a href="/admin/testimonials" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                <a href="/admin/testimonials"
+                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
                     <i class="fas fa-shopping-bag w-5"></i>
                     <span>Testimonial</span>
                 </a>
-                <a href="/admin/delivery-cost" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                <a href="/admin/delivery-cost"
+                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
                     <i class="fas fa-shopping-bag w-5"></i>
                     <span>Delivery Charge</span>
                 </a>
             </nav>
-            
+
             <div class="mt-auto pt-4 border-t border-indigo-700">
-                <button onclick="handleLogout()" class="flex items-center space-x-2 w-full p-3 rounded-lg hover:bg-indigo-700 transition text-red-300 hover:text-red-200">
+                <button onclick="handleLogout()"
+                    class="flex items-center space-x-2 w-full p-3 rounded-lg hover:bg-indigo-700 transition text-red-300 hover:text-red-200">
                     <i class="fas fa-sign-out-alt w-5"></i>
                     <span>Logout</span>
                 </button>
             </div>
         </div>
-        
+
         <!-- Main Content -->
         <div class="flex-1 p-8">
             <div class="bg-white rounded-xl shadow-md p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-semibold text-gray-800">Add New Product</h2>
                 </div>
-                
-                <form id="productForm" action="/products/add-product" method="POST" enctype="multipart/form-data" class="space-y-6">
+
+                <form id="productForm" action="/products/add-product" method="POST" enctype="multipart/form-data"
+                    class="space-y-6">
                     <!-- Product Info Section -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -92,19 +104,33 @@
                             <input type="number" id="price" name="price" step="0.01" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
-                        
+
                         <div>
                             <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
                             <input type="text" id="brand" name="brand" placeholder="AsUsual"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
-                        
+
                         <div>
-                            <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Color</label>
-                            <input type="text" id="color" name="color" placeholder="Color"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                            <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Colors</label>
+
+                            <div id="colorContainer" class="space-y-2">
+                                <div class="flex gap-2 color-input">
+                                    <input type="text" name="color[]" placeholder="Color"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                    <button type="button" class="removeColor hidden text-red-600 hover:text-red-800">
+                                        <i class="fas fa-minus-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="button" id="addColorBtn"
+                                class="mt-2 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition">
+                                <i class="fas fa-plus mr-1"></i> Add Color
+                            </button>
                         </div>
-                        
+
+
                         <div>
                             <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                             <select id="category" name="category"
@@ -115,20 +141,22 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <!-- Description -->
                     <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <label for="description"
+                            class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                         <textarea id="description" name="description" required rows="4"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
                     </div>
-                    
+
                     <!-- Size Quantities -->
                     <div class="border-t pt-4">
                         <h3 class="text-lg font-medium text-gray-700 mb-4">Size Quantities</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                             <div>
-                                <label for="x-small" class="block text-sm font-medium text-gray-700 mb-1">X-Small</label>
+                                <label for="x-small"
+                                    class="block text-sm font-medium text-gray-700 mb-1">X-Small</label>
                                 <input type="number" id="x-small" name="sizes[xsmall]" min="0" value="0"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                             </div>
@@ -153,13 +181,14 @@
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                             </div>
                             <div>
-                                <label for="xxlarge" class="block text-sm font-medium text-gray-700 mb-1">XX-Large</label>
+                                <label for="xxlarge"
+                                    class="block text-sm font-medium text-gray-700 mb-1">XX-Large</label>
                                 <input type="number" id="xxlarge" name="sizes[xxlarge]" min="0" value="0"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Best Seller -->
                     <div class="border-t pt-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Best Seller:</label>
@@ -174,30 +203,33 @@
                             </label>
                         </div>
                     </div>
-                    
+
                     <!-- Images Upload -->
                     <div class="border-t pt-4">
                         <h3 class="text-lg font-medium text-gray-700 mb-4">Product Images</h3>
                         <div class="space-y-4">
                             <div>
-                                <label for="front_image" class="block text-sm font-medium text-gray-700 mb-1">Front Image (Required)</label>
+                                <label for="front_image" class="block text-sm font-medium text-gray-700 mb-1">Front
+                                    Image (Required)</label>
                                 <input type="file" id="front_image" name="front_images" required
                                     class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                             </div>
                             <div>
-                                <label for="back_image" class="block text-sm font-medium text-gray-700 mb-1">Back Image (Required)</label>
+                                <label for="back_image" class="block text-sm font-medium text-gray-700 mb-1">Back Image
+                                    (Required)</label>
                                 <input type="file" id="back_image" name="back_image" required
                                     class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                             </div>
                             <div>
-                                <label for="images" class="block text-sm font-medium text-gray-700 mb-1">Additional Images (Max 5)</label>
+                                <label for="images" class="block text-sm font-medium text-gray-700 mb-1">Additional
+                                    Images (Max 5)</label>
                                 <input type="file" id="images" name="images" multiple accept="image/*"
                                     class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                                 <p class="mt-1 text-sm text-gray-500">Select multiple images (max 5)</p>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Submit Button -->
                     <div class="flex justify-end pt-4 border-t">
                         <button type="submit" id="submitBtn"
@@ -212,37 +244,62 @@
 
     <script>
         // Handle product form submission
+        // Dynamic Color Fields
+        document.getElementById("addColorBtn").addEventListener("click", () => {
+            const container = document.getElementById("colorContainer");
+
+            const div = document.createElement("div");
+            div.className = "flex gap-2 color-input";
+
+            div.innerHTML = `
+    <input type="text" name="color[]" placeholder="Color"
+      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+    <button type="button" class="removeColor text-red-600 hover:text-red-800">
+      <i class="fas fa-minus-circle"></i>
+    </button>
+  `;
+
+            container.appendChild(div);
+        });
+
+        // Remove color field
+        document.getElementById("colorContainer").addEventListener("click", (e) => {
+            if (e.target.closest(".removeColor")) {
+                e.target.closest(".color-input").remove();
+            }
+        });
+
         document.getElementById('productForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const form = e.target;
             const submitBtn = document.getElementById('submitBtn');
             const originalBtnText = submitBtn.innerHTML;
-            
+
             try {
                 // Show loading state
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `
                     <i class="fas fa-spinner fa-spin"></i> Adding Product...
                 `;
-                
+
                 const formData = new FormData(form);
-                
+
                 const response = await fetch('/products/add-product', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (!response.ok) {
                     throw new Error(result.message || 'Failed to add product');
                 }
-                
+
                 // Show success message
                 alert('Product added successfully!');
                 form.reset();
-                
+
             } catch (error) {
                 console.error('Error:', error);
                 alert(`Error: ${error.message}`);
@@ -255,24 +312,25 @@
 
         // Handle logout
         function handleLogout() {
-            fetch('/admin/logout', { 
+            fetch('/admin/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = '/admin/login';
-                } else {
-                    throw new Error('Logout failed');
-                }
-            })
-            .catch(error => {
-                console.error('Logout error:', error);
-                alert('Failed to logout. Please try again.');
-            });
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/admin/login';
+                    } else {
+                        throw new Error('Logout failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                    alert('Failed to logout. Please try again.');
+                });
         }
     </script>
 </body>
+
 </html>

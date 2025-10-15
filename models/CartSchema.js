@@ -20,10 +20,13 @@ const CartSchema = new mongoose.Schema({
       size: {
         type: String,
         required: true
+      },
+      color: {
+        type: String,
+        required: true
       }
     }
   ],
-  // Add coupon-related fields
   appliedCoupon: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Coupon'

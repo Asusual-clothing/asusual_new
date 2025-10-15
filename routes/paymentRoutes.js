@@ -184,6 +184,7 @@ async function createOrder(
     quantity: item.quantity,
     size: item.size,
     priceAtPurchase: item.product.price,
+    color: item.color
   }));
 
   const newOrder = new Order({

@@ -5,7 +5,8 @@
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
-::-webkit-scrollbar{
+
+::-webkit-scrollbar {
     display: none;
 }
 
@@ -13,6 +14,75 @@ body {
     background-color: #121212;
     color: #fff;
 }
+
+/* ====== Color Dropdown Section ====== */
+.color-options {
+    margin: 12px 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.color-options label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #222;
+    margin-right: 8px;
+}
+
+/* Dropdown styling */
+#color-select {
+    appearance: none;
+    background-color: #fff;
+    color: #333;
+    font-size: 15px;
+    padding: 10px 36px 10px 14px;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    min-width: 180px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Hover and focus states */
+#color-select:hover {
+    border-color: #000;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+#color-select:focus {
+    outline: none;
+    border-color: #111;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom dropdown arrow */
+#color-select {
+    background-image: linear-gradient(45deg, transparent 50%, #000 50%),
+        linear-gradient(135deg, #000 50%, transparent 50%);
+    background-position: calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 13px) calc(50% - 3px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+}
+
+/* When dropdown is disabled or empty */
+#color-select:disabled,
+#color-select option[value=""] {
+    color: #777;
+}
+
+/* Option styling (for browsers that support it) */
+#color-select option {
+    font-size: 15px;
+    padding: 6px;
+    color: #222;
+    background: #fff;
+}
+
 
 .product_details_container {
     display: flex;
@@ -22,7 +92,8 @@ body {
     background: #1E1E1E;
     border-radius: 5px;
     overflow: hidden;
-    margin: 0 auto; /* This centers the container */
+    margin: 0 auto;
+    /* This centers the container */
 }
 
 /* Image Gallery */
@@ -35,16 +106,17 @@ body {
     /* scrollbar-width: none; */
     /* -ms-overflow-style: none; */
 }
+
 /* 
 .image-gallery::-webkit-scrollbar {
     display: none;
 } */
 
 .MRP2 {
-  text-decoration: line-through;
-  color: #888;
-  font-size: 1rem;
-  margin-bottom: 2px;
+    text-decoration: line-through;
+    color: #888;
+    font-size: 1rem;
+    margin-bottom: 2px;
 }
 
 .image-scroll {
@@ -68,7 +140,7 @@ body {
 .product-details {
     flex: 1;
     padding: 20px;
-        max-height: 750px;
+    max-height: 750px;
     overflow-y: auto;
     background: #1E1E1E;
     border-left: 1px solid #333;
@@ -80,7 +152,7 @@ body {
     margin-bottom: 15px;
 }
 
- .price {
+.price {
     font-size: 22px;
     font-weight: 500;
     margin-bottom: 20px;
@@ -165,7 +237,8 @@ body {
 }
 
 /* Buttons */
-.add-to-cart, .buy-now {
+.add-to-cart,
+.buy-now {
     display: block;
     width: 100%;
     padding: 12px 20px;
@@ -275,10 +348,13 @@ summary {
         flex-direction: column;
     }
 
-    .image-gallery, .product-details {
+    .image-gallery,
+    .product-details {
         width: 100%;
-        max-height: unset; /* Remove height limit on mobile */
-        overflow-y: visible; /* Disable scrolling on mobile */
+        max-height: unset;
+        /* Remove height limit on mobile */
+        overflow-y: visible;
+        /* Disable scrolling on mobile */
     }
 
     .change_image img {
@@ -295,7 +371,8 @@ summary {
         align-items: center;
     }
 
-    .add-to-cart, .buy-now {
+    .add-to-cart,
+    .buy-now {
         width: 100%;
     }
 }

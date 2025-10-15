@@ -31,7 +31,7 @@ router.use(attachUser);
 
 // Add to cart
 router.post("/add-to-cart", async (req, res) => {
-  const { productId, quantity, size, action } = req.body;
+  const { productId, quantity, size, action, color } = req.body;
   const userId = req.session.userId || req.cookies.userId;
 
   if (!userId) {
@@ -44,27 +44,46 @@ router.post("/add-to-cart", async (req, res) => {
   }
 
   try {
+    console.log("=>",color)
     let cart = await Cart.findOne({ user: userId });
 
     if (cart) {
+      // 🔍 Find item with same product, size, and color
       const existingItem = cart.items.find(
-        (item) => item.product.toString() === productId && item.size === size
+        (item) =>
+          item.product.toString() === productId &&
+          item.size === size &&
+          item.color === color
       );
-
       if (existingItem) {
+        console.log("1")
+        // ✅ If same product + size + color exists, just increase quantity
         existingItem.quantity += parseInt(quantity, 10);
       } else {
+        console.log("2",color)
+
+        // 🆕 Otherwise, add it as a new line item (different color or size)
         cart.items.push({
           product: productId,
           quantity: parseInt(quantity, 10),
           size,
+          color,
         });
       }
       await cart.save();
     } else {
+        console.log("3")
+      // 🛒 Create new cart for user if it doesn’t exist
       const newCart = new Cart({
         user: userId,
-        items: [{ product: productId, quantity: parseInt(quantity, 10), size }],
+        items: [
+          {
+            product: productId,
+            quantity: parseInt(quantity, 10),
+            size,
+            color,
+          },
+        ],
       });
       await newCart.save();
     }

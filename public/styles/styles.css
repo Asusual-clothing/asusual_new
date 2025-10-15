@@ -23,11 +23,17 @@ body {
   color: var(--text-light);
   overflow-x: hidden;
 }
+.price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* space between MRP and price */
+}
+
 .MRP {
   text-decoration: line-through;
   color: #aaa;
-  font-size: 1 rem;
-  margin-bottom: -8px;
+  font-size: 1rem;
+  margin: 0; /* remove extra space */
 }
 /* Page 1 */
 .page1 {
@@ -65,7 +71,7 @@ body {
   position: relative;
   perspective: 1000px;
   width: 300px;
-  height: 450px;
+  height: 463px;
   background: var(--background-light);
   border-radius: 20px;
   overflow: hidden;
@@ -138,15 +144,17 @@ body {
   font-size: 18px;
   color: var(--text-light);
   font-weight: 500;
+  text-align: center;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .card .contentBox .price {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: var(--text-light);
   font-weight: 700;
   letter-spacing: 1px;
+  margin: 0;
 }
 
 /* Buy Button */
@@ -155,7 +163,7 @@ body {
   top: 100px;
   opacity: 0;
   padding: 10px 30px;
-  margin-top: -2px;
+  margin-top: -3px;
   color: #000000;
   text-decoration: none;
   background: var(--primary-color);
@@ -259,7 +267,7 @@ body {
 
   .card {
     width: 250px;
-    height: 370px;
+    height: 400px;
   }
 
   .card .imgBox {
@@ -273,14 +281,13 @@ body {
   }
 
   .card .contentBox .buy {
-    margin-top: 0;
     top: 0;
     opacity: 1;
   }
 
   .card .contentBox h3 {
     font-size: 13px;
-            margin-top: 12px;
+  margin-top: 20px;
   }
 
   .card .contentBox .price {

@@ -29,12 +29,25 @@ const CartSchema = new mongoose.Schema({
   ],
   appliedCoupon: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Coupon'
+    refPath: 'CouponType'
+  },
+  CouponType:{
+    type:String,
+    enum:['Coupon', 'Offer']
   },
   discountAmount: {
     type: Number,
     default: 0
-  }
+  },
+  freeItem:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Product'
+  },
+  couponLocked: {
+  type: Boolean,
+  default: false
+},
+
 }, {
   timestamps: true,
   strictPopulate: false // To avoid population errors

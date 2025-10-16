@@ -6,6 +6,13 @@
         MRP:{type: Number, required: true},
         price: { type: Number, required: true },
         color: [{ type: String, required: true}],
+          colorImages: [
+    {
+      color: { type: String, required: true }, // e.g., "Red"
+      images: [{ type: String, required: true }] // e.g., ["img1.jpg", "img2.jpg"]
+    }
+  ],
+
         brand: { type: String, default: "AsUsual" },
         category: { type: String },  // Optional but useful
         sizes: {

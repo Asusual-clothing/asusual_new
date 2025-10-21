@@ -12,7 +12,7 @@ const router = express.Router();
   const Subscription = require("../models/subscription");
   const Testimonial = require("../models/Testimonial");
   const DeliveryCost = require("../models/Deliveryschema");
-  const Coupon = require("../models/CouponSchema");
+  const Coupon = require("../models/CouponSchema")
 // Middleware
 const checkAdminAuth = async (req, res, next) => {
   try {

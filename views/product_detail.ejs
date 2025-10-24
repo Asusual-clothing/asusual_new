@@ -32,6 +32,10 @@
     margin-top: 18px;
 
   }
+  .active-thumb {
+    border: 2px solid black;
+  }
+
 </style>
 
 <body>
@@ -125,21 +129,23 @@
   <div class="product_details_container">
     <!-- Left Section: Scrollable Image Gallery -->
     <div class="image-gallery">
-      <div class="image-scroll">
-        <% if (product && product.images && product.images.length> 0) { %>
-          <div class="display_image">
-            <img src="<%= product.images[0] %>" alt="<%= product.name %>" style="max-width: 100%;">
-          </div>
-          <div class="change_image">
-            <% for(let i=0; i < product.images.length; i++) { %>
-              <img src="<%= product.images[i] %>" alt="<%= product.name %>"
-                style="max-width: 100px; height: auto; cursor: pointer; margin-right: 10px;">
-              <% } %>
-          </div>
+      <div class="display_image">
+        <% if (product.images && product.images.length> 0) { %>
+          <img id="mainImage" src="<%= product.images[0] %>" alt="<%= product.name %>" style="max-width: 100%;">
           <% } else { %>
             <p>No images available</p>
             <% } %>
       </div>
+
+      <% if (product.images && product.images.length> 1) { %>
+        <div class="change_image">
+          <% product.images.forEach((img, i)=> { %>
+            <img src="<%= img %>" alt="<%= product.name %>" class="thumb-img <%= i === 0 ? 'active-thumb' : '' %>"
+              data-index="<%= i %>" style="max-width: 100px; height: auto; cursor: pointer; margin-right: 10px;">
+            <% }) %>
+        </div>
+        <% } %>
+
     </div>
 
     <style>
@@ -476,16 +482,89 @@
     </div>
   </footer>
   <script>
-    // ===============================
-    // 🟡 SYNC SELECTED COLOR
-    // ===============================
-    const colorSelect = document.getElementById("color-select");
-    if (colorSelect) {
-      colorSelect.addEventListener("change", () => {
-        const selectedColorInput = document.getElementById("selected-color");
-        selectedColorInput.value = colorSelect.value.trim();
+  // ===============================
+  // ⚡ PRODUCT IMAGE SWITCHING BASED ON COLOR (with Preload & Loader)
+  // ===============================
+
+  const colorSelect = document.getElementById("color-select");
+  const mainImage = document.getElementById("mainImage");
+  const changeImageContainer = document.querySelector(".change_image");
+  const colorImageData = <%- JSON.stringify(product.colorImages || []) %>; // From backend
+  let currentImages = <%- JSON.stringify(product.images || []) %>;
+
+  // 🧩 Preload all variant images for instant switching
+  function preloadImages(imageUrls) {
+    imageUrls.forEach((url) => {
+      const img = new Image();
+      img.src = url;
+    });
+  }
+
+  // Preload all variant images in background
+  if (colorImageData && colorImageData.length > 0) {
+    colorImageData.forEach((item) => preloadImages(item.images));
+  }
+
+  // 🌀 Add a small loading effect for smoother UX
+  const loaderOverlay = document.createElement("div");
+  loaderOverlay.style =
+    "position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.6);display:flex;justify-content:center;align-items:center;font-size:16px;font-weight:bold;display:none;";
+  loaderOverlay.textContent = "Loading...";
+  document.querySelector(".display_image").style.position = "relative";
+  document.querySelector(".display_image").appendChild(loaderOverlay);
+
+  // 🎨 Render image gallery
+  function renderGallery(images) {
+    if (!images || images.length === 0) return;
+
+    loaderOverlay.style.display = "flex"; // Show loader
+
+    const tempImg = new Image();
+    tempImg.src = images[0];
+    tempImg.onload = function () {
+      mainImage.src = images[0];
+      loaderOverlay.style.display = "none"; // Hide loader when main image loaded
+    };
+
+    changeImageContainer.innerHTML = "";
+
+    images.forEach((img, i) => {
+      const thumb = document.createElement("img");
+      thumb.src = img;
+      thumb.alt = "Product Image";
+      thumb.className = `thumb-img ${i === 0 ? "active-thumb" : ""}`;
+      thumb.style = "max-width: 100px; height: auto; cursor: pointer; margin-right: 10px;";
+
+      thumb.addEventListener("click", function () {
+        mainImage.src = img;
+        document.querySelectorAll(".thumb-img").forEach(i => i.classList.remove("active-thumb"));
+        this.classList.add("active-thumb");
       });
-    }
+
+      changeImageContainer.appendChild(thumb);
+    });
+  }
+
+  // Show default images on page load
+  renderGallery(currentImages);
+
+  // 🟡 Handle color selection
+  if (colorSelect) {
+    colorSelect.addEventListener("change", function () {
+      const selectedColor = this.value.trim();
+      document.getElementById("selected-color").value = selectedColor;
+
+      const matchedColor = colorImageData.find(
+        (c) => c.color.toLowerCase() === selectedColor.toLowerCase()
+      );
+
+      if (matchedColor && matchedColor.images && matchedColor.images.length > 0) {
+        renderGallery(matchedColor.images);
+      } else {
+        renderGallery(currentImages); // fallback
+      }
+    });
+  }
 
     // ===============================
     // 🟡 HAMBURGER MENU TOGGLE
@@ -634,12 +713,26 @@
       }
     }
 
+
     // Initialize default image
     toggleImage(0);
 
     // Add click event for thumbnails
     document.querySelectorAll(".change_image img").forEach((img, index) => {
       img.addEventListener("click", () => toggleImage(index));
+    });
+  </script>
+  <script>
+    // Show selected image when thumbnail clicked
+    document.querySelectorAll('.thumb-img').forEach((img) => {
+      img.addEventListener('click', function () {
+        const mainImage = document.getElementById('mainImage');
+        if (mainImage) mainImage.src = this.src;
+
+        // Highlight the active thumbnail
+        document.querySelectorAll('.thumb-img').forEach(i => i.classList.remove('active-thumb'));
+        this.classList.add('active-thumb');
+      });
     });
   </script>
 

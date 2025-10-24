@@ -71,12 +71,13 @@ body {
   position: relative;
   perspective: 1000px;
   width: 300px;
-  height: 463px;
+  height: 456px;
   background: var(--background-light);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease-in-out;
+  /* margin-bottom: 2px; */
 }
 
 .card:hover {
@@ -227,7 +228,7 @@ body {
 /* Responsive Design */
 @media only screen and (min-width: 1024px) {
   #page2 {
-    height: 70vh;
+    height: 73vh;
   }
   #page1 {
     height: 100vh;

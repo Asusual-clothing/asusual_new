@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -105,7 +104,6 @@
         opacity: 0;
         transform: translateY(-10px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
@@ -160,6 +158,21 @@
       padding: 10px 20px;
       border-radius: 4px;
       cursor: pointer;
+    }
+    
+    /* Free item styling */
+    .free-item {
+      background: rgba(134, 5, 5, 0.1);
+      border-left: 3px solid #4CAF50;
+    }
+    
+    .free-badge {
+      background: #4CAF50;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.7em;
+      margin-left: 5px;
     }
   </style>
 </head>
@@ -292,12 +305,7 @@
                 Rs <span class="item-total">
                   <%= item.product.price * item.quantity %>
                 </span>
-                <% if (cart.couponLocked) { %>
-                  <span class="cart-remove disabled" title="Items cannot be removed while coupon is active"
-                    style="opacity: 0.4; cursor: not-allowed;">&#10005;</span>
-                  <% } else { %>
-                    <span class="cart-remove" data-id="<%= item.product._id %>">&#10005;</span>
-                    <% } %>
+                <span class="cart-remove" data-id="<%= item.product._id %>">&#10005;</span>
               </div>
 
               <div class="cart-item-quantity">
@@ -318,9 +326,9 @@
                   <!-- ✅ Free Item Section -->
                   <% if (cart.freeItem) { %>
                     <div class="cart-header" style="margin-top: 25px;">
-                      <h5 style="color: #860505;"><b>Free Item (Coupon Reward)</b></h5>
+                      <h5 style="color: #860505;"><b>Free Item (Offer Reward)</b></h5>
                     </div>
-                    <div class="cart-item free-item" style="opacity: 0.9;">
+                    <div class="cart-item free-item">
                       <img class="cart-item-image" src="<%= cart.freeItem.front_image %>"
                         alt="<%= cart.freeItem.name %>" />
                       <div class="cart-item-details">
@@ -328,12 +336,15 @@
                           <%= cart.freeItem.category %>
                         </p>
                         <p class="cart-item-name">
-                          <%= cart.freeItem.name %>
+                          <%= cart.freeItem.name %> <span class="free-badge">FREE</span>
                         </p>
-                        <p class="cart-item-size">Free Product</p>
+                        <p class="cart-item-size">Size: One Size</p>
                       </div>
                       <div class="cart-item-price">
-                        <span style="color:#4CAF50;">FREE</span>
+                        <span style="color:#4CAF50; font-weight: bold;">FREE</span>
+                      </div>
+                      <div class="cart-item-quantity">
+                        <span class="cart-quantity">1</span>
                       </div>
                     </div>
                     <% } %>
@@ -378,7 +389,7 @@
             <p style="margin-top: 15px">DISCOUNT CODE</p>
             <div class="coupon-input-group">
               <input id="cart-code" name="couponCode" placeholder="Enter your code"
-                value="<%= cart.appliedCoupon ? cart.appliedCoupon.code : '' %>" />
+                value="<%= cart.appliedCoupon ? cart.appliedCoupon.code || cart.appliedCoupon.name : '' %>" />
               <% if (!cart.appliedCoupon) { %>
                 <button type="submit" class="apply-coupon-btn">Apply</button>
                 <% } else { %>
@@ -388,7 +399,7 @@
 
             <% if (cart.appliedCoupon) { %>
               <p class="coupon-success">
-                <% if(cart.couponType==='Coupon' ) { %>
+                <% if(cart.CouponType==='Coupon' ) { %>
                   Coupon: <b>
                     <%= cart.appliedCoupon.code %>
                   </b> -
@@ -397,7 +408,7 @@
                     <% if(cart.appliedCoupon.useonce) { %>
                       <br /><small>(One-time use coupon)</small>
                       <% } %>
-                        <% } else if(cart.couponType==='Offer' ) { %>
+                        <% } else if(cart.CouponType==='Offer' ) { %>
                           Offer: <b>
                             <%= cart.appliedCoupon.name %>
                           </b> -
@@ -639,5 +650,4 @@
   <!-- OR for live -->
   <!-- <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>  -->
 </body>
-
 </html>

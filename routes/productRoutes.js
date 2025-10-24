@@ -27,7 +27,6 @@ const uploads = multer({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB limit per file
-    files: 7 // Maximum 7 files (front, back, and up to 5 additional images)
   }
 });
 
@@ -97,17 +96,12 @@ router.get("/add-product", checkAdminAuth, (req, res) => {
 
 router.post(
   "/add-product",
-  uploads.fields([
-    { name: "front_images", maxCount: 1 },
-    { name: "back_image", maxCount: 1 },
-    { name: "images", maxCount: 5 }, // Allow up to 5 additional images
-  ]),
+  uploads.any(), // Accept all dynamic fields
   async (req, res) => {
     try {
       const { name, description, MRP, price, brand, bestseller, category } = req.body;
       let { color } = req.body;
 
-      // Ensure required fields are provided
       if (!name || !description || !price || !MRP || !category) {
         return res.status(400).json({
           success: false,
@@ -115,20 +109,68 @@ router.post(
         });
       }
 
-      // Validate files were uploaded
-      if (!req.files || !req.files["front_images"] || !req.files["back_image"]) {
+      if (!req.files) {
         return res.status(400).json({
           success: false,
-          message: "Front and back images are required",
+          message: "No files uploaded",
         });
       }
 
-      // Ensure color is always an array
+      // Ensure color array
       if (!color) color = [];
-      if (!Array.isArray(color)) color = [color]; // Convert single color to array
-      color = color.filter(c => c && c.trim() !== ""); // Clean empty values
+      if (!Array.isArray(color)) color = [color];
+      color = color.filter((c) => c && c.trim() !== "");
 
-      // Process sizes safely
+      // Upload helper
+      const uploadToCloudinary = async (file) => {
+        const result = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { resource_type: "auto" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+          const readableStream = new Readable();
+          readableStream.push(file.buffer);
+          readableStream.push(null);
+          readableStream.pipe(uploadStream);
+        });
+        return result.secure_url;
+      };
+
+      // Upload main images
+      const frontImageFile = req.files.find((f) => f.fieldname === "front_images");
+      const backImageFile = req.files.find((f) => f.fieldname === "back_image");
+      if (!frontImageFile || !backImageFile)
+        return res.status(400).json({ success: false, message: "Front and back images required" });
+
+      const front_image = await uploadToCloudinary(frontImageFile);
+      const back_image = await uploadToCloudinary(backImageFile);
+
+      // Upload additional general images
+      const generalImages = req.files.filter((f) => f.fieldname === "images");
+      const images = await Promise.all(
+        generalImages.map((file) => uploadToCloudinary(file))
+      );
+
+      // Upload color-specific images
+      const colorImages = [];
+      for (let i = 0; i < color.length; i++) {
+        const fieldname = `colorImages${i}[]`;
+        const files = req.files.filter((f) => f.fieldname === fieldname);
+
+        const urls = await Promise.all(
+          files.map((file) => uploadToCloudinary(file))
+        );
+
+        colorImages.push({
+          color: color[i],
+          images: urls,
+        });
+      }
+
+      // Sizes
       const sizes = {
         xsmall: parseInt(req.body.sizes?.xsmall) || 0,
         small: parseInt(req.body.sizes?.small) || 0,
@@ -138,86 +180,33 @@ router.post(
         xxlarge: parseInt(req.body.sizes?.xxlarge) || 0,
       };
 
-      // Helper function to upload to Cloudinary
-      const uploadToCloudinary = async (file) => {
-        try {
-          let optimizedBuffer = file.buffer;
-          if (file.size > 9 * 1024 * 1024) {
-            optimizedBuffer = await sharp(file.buffer)
-              .jpeg({ quality: 80 })
-              .toBuffer();
-          }
-
-          return await new Promise((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream(
-              {
-                resource_type: "auto",
-                quality: "auto:good",
-                chunk_size: 20 * 1024 * 1024,
-              },
-              (error, result) => {
-                if (error) reject(new Error(`Upload failed: ${error.message}`));
-                else resolve(result);
-              }
-            );
-
-            const readableStream = new Readable();
-            readableStream.push(optimizedBuffer);
-            readableStream.push(null);
-            readableStream.pipe(uploadStream);
-          });
-        } catch (error) {
-          console.error("Upload error:", error);
-          throw error;
-        }
-      };
-
-      // Upload images
-      const frontImageResult = await uploadToCloudinary(req.files["front_images"][0]);
-      const backImageResult = await uploadToCloudinary(req.files["back_image"][0]);
-
-      let additionalImagesResults = [];
-      if (req.files["images"] && req.files["images"].length > 0) {
-        additionalImagesResults = await Promise.all(
-          req.files["images"].map(async (file) => {
-            try {
-              return await uploadToCloudinary(file);
-            } catch (error) {
-              console.error(`Failed to upload additional image: ${error.message}`);
-              return null;
-            }
-          })
-        );
-        additionalImagesResults = additionalImagesResults.filter((img) => img !== null);
-      }
-
-      // Create product document
+      // Create product
       const product = new Product({
         name,
         description,
         MRP,
         price,
         brand,
-        color, // Array of strings
+        color, // Array of color names
+        colorImages, // Array of { color, images }
         category,
         sizes,
         bestseller: bestseller === "true" || bestseller === "on",
-        front_image: frontImageResult.secure_url,
-        back_image: backImageResult.secure_url,
-        images: additionalImagesResults.map((img) => img.secure_url),
+        front_image,
+        back_image,
+        images,
       });
 
       await product.save();
 
-      return res.json({
+      res.json({
         success: true,
         message: "Product added successfully",
-        productId: product._id,
         product,
       });
     } catch (error) {
       console.error("Error adding product:", error);
-      return res.status(500).json({
+      res.status(500).json({
         success: false,
         message: "Failed to add product",
         error: error.message,
@@ -225,6 +214,7 @@ router.post(
     }
   }
 );
+
 
 
 

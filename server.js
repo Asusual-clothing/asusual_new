@@ -16,6 +16,34 @@ const crypto = require("crypto");
 const MongoStore = require("connect-mongo");
 const { uploads } = require("./config/cloudinary");
 const methodOverride = require("method-override");
+// Import database models
+const Product = require("./models/Product");
+const User = require("./models/UserSchema");
+const Cart = require("./models/CartSchema");
+const Admin = require("./models/AdminSchema");
+const CustomTshirt = require("./models/CustomTshirtSchema");
+const Poster = require("./models/posterSchema");
+const Order = require("./models/OrderSchema");
+const Contact = require("./models/Contact");
+const Notification = require("./models/Notification");
+const Subscription = require("./models/subscription");
+const Testimonial = require("./models/Testimonial");
+const DeliveryCost = require("./models/Deliveryschema");
+const Coupon = require("./models/CouponSchema");
+
+// Import routes
+const adminRoutes = require("./routes/adminRoutes");
+const authRoutes = require("./routes/authRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const couponRoutes = require("./routes/couponRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+const productRoutes = require("./routes/productRoutes");
+const userRoutes = require("./routes/userRoutes");
+const posterRoutes = require("./routes/posterRoutes");
+// const product_detail = require("./routes/product_detail")
+const sitemapRoute = require('./routes/sitemap');
+const offerRoutes = require("./routes/offerRoutes")
 
 require("dotenv").config();
 
@@ -79,6 +107,8 @@ const attachUser = async (req, res, next) => {
 };
 
 app.use(attachUser);
+// In your server.js file, update the cart count middleware:
+
 app.use(async (req, res, next) => {
   try {
     if (req.user) {
@@ -101,39 +131,10 @@ app.use(async (req, res, next) => {
   next();
 });
 
-
 // Set EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Import database models
-const Product = require("./models/Product");
-const User = require("./models/UserSchema");
-const Cart = require("./models/CartSchema");
-const Admin = require("./models/AdminSchema");
-const CustomTshirt = require("./models/CustomTshirtSchema");
-const Poster = require("./models/posterSchema");
-const Order = require("./models/OrderSchema");
-const Contact = require("./models/Contact");
-const Notification = require("./models/Notification");
-const Subscription = require("./models/subscription");
-const Testimonial = require("./models/Testimonial");
-const DeliveryCost = require("./models/Deliveryschema");
-const Coupon = require("./models/CouponSchema");
-
-// Import routes
-const adminRoutes = require("./routes/adminRoutes");
-const authRoutes = require("./routes/authRoutes");
-const cartRoutes = require("./routes/cartRoutes");
-const couponRoutes = require("./routes/couponRoutes");
-const orderRoutes = require("./routes/orderRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
-const productRoutes = require("./routes/productRoutes");
-const userRoutes = require("./routes/userRoutes");
-const posterRoutes = require("./routes/posterRoutes");
-// const product_detail = require("./routes/product_detail")
-const sitemapRoute = require('./routes/sitemap');
-const offerRoutes= require("./routes/offerRoutes")
 
 // Use routes
 app.use("/admin", adminRoutes);
@@ -183,6 +184,7 @@ function sendOTP(email, otp) {
 }
 
 // Home route
+// Home route
 app.get("/", async (req, res) => {
   try {
     const Products = await Product.find();
@@ -214,15 +216,14 @@ app.get("/", async (req, res) => {
     if (userId) {
       user = await User.findById(userId, "name _id email phone createdAt");
 
-      // Fetch cart count if user is logged in
-      const cart = await Cart.findOne({ userId });
+      // Fix: Use Cart model correctly
+      const cart = await Cart.findOne({ user: userId });
       if (cart) {
         cartCount = cart.items.reduce((total, item) => total + item.quantity, 0);
       }
     }
 
     res.render("index", {
-
       Products: shuffledProducts,
       posters,
       headings,
@@ -230,8 +231,8 @@ app.get("/", async (req, res) => {
       titles,
       notification,
       message: null,
-      user, // Pass user to the template
-      cartCount // Pass cartCount to the template
+      user,
+      cartCount
     });
   } catch (err) {
     console.error(err);

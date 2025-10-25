@@ -4,15 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="description" content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
-  <meta name="keywords" content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
+    <meta name="description"
+        content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
+    <meta name="keywords"
+        content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
     <title>Orders</title>
-      <!-- Favicons -->
-  <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
-  <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
-  <link rel="manifest" href="/assests/site.webmanifest">
-  <meta name="theme-color" content="#ffffff">
+    <!-- Favicons -->
+    <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
+    <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
+    <link rel="manifest" href="/assests/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -55,11 +57,13 @@
                     <i class="fas fa-shopping-bag w-5"></i>
                     <span>Orders</span>
                 </a>
-                <a href="/admin/testimonials" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                <a href="/admin/testimonials"
+                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
                     <i class="fas fa-shopping-bag w-5"></i>
                     <span>Testimonial</span>
                 </a>
-                <a href="/admin/delivery-cost" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
+                <a href="/admin/delivery-cost"
+                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
                     <i class="fas fa-shopping-bag w-5"></i>
                     <span>Delivery Charge</span>
                 </a>
@@ -86,17 +90,19 @@
                         <i class="fas fa-sync-alt"></i> Refresh
                     </a>
                     <div class="relative">
-        <div class="flex items-center">
-          <input type="text" id="orderSearch" placeholder="Search by Order ID..." 
-            class="flex-1 pl-4 pr-10 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-          <button id="searchButton" class="px-4 py-2 bg-indigo-600 text-white rounded-r-md hover:bg-indigo-700 transition">
-            <i class="fas fa-search"></i>
-          </button>
-          <button id="clearSearch" class="ml-2 px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition hidden">
-            <i class="fas fa-times"></i> Clear
-          </button>
-        </div>
-      </div>
+                        <div class="flex items-center">
+                            <input type="text" id="orderSearch" placeholder="Search by Order ID..."
+                                class="flex-1 pl-4 pr-10 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <button id="searchButton"
+                                class="px-4 py-2 bg-indigo-600 text-white rounded-r-md hover:bg-indigo-700 transition">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button id="clearSearch"
+                                class="ml-2 px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition hidden">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -177,33 +183,70 @@
                                     <div class="divide-y divide-gray-200">
                                         <% order.items.slice(0, 3).forEach(item=> { %>
                                             <div class="p-4 flex items-start gap-4">
-                                                <% if (item.product && item.product.images && item.product.images[0]) { %>
-                                                    <img src="<%= item.product.images[0] %>" alt="<%= item.product.name %>"
+                                                <% if (item.product && item.product.images && item.product.images[0]) {
+                                                    %>
+                                                    <img src="<%= item.product.images[0] %>"
+                                                        alt="<%= item.product.name %>"
                                                         class="w-16 h-16 object-cover rounded-md border border-gray-200">
-                                                <% } else { %>
-                                                    <div class="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-md border border-gray-200">
-                                                        <i class="fas fa-box-open text-gray-400"></i>
-                                                    </div>
-                                                <% } %>
-                                                <div class="flex-1">
-                                                    <h4 class="font-medium text-gray-900">
-                                                        <%= item.product ? item.product.name : 'Product not available' %>
-                                                    </h4>
-                                                    <div class="flex gap-4 mt-1 text-sm text-gray-500">
-                                                        <p>Size: <%= item.size %></p>
-                                                        <p>Color: <%= item.color %></p>
-                                                        <p>Qty: <%= item.quantity %></p>
-                                                        <p>₹<%= (item.priceAtPurchase * item.quantity).toFixed(2) %></p>
-                                                    </div>
-                                                </div>
+                                                    <% } else { %>
+                                                        <div
+                                                            class="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-md border border-gray-200">
+                                                            <i class="fas fa-box-open text-gray-400"></i>
+                                                        </div>
+                                                        <% } %>
+                                                            <div class="flex-1">
+                                                                <h4 class="font-medium text-gray-900">
+                                                                    <%= item.product ? item.product.name
+                                                                        : 'Product not available' %>
+                                                                </h4>
+                                                                <div class="flex gap-4 mt-1 text-sm text-gray-500">
+                                                                    <p>Size: <%= item.size %>
+                                                                    </p>
+                                                                    <p>Color: <%= item.color %>
+                                                                    </p>
+                                                                    <p>Qty: <%= item.quantity %>
+                                                                    </p>
+                                                                    <p>₹<%= (item.priceAtPurchase *
+                                                                            item.quantity).toFixed(2) %>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
                                             </div>
-                                        <% }) %>
-                                    
-                                        <% if (order.items.length > 3) { %>
-                                            <div class="px-6 py-3 text-center text-sm text-gray-500 bg-gray-50">
-                                                +<%= order.items.length - 3 %> more items
-                                            </div>
-                                        <% } %>
+                                            <% }) %>
+                                                <!-- Free Item Section -->
+                                                <% if (order.freeItem) { %>
+                                                    <div class="border-t border-gray-200 bg-green-50 p-4">
+                                                        <h4 class="text-md font-semibold text-green-800 mb-3">🎁 Free
+                                                            Item</h4>
+                                                        <div class="flex items-start gap-4">
+                                                            <% if (order.freeItem.images && order.freeItem.images[0]) {
+                                                                %>
+                                                                <img src="<%= order.freeItem.images[0] %>"
+                                                                    alt="<%= order.freeItem.name %>"
+                                                                    class="w-16 h-16 object-cover rounded-md border border-gray-200">
+                                                                <% } else { %>
+                                                                    <div
+                                                                        class="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-md border border-gray-200">
+                                                                        <i class="fas fa-gift text-gray-400"></i>
+                                                                    </div>
+                                                                    <% } %>
+                                                                        <div>
+                                                                            <p class="font-medium text-gray-900">
+                                                                                <%= order.freeItem.name %>
+                                                                            </p>
+                                                                            <p class="text-sm text-gray-600">Free with
+                                                                                this order</p>
+                                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+
+                                                        <% if (order.items.length> 3) { %>
+                                                            <div
+                                                                class="px-6 py-3 text-center text-sm text-gray-500 bg-gray-50">
+                                                                +<%= order.items.length - 3 %> more items
+                                                            </div>
+                                                            <% } %>
                                     </div>
                                     <!-- Order Footer -->
                                     <div class="bg-gray-50 px-6 py-3 flex justify-end">
@@ -213,10 +256,10 @@
                                         </a>
                                         <form action="/orders/delete/<%= order._id %>" method="POST" class="inline">
                                             <input type="hidden" name="_method" value="DELETE">
-                                            <button type="submit" 
-                                            class="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition"
-                                            onclick="return confirm('Are you sure you want to delete this order? This action cannot be undone.')">
-                                            Delete Order
+                                            <button type="submit"
+                                                class="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition"
+                                                onclick="return confirm('Are you sure you want to delete this order? This action cannot be undone.')">
+                                                Delete Order
                                             </button>
                                         </form>
                                     </div>
@@ -229,76 +272,77 @@
     </div>
 </body>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('orderSearch');
-    const searchButton = document.getElementById('searchButton');
-    const clearButton = document.getElementById('clearSearch');
-    const orderCards = document.querySelectorAll('.border.border-gray-200.rounded-lg');
-    const noOrdersDiv = document.querySelector('.bg-blue-50.border-l-4.border-blue-400');
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('orderSearch');
+        const searchButton = document.getElementById('searchButton');
+        const clearButton = document.getElementById('clearSearch');
+        const orderCards = document.querySelectorAll('.border.border-gray-200.rounded-lg');
+        const noOrdersDiv = document.querySelector('.bg-blue-50.border-l-4.border-blue-400');
 
-    function performSearch() {
-      const searchTerm = searchInput.value.trim().toLowerCase();
-      let hasMatches = false;
-      
-      // Search through all order cards
-      orderCards.forEach(card => {
-        const orderId = card.querySelector('h3.text-lg').textContent.toLowerCase();
-        if (orderId.includes(searchTerm)) {
-          card.style.display = 'block';
-          hasMatches = true;
-        } else {
-          card.style.display = 'none';
-        }
-      });
+        function performSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            let hasMatches = false;
 
-      // Show/hide clear button
-      if (searchTerm.length > 0) {
-        clearButton.classList.remove('hidden');
-      } else {
-        clearButton.classList.add('hidden');
-      }
+            // Search through all order cards
+            orderCards.forEach(card => {
+                const orderId = card.querySelector('h3.text-lg').textContent.toLowerCase();
+                if (orderId.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    hasMatches = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
 
-      // Show no results message if needed
-      const noResultsDiv = document.getElementById('noResultsMessage');
-      
-      if (!hasMatches && searchTerm.length > 0) {
-        if (!noResultsDiv) {
-          const messageDiv = document.createElement('div');
-          messageDiv.id = 'noResultsMessage';
-          messageDiv.className = 'bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md text-center';
-          messageDiv.innerHTML = `
+            // Show/hide clear button
+            if (searchTerm.length > 0) {
+                clearButton.classList.remove('hidden');
+            } else {
+                clearButton.classList.add('hidden');
+            }
+
+            // Show no results message if needed
+            const noResultsDiv = document.getElementById('noResultsMessage');
+
+            if (!hasMatches && searchTerm.length > 0) {
+                if (!noResultsDiv) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.id = 'noResultsMessage';
+                    messageDiv.className = 'bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md text-center';
+                    messageDiv.innerHTML = `
             <p class="text-lg text-yellow-700">No orders found matching "${searchTerm}"</p>
           `;
-          document.querySelector('.space-y-6').prepend(messageDiv);
+                    document.querySelector('.space-y-6').prepend(messageDiv);
+                }
+
+                // Hide the "no orders" message if present
+                if (noOrdersDiv) noOrdersDiv.style.display = 'none';
+            } else {
+                if (noResultsDiv) noResultsDiv.remove();
+                if (noOrdersDiv) noOrdersDiv.style.display = 'block';
+            }
         }
-        
-        // Hide the "no orders" message if present
-        if (noOrdersDiv) noOrdersDiv.style.display = 'none';
-      } else {
-        if (noResultsDiv) noResultsDiv.remove();
-        if (noOrdersDiv) noOrdersDiv.style.display = 'block';
-      }
-    }
 
-    // Event listeners
-    searchInput.addEventListener('input', function() {
-      // Search after a small delay (debounce)
-      clearTimeout(this.searchTimeout);
-      this.searchTimeout = setTimeout(performSearch, 300);
-    });
+        // Event listeners
+        searchInput.addEventListener('input', function () {
+            // Search after a small delay (debounce)
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(performSearch, 300);
+        });
 
-    searchButton.addEventListener('click', performSearch);
-    
-    clearButton.addEventListener('click', function() {
-      searchInput.value = '';
-      performSearch();
-      this.classList.add('hidden');
-    });
+        searchButton.addEventListener('click', performSearch);
 
-    // Also search when pressing Enter
-    searchInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') performSearch();
+        clearButton.addEventListener('click', function () {
+            searchInput.value = '';
+            performSearch();
+            this.classList.add('hidden');
+        });
+
+        // Also search when pressing Enter
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') performSearch();
+        });
     });
-  });
 </script>
+
 </html>

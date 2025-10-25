@@ -12,7 +12,7 @@ const Cart = require("../models/CartSchema");
 const Order = require("../models/OrderSchema");
 const DeliveryCost = require("../models/Deliveryschema");
 const Coupon = require("../models/CouponSchema");
-
+const Offer = require("../models/OfferSchema")
 // Initialize PhonePe client
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -174,10 +174,17 @@ router.get("/payment-callback", async (req, res) => {
 
 
 // Helper function to create an order
+// Helper function to create an order
 async function createOrder(
-  userId, cart, subtotal, discountAmount,
-  shippingFee, totalAmount, paymentMethod,
-  paymentStatus, shippingAddress
+  userId,
+  cart,
+  subtotal,
+  discountAmount,
+  shippingFee,
+  totalAmount,
+  paymentMethod,
+  paymentStatus,
+  shippingAddress
 ) {
   const orderItems = cart.items.map((item) => ({
     product: item.product._id,
@@ -187,6 +194,52 @@ async function createOrder(
     color: item.color
   }));
 
+  let freeItem = null;
+  let couponType = null;
+  let offerUsed = null;
+  let couponUsed = null;
+
+  // 🟩 CASE 1: Offer Applied
+  if (cart.appliedCoupon && cart.CouponType === "Offer") {
+    const offer = await Offer.findById(cart.appliedCoupon);
+
+    if (offer) {
+      offerUsed = offer._id;
+
+      // ✅ Offer Type: Free Item
+      if (offer.offerType === "free_item") {
+        freeItem = offer.freeProductId || cart.freeItem || null;
+        couponType = "free_item";
+      }
+      // ✅ Offer Type: Flat Discount
+      else if (offer.offerType === "flat_discount") {
+        couponType = "flat_discount";
+      }
+      // ✅ Offer Type: Percentage Discount
+      else if (offer.offerType === "percentage_discount") {
+        couponType = "percentage_discount";
+      }
+    }
+  }
+
+  // 🟦 CASE 2: Coupon Applied
+  else if (cart.appliedCoupon && cart.CouponType === "Coupon") {
+    const coupon = await Coupon.findById(cart.appliedCoupon);
+
+    if (coupon) {
+      couponUsed = coupon._id;
+      couponType = coupon.discountType; // 'flat' or 'percentage'
+
+      // Handle one-time coupon
+      if (coupon.useonce) {
+        await User.findByIdAndUpdate(userId, {
+          $addToSet: { useoncecoupon: coupon.code },
+        });
+      }
+    }
+  }
+
+  // 🟨 Create new order object
   const newOrder = new Order({
     user: userId,
     cart: cart._id,
@@ -198,18 +251,16 @@ async function createOrder(
     paymentMethod,
     paymentStatus,
     shippingAddress,
-    couponUsed: cart.appliedCoupon?._id,
+    freeItem,
+    offerUsed,
+    couponUsed,
+    couponType
   });
-
-  if (cart.appliedCoupon?.useonce) {
-    await User.findByIdAndUpdate(userId, {
-      $addToSet: { useoncecoupon: cart.appliedCoupon.code },
-    });
-  }
 
   await newOrder.save();
   return newOrder;
 }
+
 
 // Route to handle payment success
 router.get("/order-success/:orderId", (req, res) => {

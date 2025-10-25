@@ -53,14 +53,9 @@ async function handleQuantityIncrease(e) {
     const size = cartItem.dataset.size;
 
     try {
-        console.log('--- Increase clicked ---');
-        console.log('Product ID:', productId);
-        console.log('Size:', size);
-
         const response = await fetch(`/cart/check-stock/${productId}/${encodeURIComponent(size)}`);
         const data = await response.json();
-
-        console.log('Stock check response:', data);
+    
 
         if (!data.success) {
             throw new Error(data.error || 'Failed to check stock');
@@ -218,7 +213,6 @@ async function handleOrderSubmit(e) {
             throw new Error('Invalid order total');
         }
 
-        console.log('Processing order with amount:', totalAmount);
 
         // Process the order with the discounted amount
         const response = await fetch('/payment/process-order', {
@@ -238,9 +232,6 @@ async function handleOrderSubmit(e) {
         if (!result.success) {
             throw new Error(result.message || 'Failed to process order');
         }
-
-        // Redirect to payment gateway
-        console.log('Redirecting to payment gateway:', result.checkoutPageUrl);
         window.location.href = result.checkoutPageUrl;
 
     } catch (error) {

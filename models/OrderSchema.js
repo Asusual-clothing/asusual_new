@@ -92,6 +92,18 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Coupon'
   },
+  couponType:{
+    type:String,
+    enum: ['free_item', 'flat_discount', 'percentage_discount','percentage', 'flat'],
+  },
+  offerUsed:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'Offer'
+  },
+  freeItem:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'Product'
+  },
   notes: String
 }, {
   timestamps: true,

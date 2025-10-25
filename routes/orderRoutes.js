@@ -1,18 +1,18 @@
 const express = require("express");
 const router = express.Router();
-  const Product = require("../models/Product");
-  const User = require("../models/UserSchema");
-  const Cart = require("../models/CartSchema");
-  const Admin = require("../models/AdminSchema");
-  const CustomTshirt = require("../models/CustomTshirtSchema");
-  const Poster = require("../models/posterSchema");
-  const Order = require("../models/OrderSchema");
-  const Contact = require("../models/Contact");
-  const Notification = require("../models/Notification");
-  const Subscription = require("../models/subscription");
-  const Testimonial = require("../models/Testimonial");
-  const DeliveryCost = require("../models/Deliveryschema");
-  const Coupon = require("../models/CouponSchema");
+const Product = require("../models/Product");
+const User = require("../models/UserSchema");
+const Cart = require("../models/CartSchema");
+const Admin = require("../models/AdminSchema");
+const CustomTshirt = require("../models/CustomTshirtSchema");
+const Poster = require("../models/posterSchema");
+const Order = require("../models/OrderSchema");
+const Contact = require("../models/Contact");
+const Notification = require("../models/Notification");
+const Subscription = require("../models/subscription");
+const Testimonial = require("../models/Testimonial");
+const DeliveryCost = require("../models/Deliveryschema");
+const Coupon = require("../models/CouponSchema");
 
 // Middleware
 const checkAdminAuth = async (req, res, next) => {
@@ -72,7 +72,7 @@ router.post("/place-order", async (req, res) => {
       priceAtPurchase: item.product.price,
       color: item.color
     }));
-    console.log("=>",orderItems)
+    console.log("=>", orderItems)
     const subtotal = cart.items.reduce(
       (total, item) => total + item.product.price * item.quantity,
       0
@@ -154,6 +154,10 @@ router.get("/", checkAdminAuth, async (req, res) => {
         select: "name images price",
         options: { allowNull: true },
       })
+      .populate({
+        path: "freeItem",
+        select: "name images price",
+      })
       .sort({ createdAt: -1 })
       .lean();
 
@@ -178,6 +182,7 @@ router.get("/", checkAdminAuth, async (req, res) => {
     });
   }
 });
+
 
 // User view all orders
 router.get("/all-orders", async (req, res) => {
@@ -220,33 +225,36 @@ router.get("/all-orders", async (req, res) => {
 
 // DELETE route for order deletion
 router.post('/delete/:orderId', async (req, res) => {
-    try {
-        const orderId = req.params.orderId;
-        
-        // Find and delete the order
-        const deletedOrder = await Order.findByIdAndDelete(orderId);
-        
-        if (!deletedOrder) {
-            req.flash('error', 'Order not found');
-            return res.redirect('/orders');
-        }
-        
-        req.flash('success', 'Order deleted successfully');
-        res.redirect('/orders');
-    } catch (error) {
-        console.error('Error deleting order:', error);
-        req.flash('error', 'Error deleting order');
-        res.redirect('/orders');
+  try {
+    const orderId = req.params.orderId;
+
+    // Find and delete the order
+    const deletedOrder = await Order.findByIdAndDelete(orderId);
+
+    if (!deletedOrder) {
+      req.flash('error', 'Order not found');
+      return res.redirect('/orders');
     }
+
+    req.flash('success', 'Order deleted successfully');
+    res.redirect('/orders');
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    req.flash('error', 'Error deleting order');
+    res.redirect('/orders');
+  }
 });
 
 
 // Order details (admin)
 router.get("/:id", async (req, res) => {
   try {
-     const order = await Order.findById(req.params.id)
+    const order = await Order.findById(req.params.id)
       .populate("items.product", "name images price description")
-      .populate("user", "name email");
+      .populate("user", "name email")
+      .populate("freeItem", "name images price description")
+      .populate("offerUsed", "name offerType")
+      .populate("couponUsed", "code discountType discountValue");
 
     if (!order) {
       return res.status(404).render("error", { message: "Order not found" });
@@ -258,6 +266,8 @@ router.get("/:id", async (req, res) => {
     res.status(500).render("error", { message: "Server error fetching order details" });
   }
 });
+
+
 
 // User order details
 router.get("/all-orders/:id", async (req, res) => {

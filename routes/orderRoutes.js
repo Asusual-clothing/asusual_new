@@ -202,6 +202,11 @@ router.get("/all-orders", async (req, res) => {
         path: "items.product",
         select: "name images price",
         model: "Product",
+      })
+      .populate({
+        path: "freeItem",
+        select: "name images price",
+        model: "Product",
       });
 
     const ordersWithStatus = orders.map((order) => {
@@ -222,6 +227,7 @@ router.get("/all-orders", async (req, res) => {
     res.status(500).render("error", { message: "Error fetching your orders" });
   }
 });
+
 
 // DELETE route for order deletion
 router.post('/delete/:orderId', async (req, res) => {
@@ -272,10 +278,17 @@ router.get("/:id", async (req, res) => {
 // User order details
 router.get("/all-orders/:id", async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate(
-      "items.product",
-      "name images price description"
-    );
+    const order = await Order.findById(req.params.id)
+      .populate({
+        path: "items.product",
+        select: "name images price description",
+        model: "Product",
+      })
+      .populate({
+        path: "freeItem",
+        select: "name images price description",
+        model: "Product",
+      });
 
     if (!order) {
       return res.status(404).render("error", {

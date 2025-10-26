@@ -44,6 +44,38 @@ document.addEventListener("DOMContentLoaded", function () {
     // Check for payment return on page load
     checkPaymentReturn();
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const freeItem = document.querySelector(".free-item");
+
+    if (freeItem) {
+        const cartId = freeItem.dataset.cartId;
+        const sizeDropdown = freeItem.querySelector(".free-item-size");
+
+        if (sizeDropdown) {
+            sizeDropdown.addEventListener("change", async (e) => {
+                const selectedSize = e.target.value;
+
+                if (!selectedSize) return alert("⚠️ Please select a valid size.");
+
+                try {
+                    const res = await fetch("/cart/update-freeitem-size", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ cartId, size: selectedSize }),
+                    });
+
+                    const data = await res.json();
+                    console.log(data)
+                } catch (error) {
+                    console.error("Error saving free item size:", error);
+                    alert("⚠️ Failed to save free item size.");
+                }
+            });
+        }
+    }
+});
 
 // Handle quantity increase
 async function handleQuantityIncrease(e) {
@@ -55,7 +87,7 @@ async function handleQuantityIncrease(e) {
     try {
         const response = await fetch(`/cart/check-stock/${productId}/${encodeURIComponent(size)}`);
         const data = await response.json();
-    
+
 
         if (!data.success) {
             throw new Error(data.error || 'Failed to check stock');
@@ -73,7 +105,7 @@ async function handleQuantityIncrease(e) {
             // Hide any previous message
             const messageElem = e.target.parentElement.querySelector('.quantity-message');
             messageElem.style.display = 'none';
-            
+
             showNotification('Quantity updated successfully', 'success');
         } else {
             // Show message that maximum quantity reached
@@ -95,7 +127,7 @@ async function handleQuantityDecrease(e) {
     const productId = cartItem.dataset.productId;
     const size = cartItem.dataset.size;
     const currentQuantity = parseInt(quantityElem.textContent);
-    
+
     if (currentQuantity > 1) {
         const newQuantity = currentQuantity - 1;
         quantityElem.textContent = newQuantity;
@@ -105,7 +137,7 @@ async function handleQuantityDecrease(e) {
         // Hide any previous message when decreasing
         const messageElem = e.target.parentElement.querySelector('.quantity-message');
         messageElem.style.display = 'none';
-        
+
         showNotification('Quantity updated successfully', 'success');
     } else {
         showNotification('Quantity cannot be less than 1', 'warning');
@@ -136,7 +168,7 @@ async function handleRemoveItem(e) {
             cartItem.remove();
             updateCart();
             showNotification('Item removed from cart', 'success');
-            
+
             // If cart is empty, reload page after a delay
             if (data.cartSummary && data.cartSummary.itemCount === 0) {
                 setTimeout(() => {
@@ -156,7 +188,7 @@ async function handleRemoveItem(e) {
 function handleProceedToOrder() {
     const proceedBtn = document.getElementById('proceed-to-order');
     const shippingForm = document.getElementById('shipping-form-container');
-    
+
     if (proceedBtn && shippingForm) {
         proceedBtn.style.display = 'none';
         shippingForm.style.display = 'block';
@@ -167,7 +199,7 @@ function handleProceedToOrder() {
 function handleCancelOrder() {
     const proceedBtn = document.getElementById('proceed-to-order');
     const shippingForm = document.getElementById('shipping-form-container');
-    
+
     if (proceedBtn && shippingForm) {
         proceedBtn.style.display = 'block';
         shippingForm.style.display = 'none';
@@ -250,7 +282,7 @@ function getFinalDiscountedTotal() {
         const totalText = totalLineElem.textContent.replace('Rs ', '').trim();
         return parseFloat(totalText);
     }
-    
+
     // Fallback calculation if DOM element not found
     return calculateFinalTotal();
 }
@@ -258,7 +290,7 @@ function getFinalDiscountedTotal() {
 // Function to calculate final total with proper discount handling
 function calculateFinalTotal() {
     let subtotal = 0;
-    
+
     // Calculate subtotal from regular items (excluding free items)
     document.querySelectorAll(".cart-item:not(.free-item)").forEach(item => {
         const quantityElem = item.querySelector(".cart-quantity");
@@ -282,7 +314,7 @@ function calculateFinalTotal() {
 
     // Final total = subtotal + shipping - discount
     const finalTotal = Math.max(0, subtotal + shipping - discountAmount);
-    
+
     return finalTotal;
 }
 
@@ -327,7 +359,7 @@ function calculateDiscountAmount(subtotal) {
 function updateCart() {
     let totalItems = 0;
     let subtotal = 0;
-    
+
     // Get shipping cost from the select option
     const shippingOption = document.querySelector('select option');
     let shipping = 0;
@@ -413,7 +445,7 @@ async function updateQuantityInDatabase(productId, size, newQuantity) {
         if (!data.success) {
             console.error('Error updating quantity:', data.message);
             showNotification(data.message || 'Error updating quantity', 'error');
-            
+
             // Revert the quantity change in UI if backend update failed
             const cartItem = document.querySelector(`[data-product-id="${productId}"][data-size="${size}"]`);
             if (cartItem) {
@@ -426,7 +458,7 @@ async function updateQuantityInDatabase(productId, size, newQuantity) {
     } catch (error) {
         console.error('Error updating quantity:', error);
         showNotification('Error updating quantity in cart', 'error');
-        
+
         // Revert the quantity change in UI
         const cartItem = document.querySelector(`[data-product-id="${productId}"][data-size="${size}"]`);
         if (cartItem) {
@@ -446,13 +478,13 @@ function showNotification(message, type = 'success') {
         if (notificationText) {
             notificationText.textContent = message;
         }
-        
+
         // Set background color based on type
         notificationBar.style.backgroundColor =
             type === 'success' ? '#4CAF50' :
-            type === 'error' ? '#f44336' :
-            type === 'warning' ? '#ff9800' : '#2196F3';
-        
+                type === 'error' ? '#f44336' :
+                    type === 'warning' ? '#ff9800' : '#2196F3';
+
         notificationBar.style.display = 'block';
 
         // Auto hide after 5 seconds

@@ -43,6 +43,10 @@ const CartSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     ref:'Product'
   },
+  freeItemSize: {
+  type: String,
+  default: null,
+},
   couponLocked: {
   type: Boolean,
   default: false

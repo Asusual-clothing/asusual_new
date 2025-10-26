@@ -104,6 +104,9 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref:'Product'
   },
+  freeItemSize:{
+    type:String,
+  },
   notes: String
 }, {
   timestamps: true,

@@ -195,6 +195,7 @@ async function createOrder(
   }));
 
   let freeItem = null;
+  let freeitemSize=null;
   let couponType = null;
   let offerUsed = null;
   let couponUsed = null;
@@ -209,6 +210,7 @@ async function createOrder(
       // ✅ Offer Type: Free Item
       if (offer.offerType === "free_item") {
         freeItem = offer.freeProductId || cart.freeItem || null;
+        freeitemSize= cart.freeItemSize || null;
         couponType = "free_item";
       }
       // ✅ Offer Type: Flat Discount
@@ -244,6 +246,7 @@ async function createOrder(
     user: userId,
     cart: cart._id,
     items: orderItems,
+    freeItemSize:freeitemSize,
     subtotal,
     discountAmount,
     shippingFee,

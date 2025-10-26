@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -104,6 +105,7 @@
         opacity: 0;
         transform: translateY(-10px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -159,13 +161,13 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    
+
     /* Free item styling */
     .free-item {
       background: rgba(134, 5, 5, 0.1);
       border-left: 3px solid #4CAF50;
     }
-    
+
     .free-badge {
       background: #4CAF50;
       color: white;
@@ -328,9 +330,11 @@
                     <div class="cart-header" style="margin-top: 25px;">
                       <h5 style="color: #860505;"><b>Free Item (Offer Reward)</b></h5>
                     </div>
-                    <div class="cart-item free-item">
+
+                    <div class="cart-item free-item" data-cart-id="<%= cart._id %>">
                       <img class="cart-item-image" src="<%= cart.freeItem.front_image %>"
                         alt="<%= cart.freeItem.name %>" />
+
                       <div class="cart-item-details">
                         <p class="cart-item-category">
                           <%= cart.freeItem.category %>
@@ -338,8 +342,24 @@
                         <p class="cart-item-name">
                           <%= cart.freeItem.name %> <span class="free-badge">FREE</span>
                         </p>
-                        <p class="cart-item-size">Size: One Size</p>
+
+                        <div class="cart-item-size">
+                          <label for="freeItemSize" style="font-weight: 500;">Size:</label>
+                          <select id="freeItemSize" class="free-item-size">
+                            <option value="">-- Select Size --</option>
+                            <% if (cart.freeItem.availableSizes && cart.freeItem.availableSizes.length> 0) { %>
+                              <% cart.freeItem.availableSizes.forEach(size=> { %>
+                                <option value="<%= size %>" <%=cart.freeItemSize===size ? 'selected' : '' %>>
+                                  <%= size %>
+                                </option>
+                                <% }) %>
+                                  <% } else { %>
+                                    <option value="One Size" selected>One Size</option>
+                                    <% } %>
+                          </select>
+                        </div>
                       </div>
+
                       <div class="cart-item-price">
                         <span style="color:#4CAF50; font-weight: bold;">FREE</span>
                       </div>
@@ -348,6 +368,7 @@
                       </div>
                     </div>
                     <% } %>
+
                       <% } else { %>
                         <div class="empty-cart-message">
                           <p>No items in cart. Please continue shopping.</p>
@@ -650,4 +671,5 @@
   <!-- OR for live -->
   <!-- <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>  -->
 </body>
+
 </html>

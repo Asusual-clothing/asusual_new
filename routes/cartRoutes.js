@@ -68,6 +68,19 @@ router.get("/", async (req, res) => {
         }
       }
 
+      // ✅ Fetch available sizes from product schema for the free item
+      if (cart.freeItem) {
+        const freeItemSizes = cart.freeItem.sizes || {};
+        cart.freeItem.availableSizes = Object.keys(freeItemSizes).filter(
+          (sizeKey) => freeItemSizes[sizeKey] > 0
+        );
+
+        // If all size counts are 0 → show "One Size"
+        if (cart.freeItem.availableSizes.length === 0) {
+          cart.freeItem.availableSizes = ["One Size"];
+        }
+      }
+
       if (cart.appliedCoupon) {
         const now = new Date();
         const userDoc = await User.findById(userId);
@@ -138,6 +151,7 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
 
 
 router.post("/apply-coupon", async (req, res) => {
@@ -540,7 +554,7 @@ router.get("/", async (req, res) => {
 });
 
 
- 
+
 
 
 
@@ -626,6 +640,24 @@ router.post("/update-quantity", async (req, res) => {
     res.status(500).json({ success: false, message: "Error updating cart" });
   }
 });
+// Save selected size for free item
+router.post("/update-freeitem-size", async (req, res) => {
+  try {
+    const { cartId, size } = req.body;
+    console.log("caled=>",cartId)
+    console.log("=>",size)
+    if (!cartId || !size) {
+      return res.status(400).json({ success: false, message: "Invalid data" });
+    }
+
+    await Cart.findByIdAndUpdate(cartId, { freeItemSize: size });
+    return res.json({ success: true, message: "Free item size updated successfully" });
+  } catch (error) {
+    console.error("Error updating free item size:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
 
 router.post("/remove-item", async (req, res) => {
   try {

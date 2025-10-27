@@ -17,7 +17,7 @@ const checkAdminAuth = require("../middleware/checkAdminAuth");
   const Testimonial = require("../models/Testimonial");
   const DeliveryCost = require("../models/Deliveryschema");
   const Coupon = require("../models/CouponSchema");
-
+const Category= require("../models/Category")
 
 
 // Admin Login Page
@@ -183,11 +183,12 @@ router.post("/testimonials/:id/delete", async (req, res) => {
 router.get("/delivery-cost", checkAdminAuth, async (req, res) => {
   try {
     let delivery = await DeliveryCost.findOne();
+    const categories = await Category.find().sort({ name: 1 });
     if (!delivery) {
       delivery = new DeliveryCost({ cost: 0 });
       await delivery.save();
     }
-    res.render("deliverycharge", { delivery });
+    res.render("deliverycharge", { delivery, categories});
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");

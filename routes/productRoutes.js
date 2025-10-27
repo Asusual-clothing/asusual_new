@@ -99,7 +99,7 @@ router.post(
   uploads.any(), // Accept all dynamic fields
   async (req, res) => {
     try {
-      const { name, description, MRP, price, brand, bestseller, category } = req.body;
+      const { name, description, MRP, price, brand, bestseller, category, categoryType } = req.body;
       let { color } = req.body;
 
       if (!name || !description || !price || !MRP || !category) {
@@ -108,7 +108,12 @@ router.post(
           message: "Missing required fields",
         });
       }
-
+      if (!categoryType) {
+        return res.status(400).json({
+          success: false,
+          message: "Category type is required",
+        });
+      }
       if (!req.files) {
         return res.status(400).json({
           success: false,
@@ -190,6 +195,7 @@ router.post(
         color, // Array of color names
         colorImages, // Array of { color, images }
         category,
+        categoryType,
         sizes,
         bestseller: bestseller === "true" || bestseller === "on",
         front_image,
@@ -270,12 +276,14 @@ router.get("/edit-product", checkAdminAuth, async (req, res) => {
   try {
     const products = await Product.find(
       {},
-      "name MRP price front_image category brand bestseller sizes description"
-    ).lean();
+      "name MRP price front_image category brand bestseller sizes description color categoryType"
+    )
+      .populate("categoryType", "name _id") // populate category type name + id
+      .lean();
 
     const updatedProducts = products.map(product => ({
       ...product,
-      front_image: product.front_image || null
+      front_image: product.front_image || null,
     }));
 
     res.render("edit_product", { products: updatedProducts });
@@ -289,6 +297,7 @@ router.get("/edit-product", checkAdminAuth, async (req, res) => {
     `);
   }
 });
+
 
 // Product details
 
@@ -322,21 +331,18 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-
-// POST route to update a product
 router.post(
   "/edit-product/:id",
   checkAdminAuth,
-  uploads.fields([
-    { name: "front_image", maxCount: 1 },
-    { name: "back_image", maxCount: 1 },
-    { name: "images", maxCount: 5 }
-  ]),
+  uploads.any(),
   async (req, res) => {
     const { id } = req.params;
-
     try {
-      // Validate product ID
+      const sizes = req.body.sizes || {};
+      console.log("🟢 Edit request for product:", id);
+      console.log("Received body:", req.body);
+      console.log("Parsed sizes:", req.body.sizes);
+      // ✅ Validate Product ID
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send(`
           <script>
@@ -346,6 +352,7 @@ router.post(
         `);
       }
 
+      // ✅ Find existing product
       const product = await Product.findById(id);
       if (!product) {
         return res.status(404).send(`
@@ -356,75 +363,132 @@ router.post(
         `);
       }
 
-      // Prepare update data
+
+      // 🧩 Parse color arrays
+      const colorArray = req.body.color ? JSON.parse(req.body.color) : [];
+      const deletedArray = req.body.deletedColors ? JSON.parse(req.body.deletedColors) : [];
+
+      // 🧾 Build basic product fields
       const updateData = {
         name: req.body.name,
         description: req.body.description,
         MRP: req.body.MRP,
         price: req.body.price,
-        brand: req.body.brand,
-        category: req.body.category,
-        bestseller: req.body.bestseller === 'true',
+        brand: req.body.brand || "AsUsual",
+        category: req.body.category || "",
+        categoryType: req.body.categoryType || product.categoryType,
+        bestseller: req.body.bestseller === "true",
+        color: colorArray, // 🟣 colors array
         sizes: {
-          xsmall: parseInt(req.body.sizes?.xsmall) || 0,
-          small: parseInt(req.body.sizes?.small) || 0,
-          medium: parseInt(req.body.sizes?.medium) || 0,
-          large: parseInt(req.body.sizes?.large) || 0,
-          xlarge: parseInt(req.body.sizes?.xlarge) || 0,
-          xxlarge: parseInt(req.body.sizes?.xxlarge) || 0
-        }
+          xsmall: Number(sizes.xsmall) || 0,
+          small: Number(sizes.small) || 0,
+          medium: Number(sizes.medium) || 0,
+          large: Number(sizes.large) || 0,
+          xlarge: Number(sizes.xlarge) || 0,
+          xxlarge: Number(sizes.xxlarge) || 0,
+        },
       };
 
-      // Handle file uploads
-      const uploadImage = async (file, oldUrl) => {
+      // ✅ Helper: upload image to Cloudinary
+      const uploadImage = async (file, oldUrl = null) => {
         if (oldUrl) {
           const publicId = extractPublicIdFromUrl(oldUrl);
-          if (publicId) await cloudinary.uploader.destroy(publicId);
+          if (publicId) {
+            await cloudinary.uploader.destroy(publicId);
+          }
         }
-
-        return await cloudinary.uploader.upload(
-          `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+        const result = await cloudinary.uploader.upload(
+          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
           {
             quality: "auto:best",
             fetch_format: "auto",
             width: 800,
             height: 1000,
             crop: "fill",
-            gravity: "auto:faces"
+            gravity: "auto:faces",
           }
         );
+        return result.secure_url;
       };
 
-      // Process front image
-      if (req.files?.front_image?.[0]) {
-        const result = await uploadImage(req.files.front_image[0], product.front_image);
-        updateData.front_image = result.secure_url;
-      }
+      // ✅ Helper: get files by fieldname
+      const getFilesByField = (fieldName) =>
+        Array.isArray(req.files)
+          ? req.files.filter((file) => file.fieldname === fieldName)
+          : [];
 
-      // Process back image
-      if (req.files?.back_image?.[0]) {
-        const result = await uploadImage(req.files.back_image[0], product.back_image);
-        updateData.back_image = result.secure_url;
-      }
+      // 🟡 FRONT IMAGE
+      const frontFiles = getFilesByField("front_image");
+      if (frontFiles.length > 0)
+        updateData.front_image = await uploadImage(frontFiles[0], product.front_image);
+      else updateData.front_image = product.front_image;
 
-      // Process additional images
-      if (req.files?.images) {
-        // Delete old images
-        for (const imageUrl of product.images) {
-          const publicId = extractPublicIdFromUrl(imageUrl);
+      // 🟡 BACK IMAGE
+      const backFiles = getFilesByField("back_image");
+      if (backFiles.length > 0)
+        updateData.back_image = await uploadImage(backFiles[0], product.back_image);
+      else updateData.back_image = product.back_image;
+
+      // 🟡 GALLERY IMAGES
+      const galleryFiles = getFilesByField("images");
+      if (galleryFiles.length > 0) {
+        // delete old gallery
+        for (const imgUrl of product.images || []) {
+          const publicId = extractPublicIdFromUrl(imgUrl);
           if (publicId) await cloudinary.uploader.destroy(publicId);
         }
-
-        // Upload new images
-        const uploadPromises = req.files.images.map(file =>
-          uploadImage(file, null)
+        const uploaded = await Promise.all(
+          galleryFiles.map((file) => uploadImage(file))
         );
-        const results = await Promise.all(uploadPromises);
-        updateData.images = results.map(img => img.secure_url);
+        updateData.images = uploaded;
+      } else {
+        updateData.images = product.images;
       }
 
-      // Update product
-      await Product.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+      const updatedColorImages = {};
+
+      // Keep existing colors (excluding deleted)
+      for (const entry of product.colorImages || []) {
+        if (!deletedArray.includes(entry.color)) {
+          updatedColorImages[entry.color] = entry.images;
+        } else {
+          console.log(`🗑️ Removing images for deleted color: ${entry.color}`);
+          for (const img of entry.images) {
+            const publicId = extractPublicIdFromUrl(img);
+            if (publicId) await cloudinary.uploader.destroy(publicId);
+          }
+        }
+      }
+
+      // Upload new colorImages (colorImages_<color>)
+      for (const color of colorArray) {
+        const files = getFilesByField(`colorImages_${color}`);
+        if (files.length > 0) {
+          const uploaded = await Promise.all(files.map((f) => uploadImage(f)));
+          updatedColorImages[color] = uploaded;
+        } else if (updatedColorImages[color]) {
+          // Keep existing if not replaced
+          console.log(`ℹ️ Keeping existing images for ${color}`);
+        } else {
+          // New color but no images uploaded
+          updatedColorImages[color] = [];
+        }
+      }
+
+      // Convert map → array for schema
+      updateData.colorImages = Object.entries(updatedColorImages).map(
+        ([color, images]) => ({ color, images })
+      );
+
+      console.log("✅ Final colorImages array:", updateData.colorImages);
+
+      // 🟢 Update product in DB
+      const updated = await Product.findByIdAndUpdate(id, updateData, {
+        new: true,
+        runValidators: true,
+      });
+
+      console.log("✅ Product successfully updated:", updated?._id);
 
       return res.send(`
         <script>
@@ -433,7 +497,7 @@ router.post(
         </script>
       `);
     } catch (error) {
-      console.error("Error updating product:", error);
+      console.error("❌ Error updating product:", error);
       return res.status(500).send(`
         <script>
           alert('Failed to update product: ${error.message.replace(/'/g, "\\'")}');

@@ -44,7 +44,7 @@ const posterRoutes = require("./routes/posterRoutes");
 // const product_detail = require("./routes/product_detail")
 const sitemapRoute = require('./routes/sitemap');
 const offerRoutes = require("./routes/offerRoutes")
-
+const categoryRoutes = require("./routes/categoryRoutes")
 require("dotenv").config();
 
 // Initialize Express app
@@ -147,6 +147,7 @@ app.use("/products", productRoutes);
 app.use("/user", userRoutes);
 app.use("/posters", posterRoutes);
 app.use('/', sitemapRoute);
+app.use('/category', categoryRoutes)
 
 app.use('/offers', offerRoutes);
 // app.use("/product_details", product_detail)

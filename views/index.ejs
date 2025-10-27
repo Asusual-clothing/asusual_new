@@ -2,18 +2,15 @@
 <html lang="en">
 
 <head>
-  <!-- Basic Meta Tags -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- SEO Meta Tags -->
   <title>AsUsual Clothing | Premium Oversized T-Shirts in India | Trendy Streetwear</title>
   <meta name="description"
     content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
   <meta name="keywords"
     content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
 
-  <!-- Social Media Meta Tags -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.asusual.in/">
   <meta property="og:title" content="AsUsual Clothing | Premium Oversized T-Shirts in India">
@@ -24,47 +21,19 @@
   <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="AsUsual Clothing">
   <meta name="google-site-verification" content="9AG6MollFiLHq4QXZzUEFbJP94pgFh9FDN6Tbb8Ec8U" />
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ClothingStore",
-    "name": "AsUsual Clothing",
-    "url": "https://www.asusual.in",
-    "logo": "https://www.asusual.in/assests/horizontalLogo-removebg-preview.png",
-    "description": "Premium oversized t-shirts and streetwear fashion brand in India",
-    "priceRange": "₹299-₹"1500,
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Rajasthan",
-      "addressRegion": "RJ",
-      "postalCode": "302026",
-      "addressCountry": "IN"
-    },
-    "offers": {
-      "@type": "Offer",
-      "url": "https://www.asusual.in",
-      "priceCurrency": "INR",
-    }
-  }
-  </script>
 
-  <!-- Favicons -->
   <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
   <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
   <link rel="manifest" href="/assests/site.webmanifest">
   <meta name="theme-color" content="#ffffff">
 
-  <!-- Canonical URL -->
   <link rel="canonical" href="https://www.asusual.in/" />
 
-  <!-- Preload Critical Resources -->
   <link rel="preload" href="/styles/styles.css" as="style">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style">
   <link rel="preload" href="/assests/hero-banner.jpg" as="image">
 
-  <!-- CSS Resources -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="stylesheet" href="/styles/styles.css" />
   <link rel="stylesheet" href="/styles/footer.css" />
@@ -74,284 +43,70 @@
   <link rel="stylesheet" href="/styles/posterSlider.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Dancing+Script:wght@400..700&display=swap"
     rel="stylesheet" media="print" onload="this.media='all'">
 
-  <!-- JS Resources (Deferred) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
   <script src="https://cdn.tailwindcss.com" defer></script>
-</head>
-
-<body>
-  <!-- Loader Container -->
-  <div id="loader" class="loader">
-    <div class="loader-container" id="page5">
-      <img class="sword-left"
-        src="https://cdn4.iconfinder.com/data/icons/video-game-items-concepts/128/weapon-katana-512.png"
-        alt="Sword Left" />
-      <img class="ninja" id="ninja" src="/assests/loaderNinja.png" alt="Ninja" />
-      <img class="sword-right"
-        src="https://cdn4.iconfinder.com/data/icons/video-game-items-concepts/128/weapon-katana-512.png"
-        alt="Sword Right" />
-      <img class="moon" src="https://www.seekpng.com/png/full/1-16744_red-moon-png-orange-moon-png.png" alt="Moon" />
-      <!-- <div class="brand-name"><img
-            src="assests/horizontalLogo-removebg-preview.png" alt="Logo"></div> -->
-    </div>
-  </div>
-
-  <!-- Homepage Content -->
-  <div class="homepage-content" id="homepage-content" style="display: none">
-    <!-- marquee for notification -->
-    <div class="notification-bar">
-      <span class="notification-text">
-        <%= notification.notification || 'No new updates at the moment.' %>
-      </span>
-    </div>
-
-    <div class="notification-bar blank-notification">
-      <span class="notification-text"> </span>
-    </div>
-    <!-- this is the responsive navbar -->
-    <nav class="As-navbar">
-      <div class="As-container">
-        <ul class="As-nav-links">
-          <li class="blinking-text">AS USUAL CLOTHING</li>
-          <li style="height: 25px; border-left: 2px solid black; margin: 0 9px;"></li>
-
-          <!-- <li>
-              <a href="/"><i class="fas fa-home"></i> <span>Home</span></a>
-            </li> -->
-          <li>
-            <a href="/about"><i class="fas fa-info-circle"></i> <span>About Us</span></a>
-          </li>
-          <li>
-            <a href="/Products"><i class="fas fa-box"></i> <span>All Products</span></a>
-          </li>
-          <li>
-            <a href="/orders/all-orders"><i class="fa fa-shirt"></i><span>Your Orders</span></a>
-          </li>
-          <li>
-            <a href="/contact"><i class="fas fa-phone"></i><span>Contact Us</span></a>
-          </li>
-        </ul>
-        <div class="As-logo">
-          <a href="/"><img src="assests/horizontalLogo-removebg-preview.png" alt="Logo" /></a>
-        </div>
-        <div class="AS-nav-btn">
-          <% if (user) { %>
-            <li>
-              <a href="/cart" class="cart-icon">
-                <i class="fas fa-shopping-cart"></i>
-                <span>Cart</span>
-                <% if (cartCount> 0) { %>
-                  <span class="cart-count">
-                    <%= cartCount %>
-                  </span>
-                  <% } %>
-              </a>
-            </li>
-
-            <!-- Dropdown for logged-in users -->
-            <!-- Profile Dropdown -->
-            <div class="profile-dropdown">
-              <div class="profile-trigger">
-                <li>
-                  <a href="#"><i class="fas fa-user-circle"></i><span>Profile</span></a>
-                </li>
-              </div>
-              <div class="profile-details">
-                <p><i class="fas fa-user"></i> Name: <%= user.name %>
-                </p>
-                <p><i class="fas fa-envelope"></i> Email: <%= user.email %>
-                </p>
-                <p>
-                  <i class="fas fa-phone"></i> Phone: <%= user.phone || 'N/A' %>
-                </p>
-                <p>
-                  <i class="fas fa-calendar"></i> Member Since: <%= user.createdAt ? new
-                    Date(user.createdAt).toDateString() : 'N/A' %>
-                </p>
-              </div>
-            </div>
-            <li>
-              <a href="/logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span>
-              </a>
-            </li>
-
-            <% } else { %>
-              <!-- Sign-up link for guests -->
-              <li>
-                <a href="/signup"><i class="fas fa-user-plus"></i> <span>Sign-Up</span></a>
-              </li>
-              <% } %>
-        </div>
-
-        <div class="As-hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    </nav>
-    <!-- this is slider of poster  -->
-
-    <div class="slider" id="slider" style="--img-prev: url(<%=posters[posters.length-1]||''%>)">
-
-      <div class="slider__content" id="slider-content">
-        <div class="slider__images">
-          <% if (posters && posters.length> 0) { %> <% posters.forEach((poster, index)=> { %>
-              <div class="slider__images-item <%= index === 0 ? 'slider__images-item--active' : '' %>"
-                data-id="<%= index + 1 %>">
-                <img src="<%= poster %>" alt="Fashion Style <%= index + 1 %>" />
-              </div>
-              <% }); %>
-                <% } %>
-        </div>
-
-        <div class="slider__text">
-          <% posters.forEach((poster, index)=> { %>
-            <div class="slider__text-item <%= index === 0 ? 'slider__text-item--active' : '' %>"
-              data-id="<%= index + 1 %>">
-              <div class="slider__text-item-head">
-                <h3>
-                  <%= headings?.[index] || 'Default Heading' %>
-                </h3>
-              </div>
-              <div class="slider__text-item-info">
-                <p>
-                  <%= titles?.[index] || 'Default Title' %>
-                </p>
-              </div>
-            </div>
-            <% }); %>
-        </div>
-      </div>
-
-      <div class="slider__nav">
-        <div class="slider__nav-arrows">
-          <div class="slider__nav-arrow slider__nav-arrow--left" id="left">
-            to left
-          </div>
-          <div class="slider__nav-arrow slider__nav-arrow--right" id="right">
-            to right
-          </div>
-        </div>
-
-        <div class="slider__nav-dots" id="slider-dots">
-          <% posters.forEach((poster, index)=> { %>
-            <div class="slider__nav-dot <%= index === 0 ? 'slider__nav-dot--active' : '' %>" data-id="<%= index + 1 %>">
-            </div>
-            <% }); %>
-        </div>
-      </div>
-    </div>
-
-    <!-- this is the second section -->
-    <% const bestsellers=Products.filter(p=> p.bestseller); const
-      nonBestsellers = Products.filter(p => !p.bestseller); const finalProducts
-      = bestsellers.slice(0, 4); if (finalProducts.length < 4) { finalProducts.push(...nonBestsellers.slice(0, 4 -
-        finalProducts.length)); } %>
-        <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-[#121212] z-0">
-          <div class="container mx-auto px-4 text-center">
-            <!-- Main Title -->
-            <h2
-              class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 to-gray-100 mb-4 tracking-tight">
-              Our Bestsellers
-            </h2>
-            <!-- Subtitle with decorative elements -->
-            <div class="relative inline-block">
-              <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
-                Sold out for a reason
-              </p>
-              <div class="hidden sm:absolute sm:inset-0 sm:flex sm:items-center sm:justify-center">
-                <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page2" id="page2">
-          <% finalProducts.forEach(product=> { %>
-            <div class="card" data-url="/products/<%= product._id %>">
-              <div class="imgBox">
-                <div class="front">
-                  <img src="<%= product.front_image %>" alt="<%= product.name %>" />
-                </div>
-                <div class="back">
-                  <img src="<%= product.back_image %>" alt="<%= product.name %>" />
-                </div>
-              </div>
-              <div class="contentBox">
-                <h3>
-                  <%= product.name %>
-                </h3>
-                <div class="price-row">
-                  <p class="MRP">₹<%= product.MRP %>
-                  </p>
-                  <h2 class="price"><small>₹<%= product.price %></small></h2>
-                </div>
-                <a href="/products/<%= product._id %>" class="buy">Buy Now</a>
-              </div>
-
-            </div>
-            <% }) %>
-        </div>
-
-        <!-- this is the third section -->
-        <div class="pagenew">
-          <!-- Section Header with Improved Styling -->
-          <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-black">
-            <div class="container mx-auto px-4 text-center">
-              <!-- Main Title -->
-              <h2
-                class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 to-gray-100 mb-4 tracking-tight">
-                Featured Collection
-              </h2>
-
-              <!-- Subtitle with decorative elements -->
-              <div class="relative inline-block">
-                <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
-                  Discover our premium selection of high-quality products
-                </p>
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="container">
-            <ul class="slides">
-              <% Products.slice(0, 5).forEach((product, index)=> { %>
-                <li id="slide<%= index + 1 %>">
-                  <img src="<%= product.front_image %>" alt="<%= product.name %>" />
-                  <div class="slide-content">
-                    <a href="/products/<%= product._id %>" class="buy">Buy Now</a>
-                  </div>
-                </li>
-                <% }); %>
-            </ul>
-
-            <ul class="thumbnails">
-              <% Products.slice(0, 5).forEach((product, index)=> { %>
-                <li>
-                  <a href="#slide<%= index + 1 %>">
-                    <img src="<%= product.front_image %>" alt="<%= product.name %>" />
-                  </a>
-                </li>
-                <% }); %>
-            </ul>
-          </div>
-        </div>
 
         <style>
+          .testimonial-swiper {
+            padding: 20px 0;
+          }
+
+          .swiper-slide {
+            height: auto;
+            padding: 10px;
+          }
+
+          .swiper-button-next,
+          .swiper-button-prev {
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          @media only screen and (max-width: 600px) {
+
+            .swiper-button-next,
+            .swiper-button-prev {
+              display: none;
+            }
+          }
+
+          .swiper-button-next::after,
+          .swiper-button-prev::after {
+            font-size: 20px;
+          }
+
+          .swiper-pagination-bullet {
+            background: white;
+            opacity: 0.5;
+          }
+
+          .swiper-pagination-bullet-active {
+            opacity: 1;
+          }
+        </style>
+
+        
+        <style>
+          .card.flipped .imgBox {
+            transform: rotateY(180deg);
+          }
+        </style>
+               <style>
           .pagenew {
             overflow: hidden;
             background-color: black;
@@ -448,7 +203,6 @@
               text-align: center;
               z-index: 3;
             }
-
             .buy {
               display: inline-block;
               padding: 12px 30px;
@@ -468,13 +222,11 @@
             }
           }
 
-          /* Responsive adjustments */
           @media (max-width: 768px) {
             .container {
               flex-direction: column;
               align-items: center;
             }
-
             .thumbnails {
               flex-direction: row;
               width: 100%;
@@ -486,7 +238,6 @@
                 height: 80px;
               }
             }
-
             .slides {
               width: 100%;
               height: 300px;
@@ -499,7 +250,252 @@
             }
           }
         </style>
-        <!-- this is forth section -->
+</head>
+
+<body>
+  <div id="loader" class="loader">
+    <div class="loader-container" id="page5">
+      <img class="sword-left"
+        src="https://cdn4.iconfinder.com/data/icons/video-game-items-concepts/128/weapon-katana-512.png"
+        alt="Sword Left" />
+      <img class="ninja" id="ninja" src="/assests/loaderNinja.png" alt="Ninja" />
+      <img class="sword-right"
+        src="https://cdn4.iconfinder.com/data/icons/video-game-items-concepts/128/weapon-katana-512.png"
+        alt="Sword Right" />
+      <img class="moon" src="https://www.seekpng.com/png/full/1-16744_red-moon-png-orange-moon-png.png" alt="Moon" />
+    </div>
+  </div>
+
+  <div class="homepage-content" id="homepage-content" style="display: none">
+    <div class="notification-bar">
+      <span class="notification-text">
+        <%= notification.notification || 'No new updates at the moment.' %>
+      </span>
+    </div>
+
+    <div class="notification-bar blank-notification">
+      <span class="notification-text"> </span>
+    </div>
+    <nav class="As-navbar">
+      <div class="As-container">
+        <ul class="As-nav-links">
+          <li class="blinking-text">AS USUAL CLOTHING</li>
+          <li style="height: 25px; border-left: 2px solid black; margin: 0 9px;"></li>
+
+          <li>
+            <a href="/about"><i class="fas fa-info-circle"></i> <span>About Us</span></a>
+          </li>
+          <li>
+            <a href="/Products"><i class="fas fa-box"></i> <span>All Products</span></a>
+          </li>
+          <li>
+            <a href="/orders/all-orders"><i class="fa fa-shirt"></i><span>Your Orders</span></a>
+          </li>
+          <li>
+            <a href="/contact"><i class="fas fa-phone"></i><span>Contact Us</span></a>
+          </li>
+        </ul>
+        <div class="As-logo">
+          <a href="/"><img src="assests/horizontalLogo-removebg-preview.png" alt="Logo" /></a>
+        </div>
+        <div class="AS-nav-btn">
+          <% if (user) { %>
+            <li>
+              <a href="/cart" class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Cart</span>
+                <% if (cartCount> 0) { %>
+                  <span class="cart-count">
+                    <%= cartCount %>
+                  </span>
+                  <% } %>
+              </a>
+            </li>
+
+            <div class="profile-dropdown">
+              <div class="profile-trigger">
+                <li>
+                  <a href="#"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+                </li>
+              </div>
+              <div class="profile-details">
+                <p><i class="fas fa-user"></i> Name: <%= user.name %>
+                </p>
+                <p><i class="fas fa-envelope"></i> Email: <%= user.email %>
+                </p>
+                <p>
+                  <i class="fas fa-phone"></i> Phone: <%= user.phone || 'N/A' %>
+                </p>
+                <p>
+                  <i class="fas fa-calendar"></i> Member Since: <%= user.createdAt ? new
+                    Date(user.createdAt).toDateString() : 'N/A' %>
+                </p>
+              </div>
+            </div>
+            <li>
+              <a href="/logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span>
+              </a>
+            </li>
+
+            <% } else { %>
+              <!-- Sign-up link for guests -->
+              <li>
+                <a href="/signup"><i class="fas fa-user-plus"></i> <span>Sign-Up</span></a>
+              </li>
+              <% } %>
+        </div>
+
+        <div class="As-hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+    <!-- this is slider of poster  -->
+
+    <div class="slider" id="slider" style="--img-prev: url(<%=posters[posters.length-1]||''%>)">
+
+      <div class="slider__content" id="slider-content">
+        <div class="slider__images">
+          <% if (posters && posters.length> 0) { %> <% posters.forEach((poster, index)=> { %>
+              <div class="slider__images-item <%= index === 0 ? 'slider__images-item--active' : '' %>"
+                data-id="<%= index + 1 %>">
+                <img src="<%= poster %>" alt="Fashion Style <%= index + 1 %>" />
+              </div>
+              <% }); %>
+                <% } %>
+        </div>
+
+        <div class="slider__text">
+          <% posters.forEach((poster, index)=> { %>
+            <div class="slider__text-item <%= index === 0 ? 'slider__text-item--active' : '' %>"
+              data-id="<%= index + 1 %>">
+              <div class="slider__text-item-head">
+                <h3>
+                  <%= headings?.[index] || 'Default Heading' %>
+                </h3>
+              </div>
+              <div class="slider__text-item-info">
+                <p>
+                  <%= titles?.[index] || 'Default Title' %>
+                </p>
+              </div>
+            </div>
+            <% }); %>
+        </div>
+      </div>
+
+      <div class="slider__nav">
+        <div class="slider__nav-arrows">
+          <div class="slider__nav-arrow slider__nav-arrow--left" id="left">
+            to left
+          </div>
+          <div class="slider__nav-arrow slider__nav-arrow--right" id="right">
+            to right
+          </div>
+        </div>
+
+        <div class="slider__nav-dots" id="slider-dots">
+          <% posters.forEach((poster, index)=> { %>
+            <div class="slider__nav-dot <%= index === 0 ? 'slider__nav-dot--active' : '' %>" data-id="<%= index + 1 %>">
+            </div>
+            <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <% const bestsellers=Products.filter(p=> p.bestseller); const
+      nonBestsellers = Products.filter(p => !p.bestseller); const finalProducts
+      = bestsellers.slice(0, 4); if (finalProducts.length < 4) { finalProducts.push(...nonBestsellers.slice(0, 4 -
+        finalProducts.length)); } %>
+        <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-[#121212] z-0">
+          <div class="container mx-auto px-4 text-center">
+            <h2
+              class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 to-gray-100 mb-4 tracking-tight">
+              Our Bestsellers
+            </h2>
+            <div class="relative inline-block">
+              <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
+                Sold out for a reason
+              </p>
+              <div class="hidden sm:absolute sm:inset-0 sm:flex sm:items-center sm:justify-center">
+                <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page2" id="page2">
+          <% finalProducts.forEach(product=> { %>
+            <div class="card" data-url="/products/<%= product._id %>">
+              <div class="imgBox">
+                <div class="front">
+                  <img src="<%= product.front_image %>" alt="<%= product.name %>" />
+                </div>
+                <div class="back">
+                  <img src="<%= product.back_image %>" alt="<%= product.name %>" />
+                </div>
+              </div>
+              <div class="contentBox">
+                <h3>
+                  <%= product.name %>
+                </h3>
+                <div class="price-row">
+                  <p class="MRP">₹<%= product.MRP %>
+                  </p>
+                  <h2 class="price"><small>₹<%= product.price %></small></h2>
+                </div>
+                <a href="/products/<%= product._id %>" class="buy">Buy Now</a>
+              </div>
+
+            </div>
+            <% }) %>
+        </div>
+
+        <div class="pagenew">
+          <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-black">
+            <div class="container mx-auto px-4 text-center">
+              <h2
+                class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 to-gray-100 mb-4 tracking-tight">
+                Featured Collection
+              </h2>
+
+              <div class="relative inline-block">
+                <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
+                  Discover our premium selection of high-quality products
+                </p>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container">
+            <ul class="slides">
+              <% Products.slice(0, 5).forEach((product, index)=> { %>
+                <li id="slide<%= index + 1 %>">
+                  <img src="<%= product.front_image %>" alt="<%= product.name %>" />
+                  <div class="slide-content">
+                    <a href="/products/<%= product._id %>" class="buy">Buy Now</a>
+                  </div>
+                </li>
+                <% }); %>
+            </ul>
+
+            <ul class="thumbnails">
+              <% Products.slice(0, 5).forEach((product, index)=> { %>
+                <li>
+                  <a href="#slide<%= index + 1 %>">
+                    <img src="<%= product.front_image %>" alt="<%= product.name %>" />
+                  </a>
+                </li>
+                <% }); %>
+            </ul>
+          </div>
+        </div>
+
 
         <div class="page4" id="page4">
           <div class="scroller">
@@ -541,56 +537,9 @@
           </div>
         </div>
 
-        <style>
-          .card.flipped .imgBox {
-            transform: rotateY(180deg);
-          }
-        </style>
-        <script>
-          function setupCardClickBehavior() {
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(
-              navigator.userAgent
-            );
-            const screenWidth = window.innerWidth;
 
-            console.log("Screen width:", screenWidth);
-            console.log("isMobile (based on user agent):", isMobile);
-
-            document.querySelectorAll(".card").forEach((card) => {
-              if (isMobile || screenWidth <= 768) {
-                // Mobile behavior (or small screen in inspect)
-                card.addEventListener("click", (e) => {
-                  if (e.target.classList.contains("buy")) return;
-
-                  if (!card.classList.contains("flipped")) {
-                    console.log("Flipping card...");
-                    card.classList.add("flipped");
-                  } else {
-                    console.log("Navigating to product detail...");
-                    const url = card.getAttribute("data-url");
-                    window.location.href = url;
-                  }
-                });
-              } else {
-                // Desktop behavior
-                card.addEventListener("click", (e) => {
-                  if (e.target.classList.contains("buy")) return;
-
-                  const url = card.getAttribute("data-url");
-                  console.log("Desktop click: navigating to", url);
-                  window.location.href = url;
-                });
-              }
-            });
-          }
-
-          document.addEventListener("DOMContentLoaded", setupCardClickBehavior);
-        </script>
-
-        <!-- Testimonial Section -->
         <div class="page5" id="page5">
           <section class="bg-black text-white py-16 px-4 sm:px-6 lg:px-20">
-            <!-- Enhanced Header Section -->
             <div class="container mx-auto px-4 text-center mb-12">
               <h2
                 class="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300 mb-4 tracking-tight">
@@ -635,82 +584,6 @@
             </div>
           </section>
         </div>
-
-        <!-- Initialize Swiper -->
-        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-        <script>
-          var swiperT = new Swiper(".testimonial-swiper", {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
-            autoplay: {
-              delay: 3000,
-              disableOnInteraction: false,
-            },
-            pagination: {
-              el: ".swiper-pagination",
-              clickable: true,
-            },
-            navigation: {
-              nextEl: ".swiper-button-next",
-              prevEl: ".swiper-button-prev",
-            },
-            breakpoints: {
-              640: {
-                slidesPerView: 2,
-              },
-              1024: {
-                slidesPerView: 3,
-              },
-            },
-          });
-        </script>
-        <style>
-          .testimonial-swiper {
-            padding: 20px 0;
-          }
-
-          .swiper-slide {
-            height: auto;
-            padding: 10px;
-          }
-
-          .swiper-button-next,
-          .swiper-button-prev {
-            color: white;
-            background: rgba(0, 0, 0, 0.5);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          @media only screen and (max-width: 600px) {
-
-            .swiper-button-next,
-            .swiper-button-prev {
-              display: none;
-            }
-          }
-
-          .swiper-button-next::after,
-          .swiper-button-prev::after {
-            font-size: 20px;
-          }
-
-          .swiper-pagination-bullet {
-            background: white;
-            opacity: 0.5;
-          }
-
-          .swiper-pagination-bullet-active {
-            opacity: 1;
-          }
-        </style>
-
-        <!-- stay up to date  -->
         <div
           class="flex flex-col items-center justify-center bg-black w-full h-auto sm:h-[474px] shadow-[0_10px_40px_rgba(0,0,0,0.6)] p-6 sm:p-10 font-['Mulish'] mx-auto border border-gray-800 transition-all duration-300 ease-in-out">
           <h2 class="font-extrabold text-3xl sm:text-4xl mb-3 sm:mb-5 text-center text-white tracking-tight">
@@ -745,19 +618,8 @@
                 </div>
               </form>
 
-              <script>
-                function validateCheckbox() {
-                  const checkbox = document.getElementById("consent");
-                  if (!checkbox.checked) {
-                    alert("Please agree to receive updates before subscribing.");
-                    return false;
-                  }
-                  return true;
-                }
-              </script>
+     
         </div>
-
-        <!-- footer  -->
 
         <footer class="footer">
           <div class="footer__parralax">
@@ -822,7 +684,6 @@
                     </li>
                     <li class="footer__nav-item footer-nav-email">
                       <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
-                        <!-- <i data-feather="mail"></i> -->
                         <i data-feather="at-sign"></i>
                         <span>asusualclothing@gmail.com</span>
                       </a>
@@ -838,7 +699,6 @@
                   <ul class="footer__nav-list">
                     <li class="footer__nav-item">
                       <a href="mailto:asusualclothing@gmail.com" class="footer__nav-link">
-                        <!-- <i data-feather="mail"></i> -->
                         <i data-feather="at-sign"></i>
                         <span>asusualclothing@gmail.com</span>
                       </a>
@@ -850,8 +710,107 @@
           </div>
         </footer>
   </div>
-  <!-- this the javascript and link for gsap  -->
-  <!-- Locomotive Scroll -->
+   
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+            <script>
+                function validateCheckbox() {
+                  const checkbox = document.getElementById("consent");
+                  if (!checkbox.checked) {
+                    alert("Please agree to receive updates before subscribing.");
+                    return false;
+                  }
+                  return true;
+                }
+
+                var swiperT = new Swiper(".testimonial-swiper", {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            autoplay: {
+              delay: 3000,
+              disableOnInteraction: false,
+            },
+            pagination: {
+              el: ".swiper-pagination",
+              clickable: true,
+            },
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+              640: {
+                slidesPerView: 2,
+              },
+              1024: {
+                slidesPerView: 3,
+              },
+            },
+          });
+
+          function setupCardClickBehavior() {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(
+              navigator.userAgent
+            );
+            const screenWidth = window.innerWidth;
+
+            console.log("Screen width:", screenWidth);
+            console.log("isMobile (based on user agent):", isMobile);
+
+            document.querySelectorAll(".card").forEach((card) => {
+              if (isMobile || screenWidth <= 768) {
+                // Mobile behavior (or small screen in inspect)
+                card.addEventListener("click", (e) => {
+                  if (e.target.classList.contains("buy")) return;
+
+                  if (!card.classList.contains("flipped")) {
+                    console.log("Flipping card...");
+                    card.classList.add("flipped");
+                  } else {
+                    console.log("Navigating to product detail...");
+                    const url = card.getAttribute("data-url");
+                    window.location.href = url;
+                  }
+                });
+              } else {
+                // Desktop behavior
+                card.addEventListener("click", (e) => {
+                  if (e.target.classList.contains("buy")) return;
+
+                  const url = card.getAttribute("data-url");
+                  console.log("Desktop click: navigating to", url);
+                  window.location.href = url;
+                });
+              }
+            });
+          }
+
+          document.addEventListener("DOMContentLoaded", setupCardClickBehavior);
+              </script>
+                <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ClothingStore",
+    "name": "AsUsual Clothing",
+    "url": "https://www.asusual.in",
+    "logo": "https://www.asusual.in/assests/horizontalLogo-removebg-preview.png",
+    "description": "Premium oversized t-shirts and streetwear fashion brand in India",
+    "priceRange": "₹299-₹"1500,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Rajasthan",
+      "addressRegion": "RJ",
+      "postalCode": "302026",
+      "addressCountry": "IN"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://www.asusual.in",
+      "priceCurrency": "INR",
+    }
+  }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
 
   <!-- GSAP Core and ScrollTrigger -->

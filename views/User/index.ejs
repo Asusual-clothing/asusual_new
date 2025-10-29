@@ -253,7 +253,6 @@
       }
     }
 
-
     .categorical-section {
       background-color: black;
       padding: 40px 0;
@@ -270,54 +269,16 @@
       margin-top: -120px;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
-      scrollbar-width: thin;
-      scrollbar-color: #444 #111;
-
-      /* 👇 Hide scrollbar across browsers */
       scrollbar-width: none;
-      /* Firefox */
       -ms-overflow-style: none;
     }
 
-    .categorical-scroll-container2 {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      gap: 1rem;
-      padding: 0rem 3rem;
-      margin-top: 0px;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-      scrollbar-width: thin;
-      scrollbar-color: #444 #111;
-
-    }
-
-
-    .categorical-scroll-container:hover,
-    .categorical-scroll-container2:hover {
-      cursor: grab;
-    }
-
-    .categorical-scroll-container::-webkit-scrollbar,
-    .categorical-scroll-container2::-webkit-scrollbar {
+    .categorical-scroll-container::-webkit-scrollbar {
       display: none;
     }
 
-    .categorical-scroll-container::-webkit-scrollbar-thumb,
-    .categorical-scroll-container2::-webkit-scrollbar-thumb {
-      background: #555;
-      border-radius: 4px;
-    }
-
-    .categorical-scroll-container::-webkit-scrollbar-thumb:hover,
-    .categorical-scroll-container2::-webkit-scrollbar-thumb:hover {
-      background: #777;
-    }
-
-
-    .categorical-scroll-container::-webkit-scrollbar-thumb:hover {
-      background: #777;
+    .categorical-scroll-container:hover {
+      cursor: grab;
     }
 
     /* --- Cards --- */
@@ -381,7 +342,7 @@
       transition: opacity 0.6s 1.6s cubic-bezier(0.215, 0.61, 0.355, 1);
     }
 
-    /* Hover */
+    /* Hover Effects */
     .categorical-card-wrap:hover .categorical-card {
       box-shadow:
         rgba(255, 255, 255, 0.2) 0 0 40px 5px,
@@ -403,22 +364,38 @@
       opacity: 1;
     }
 
-    /* --- RESPONSIVE --- */
+    /* --- Explore All Card --- */
+    .explore-card {
+      background: linear-gradient(135deg, #3a0a0a, #000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #888;
+    }
+
+    .explore-card h1 {
+      color: #fff;
+      margin-bottom: 179px;
+
+      font-size: 22px;
+
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* --- Responsive --- */
     @media (max-width: 1024px) {
       .categorical-card-wrap {
         flex: 0 0 calc(33.33% - 1rem);
-        /* 3 cards visible */
       }
     }
 
     @media (max-width: 768px) {
       .categorical-card-wrap {
         flex: 0 0 42%;
-        /* shows 2.3 cards roughly */
       }
 
-      .categorical-scroll-container,
-      .categorical-scroll-container2 {
+      .categorical-scroll-container {
         gap: 1.2rem;
         padding: 1.2rem 1rem;
       }
@@ -583,8 +560,6 @@
             <!-- CATEGORY SECTION -->
             <section class="categorical-section">
               <div id="categorical-app">
-
-                <!-- ✅ FIRST ROW (firstSeven) -->
                 <% if (firstHalf && firstHalf.length> 0) { %>
                   <div class="categorical-scroll-container">
                     <% firstHalf.forEach((cat)=> { %>
@@ -602,33 +577,21 @@
                         </div>
                       </div>
                       <% }) %>
-                  </div>
-                  <% } %>
 
-                    <!-- ✅ SECOND ROW (rest) -->
-                    <% if (secondHalf && secondHalf.length> 0) { %>
-                      <div class="categorical-scroll-container2">
-                        <% secondHalf.forEach((cat)=> { %>
-                          <div class="categorical-card-wrap" data-image="<%= cat.Image %>">
-                            <div class="categorical-card">
-                              <div class="categorical-card-bg" style="background-image: url('<%= cat.Image %>');"></div>
-                              <div class="categorical-card-info">
-                                <h1>
-                                  <%= cat.name %>
-                                </h1>
-                                <p>
-                                  <%= cat.description || "Explore our latest collection." %>
-                                </p>
-                              </div>
+                        <!-- 🚀 Explore All Card -->
+                        <div class="categorical-card-wrap explore-all-card">
+                          <div class="categorical-card explore-card">
+                            <div class="categorical-card-info explore-info">
+                              <h1>Explore All</h1>
                             </div>
                           </div>
-                          <% }) %>
-                      </div>
-                      <% } %>
-
+                        </div>
+                  </div>
+                  <% } %>
               </div>
             </section>
           </div>
+
 
 
 
@@ -677,47 +640,59 @@
           </div>
 
 
-          <div class="page4" id="page4">
-            <div class="scroller">
+          <div class="featured-products-section" id="featured-products">
+            <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-black">
+              <div class="container mx-auto px-4 text-center">
+                <h2
+                  class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 to-gray-100 mb-4 tracking-tight">
+                  Featured Collection
+                </h2>
+
+                <div class="relative inline-block">
+                  <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
+                    Discover our premium selection of high-quality products
+                  </p>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="featured-scroll-container">
               <% for(let i=0; i < 6; i++) { %>
-                <div class="card" data-url="/products/<%= Products[i]._id %>">
-                  <div class="imgBox">
-                    <div class="front">
+                <div class="featured-card-wrap" data-url="/products/<%= Products[i]._id %>">
+                  <div class="featured-imgBox">
+                    <div class="featured-front">
                       <img src="<%= Products[i].front_image %>" alt="<%= Products[i].name %>" />
                     </div>
-                    <div class="back">
+                    <div class="featured-back">
                       <img src="<%= Products[i].back_image %>" alt="<%= Products[i].name %>" />
                     </div>
                   </div>
-                  <div class="contentBox">
+                  <div class="featured-contentBox">
                     <h3>
                       <%= Products[i].name %>
                     </h3>
-                    <div class="price-row">
-                      <p class="MRP">₹<%= Products[i].MRP %>
+                    <div class="featured-price-row">
+                      <p class="featured-MRP">₹<%= Products[i].MRP %>
                       </p>
-                      <h2 class="price"><small>₹<%= Products[i].price %></small></h2>
+                      <h2 class="featured-price"><small>₹<%= Products[i].price %></small></h2>
                     </div>
-                    <a href="/products/<%= Products[i]._id %>" class="buy">Buy Now</a>
+                    <a href="/products/<%= Products[i]._id %>" class="featured-buy">Buy Now</a>
                   </div>
-
                 </div>
                 <% } %>
-                  <a href="/Products">
-                    <div
-                      class="card w-[250px] h-[370px] sm:w-[300px] sm:h-[450px] bg-[#1a1a1a] text-white rounded-2xl shadow-2xl flex items-center justify-center z-2 ">
-                      <span
-                        class="text-2xl font-bold tracking-widest uppercase transition-all duration-300 hover:text-[#870000] hover:underline hover:underline-offset-4 hover:scale-105 hover:drop-shadow-[0_0_6px_#903b3b] cursor-pointer"
-                        style="z-index: 2;">
-                        Explore More
-                      </span>
 
+                  <a href="/Products">
+                    <div class="featured-card-wrap">
+                      <div class="featured-explore-card">
+                        <span>Explore More</span>
+                      </div>
                     </div>
                   </a>
             </div>
           </div>
-
-
           <div class="page5" id="page5">
             <section class="bg-black text-white py-16 px-4 sm:px-6 lg:px-20">
               <div class="container mx-auto px-4 text-center mb-12">

@@ -149,7 +149,9 @@ function initializeAnimations() {
       height: "14rem",
       duration: 1,
     });
-  });const containers = document.querySelectorAll('.categorical-scroll-container, .categorical-scroll-container2');
+  });
+  
+  const containers = document.querySelectorAll('.categorical-scroll-container, .categorical-scroll-container2');
 
 // Helper function — sync scroll position
 function syncScroll(source) {
@@ -297,8 +299,100 @@ containers.forEach(container => {
     ease: "linear",
   });
 }
+ document.addEventListener("DOMContentLoaded", function() {
+        const featuredContainer = document.querySelector('.featured-scroll-container');
+        let isScrolling = false;
+        let scrollTimer;
+        let isDown = false;
+        let startX;
+        let scrollLeft;
 
+        // Function to disable hover effects during scroll
+        function disableHoverEffects() {
+            featuredContainer.classList.add('scrolling');
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(() => {
+                featuredContainer.classList.remove('scrolling');
+            }, 150);
+        }
 
+        // Desktop: Horizontal scroll with mouse wheel
+        featuredContainer.addEventListener('wheel', function(e) {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault();
+                disableHoverEffects();
+                featuredContainer.scrollLeft += e.deltaY * 1.5;
+            }
+        }, { passive: false });
+
+        // Mouse down for drag scrolling
+        featuredContainer.addEventListener('mousedown', (e) => {
+            isDown = true;
+            featuredContainer.classList.add('scrolling');
+            startX = e.pageX - featuredContainer.offsetLeft;
+            scrollLeft = featuredContainer.scrollLeft;
+        });
+
+        featuredContainer.addEventListener('mouseleave', () => {
+            isDown = false;
+            featuredContainer.classList.remove('scrolling');
+        });
+
+        featuredContainer.addEventListener('mouseup', () => {
+            isDown = false;
+            featuredContainer.classList.remove('scrolling');
+        });
+
+        featuredContainer.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - featuredContainer.offsetLeft;
+            const walk = (x - startX) * 2;
+            featuredContainer.scrollLeft = scrollLeft - walk;
+        });
+
+        // Mobile: Touch/swipe handling
+        featuredContainer.addEventListener('touchstart', (e) => {
+            isDown = true;
+            featuredContainer.classList.add('scrolling');
+            startX = e.touches[0].pageX - featuredContainer.offsetLeft;
+            scrollLeft = featuredContainer.scrollLeft;
+        });
+
+        featuredContainer.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            disableHoverEffects();
+            const x = e.touches[0].pageX - featuredContainer.offsetLeft;
+            const walk = (x - startX) * 2;
+            featuredContainer.scrollLeft = scrollLeft - walk;
+        });
+
+        featuredContainer.addEventListener('touchend', () => {
+            isDown = false;
+            featuredContainer.classList.remove('scrolling');
+        });
+
+        // Card click behavior
+        document.querySelectorAll('.featured-card-wrap').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't navigate if clicking on the Buy Now button or if we were scrolling
+                if (e.target.classList.contains('featured-buy') || featuredContainer.classList.contains('scrolling')) {
+                    return;
+                }
+                
+                const url = this.getAttribute('data-url');
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        // Prevent card hover effects during any scroll activity
+        featuredContainer.addEventListener('scroll', () => {
+            disableHoverEffects();
+        });
+    });
 
 
 

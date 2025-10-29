@@ -385,13 +385,18 @@ body {
   .footer__nav-link i {
     display: none;
   }
+  
+   .blinking-text {
+    font-size: 8px;
+  }
 }
 
 @media (max-width: 480px) {
   .footer-nav-email {
     display: block;
+    
+    margin-right: 11px;
   }
-
   .footer__col_last {
     display: none;
   }
@@ -452,6 +457,10 @@ body {
   .footer__nav-link svg {
     display: none;
   }
+  
+  .blinking-text {
+    font-size: 8px;
+  }
 }
 
 @media (min-width: 1280px) {
@@ -465,5 +474,8 @@ body {
   .footer__nav {
     font-size: small;
 
+  }
+   .blinking-text {
+    font-size: 8px !important;
   }
 }

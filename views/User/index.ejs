@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>AsUsual Clothing | Premium Oversized T-Shirts in India | Trendy Streetwear</title>
+  <meta name="description"
+    content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
+  <meta name="keywords"
+    content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.asusual.in/">
+  <meta property="og:title" content="AsUsual Clothing | Premium Oversized T-Shirts in India">
+  <meta property="og:description"
+    content="India's trendiest oversized t-shirts for men & women. Shop unique graphic tees, cotton streetwear with free shipping.">
+  <meta property="og:image" content="https://www.asusualclothing.com/assests/favicon.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="AsUsual Clothing">
+  <meta name="google-site-verification" content="9AG6MollFiLHq4QXZzUEFbJP94pgFh9FDN6Tbb8Ec8U" />
+
+  <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
+  <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
+  <link rel="manifest" href="/assests/site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="canonical" href="https://www.asusual.in/" />
+
+  <link rel="preload" href="/styles/styles.css" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style">
+  <link rel="preload" href="/assests/hero-banner.jpg" as="image">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="/styles/styles.css" />
+  <link rel="stylesheet" href="/styles/footer.css" />
+  <link rel="stylesheet" href="/styles/navbar.css" />
+  <link rel="stylesheet" href="/styles/horizontal.css" />
+  <link rel="stylesheet" href="/styles/loader.css" />
+  <link rel="stylesheet" href="/styles/posterSlider.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Dancing+Script:wght@400..700&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+  <script src="https://cdn.tailwindcss.com" defer></script>
+
+  <style>
+    .testimonial-swiper {
+      padding: 20px 0;
+    }
+
+    .swiper-slide {
+      height: auto;
+      padding: 10px;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media only screen and (max-width: 600px) {
+
+      .swiper-button-next,
+      .swiper-button-prev {
+        display: none;
+      }
+    }
+
+    .swiper-button-next::after,
+    .swiper-button-prev::after {
+      font-size: 20px;
+    }
+
+    .swiper-pagination-bullet {
+      background: white;
+      opacity: 0.5;
+    }
+
+    .swiper-pagination-bullet-active {
+      opacity: 1;
+    }
+  </style>
+
+
+  <style>
+    .card.flipped .imgBox {
+      transform: rotateY(180deg);
+    }
+  </style>
+  <style>
+    .pagenew {
+      overflow: hidden;
+      background-color: black;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .slides li:first-child {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .slides li:target~li:first-child {
+      opacity: 0;
+      z-index: 0;
+    }
+
+    .thumbnails {
+      display: flex;
+      flex-direction: column;
+      width: 150px;
+
+      li {
+        list-style: none;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+
+      a {
+        display: block;
+        border: 2px solid transparent;
+        transition: border-color 0.3s ease;
+      }
+
+      img {
+        width: 100%;
+        height: 100px;
+        object-fit: fill;
+        object-position: center;
+        border-radius: 4px;
+        cursor: pointer;
+        filter: grayscale(100%);
+      }
+
+      a:hover img {
+        filter: grayscale(0%);
+      }
+    }
+
+    .slides {
+      position: relative;
+      width: 600px;
+      height: 510px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+      li {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+        }
+      }
+
+      li:target {
+        opacity: 1;
+        z-index: 2;
+      }
+
+      .slide-content {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        z-index: 3;
+      }
+
+      .buy {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #860505;
+        color: black;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+        &:hover {
+          background-color: #620404;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .thumbnails {
+        flex-direction: row;
+        width: 100%;
+        order: 2;
+        margin-top: 15px;
+        filter: grayscale(100%);
+
+        img {
+          height: 80px;
+        }
+      }
+
+      .slides {
+        width: 100%;
+        height: 300px;
+        order: 1;
+
+        .buy {
+          padding: 8px 20px;
+          font-size: 14px;
+        }
+      }
+    }
+
+
+    .categorical-section {
+      background-color: black;
+      padding: 40px 0;
+      margin: 60px 0;
+    }
+
+    /* --- Scrollable container --- */
+    .categorical-scroll-container {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 1rem;
+      padding: 0rem 3rem;
+      margin-top: -120px;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: #444 #111;
+
+      /* 👇 Hide scrollbar across browsers */
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+    }
+
+    .categorical-scroll-container2 {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 1rem;
+      padding: 0rem 3rem;
+      margin-top: 0px;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: #444 #111;
+
+    }
+
+
+    .categorical-scroll-container:hover,
+    .categorical-scroll-container2:hover {
+      cursor: grab;
+    }
+
+    .categorical-scroll-container::-webkit-scrollbar,
+    .categorical-scroll-container2::-webkit-scrollbar {
+      display: none;
+    }
+
+    .categorical-scroll-container::-webkit-scrollbar-thumb,
+    .categorical-scroll-container2::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 4px;
+    }
+
+    .categorical-scroll-container::-webkit-scrollbar-thumb:hover,
+    .categorical-scroll-container2::-webkit-scrollbar-thumb:hover {
+      background: #777;
+    }
+
+
+    .categorical-scroll-container::-webkit-scrollbar-thumb:hover {
+      background: #777;
+    }
+
+    /* --- Cards --- */
+    .categorical-card-wrap {
+      flex: 0 0 calc(25% - 1rem);
+      scroll-snap-align: center;
+      transform: perspective(800px);
+      transform-style: preserve-3d;
+      cursor: pointer;
+      transition: transform 0.6s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+    }
+
+    .categorical-card {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      background-color: #333;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow:
+        rgba(0, 0, 0, 0.66) 0 30px 60px 0,
+        inset #333 0 0 0 5px,
+        inset rgba(255, 255, 255, 0.5) 0 0 0 6px;
+      transition: box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+        transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .categorical-card-bg {
+      opacity: 0.5;
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      width: calc(100% + 40px);
+      height: calc(100% + 40px);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+        opacity 5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .categorical-card-info {
+      position: absolute;
+      bottom: 0;
+      color: #fff;
+      padding: 20px;
+      transform: translateY(40%);
+      transition: transform 0.6s 1.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    .categorical-card-info h1 {
+      font-family: "Playfair Display", serif;
+      font-size: 19px;
+      margin: -11px;
+      text-shadow: rgba(0, 0, 0, 0.5) 0 10px 10px;
+    }
+
+    .categorical-card-info p {
+      opacity: 0;
+      text-shadow: rgba(0, 0, 0, 1) 0 2px 3px;
+      transition: opacity 0.6s 1.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    /* Hover */
+    .categorical-card-wrap:hover .categorical-card {
+      box-shadow:
+        rgba(255, 255, 255, 0.2) 0 0 40px 5px,
+        rgba(255, 255, 255, 1) 0 0 0 1px,
+        rgba(0, 0, 0, 0.66) 0 30px 60px 0,
+        inset #333 0 0 0 5px,
+        inset white 0 0 0 6px;
+    }
+
+    .categorical-card-wrap:hover .categorical-card-bg {
+      opacity: 0.8;
+    }
+
+    .categorical-card-wrap:hover .categorical-card-info {
+      transform: translateY(0);
+    }
+
+    .categorical-card-wrap:hover .categorical-card-info p {
+      opacity: 1;
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 1024px) {
+      .categorical-card-wrap {
+        flex: 0 0 calc(33.33% - 1rem);
+        /* 3 cards visible */
+      }
+    }
+
+    @media (max-width: 768px) {
+      .categorical-card-wrap {
+        flex: 0 0 42%;
+        /* shows 2.3 cards roughly */
+      }
+
+      .categorical-scroll-container,
+      .categorical-scroll-container2 {
+        gap: 1.2rem;
+        padding: 1.2rem 1rem;
+      }
+
+      .categorical-card {
+        height: 250px;
+        width: 174px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="loader" class="loader">
+    <div class="loader-container" id="page5">
+      <img class="sword-left"
+        src="https://cdn4.iconfinder.com/data/icons/video-game-items-concepts/128/weapon-katana-512.png"
+        alt="Sword Left" />
+      <img class="ninja" id="ninja" src="/assests/loaderNinja.png" alt="Ninja" />
+      <img class="sword-right"
+        src="https://cdn4.iconfinder.com/data/icons/video-game-items-concepts/128/weapon-katana-512.png"
+        alt="Sword Right" />
+      <img class="moon" src="https://www.seekpng.com/png/full/1-16744_red-moon-png-orange-moon-png.png" alt="Moon" />
+    </div>
+  </div>
+
+  <div class="homepage-content" id="homepage-content" style="display: none">
+    <div class="notification-bar">
+      <span class="notification-text">
+        <%= notification.notification || 'No new updates at the moment.' %>
+      </span>
+    </div>
+
+    <div class="notification-bar blank-notification">
+      <span class="notification-text"> </span>
+    </div>
+
+    <%- include('../partials/navbar', { user: user, cartCount: cartCount }) %>
+      <!-- this is slider of poster  -->
+
+      <div class="slider" id="slider" style="--img-prev: url(<%=posters[posters.length-1]||''%>)">
+
+        <div class="slider__content" id="slider-content">
+          <div class="slider__images">
+            <% if (posters && posters.length> 0) { %> <% posters.forEach((poster, index)=> { %>
+                <div class="slider__images-item <%= index === 0 ? 'slider__images-item--active' : '' %>"
+                  data-id="<%= index + 1 %>">
+                  <img src="<%= poster %>" alt="Fashion Style <%= index + 1 %>" />
+                </div>
+                <% }); %>
+                  <% } %>
+          </div>
+
+          <div class="slider__text">
+            <% posters.forEach((poster, index)=> { %>
+              <div class="slider__text-item <%= index === 0 ? 'slider__text-item--active' : '' %>"
+                data-id="<%= index + 1 %>">
+                <div class="slider__text-item-head">
+                  <h3>
+                    <%= headings?.[index] || 'Default Heading' %>
+                  </h3>
+                </div>
+                <div class="slider__text-item-info">
+                  <p>
+                    <%= titles?.[index] || 'Default Title' %>
+                  </p>
+                </div>
+              </div>
+              <% }); %>
+          </div>
+        </div>
+
+        <div class="slider__nav">
+          <div class="slider__nav-arrows">
+            <div class="slider__nav-arrow slider__nav-arrow--left" id="left">
+              to left
+            </div>
+            <div class="slider__nav-arrow slider__nav-arrow--right" id="right">
+              to right
+            </div>
+          </div>
+
+          <div class="slider__nav-dots" id="slider-dots">
+            <% posters.forEach((poster, index)=> { %>
+              <div class="slider__nav-dot <%= index === 0 ? 'slider__nav-dot--active' : '' %>"
+                data-id="<%= index + 1 %>">
+              </div>
+              <% }); %>
+          </div>
+        </div>
+      </div>
+
+      <% const bestsellers=Products.filter(p=> p.bestseller); const
+        nonBestsellers = Products.filter(p => !p.bestseller); const finalProducts
+        = bestsellers.slice(0, 4); if (finalProducts.length < 4) { finalProducts.push(...nonBestsellers.slice(0, 4 -
+          finalProducts.length)); } %>
+          <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-[#121212] z-0">
+            <div class="container mx-auto px-4 text-center">
+              <h2
+                class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 to-gray-100 mb-4 tracking-tight">
+                Our Bestsellers
+              </h2>
+              <div class="relative inline-block">
+                <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
+                  Sold out for a reason
+                </p>
+                <div class="hidden sm:absolute sm:inset-0 sm:flex sm:items-center sm:justify-center">
+                  <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="page2" id="page2">
+            <% finalProducts.forEach(product=> { %>
+              <div class="card" data-url="/products/<%= product._id %>">
+                <div class="imgBox">
+                  <div class="front">
+                    <img src="<%= product.front_image %>" alt="<%= product.name %>" />
+                  </div>
+                  <div class="back">
+                    <img src="<%= product.back_image %>" alt="<%= product.name %>" />
+                  </div>
+                </div>
+                <div class="contentBox">
+                  <h3>
+                    <%= product.name %>
+                  </h3>
+                  <div class="price-row">
+                    <p class="MRP">₹<%= product.MRP %>
+                    </p>
+                    <h2 class="price"><small>₹<%= product.price %></small></h2>
+                  </div>
+                  <a href="/products/<%= product._id %>" class="buy">Buy Now</a>
+                </div>
+
+              </div>
+              <% }) %>
+          </div>
+
+
+          <div class="pagenew">
+            <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-black">
+              <div class="container mx-auto px-4 text-center">
+                <h2
+                  class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 to-gray-100 mb-4 tracking-tight">
+                  Categorical Collection
+                </h2>
+
+                <div class="relative inline-block">
+                  <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
+                    Discover our premium selection of high-quality products
+                  </p>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CATEGORY SECTION -->
+            <section class="categorical-section">
+              <div id="categorical-app">
+
+                <!-- ✅ FIRST ROW (firstSeven) -->
+                <% if (firstHalf && firstHalf.length> 0) { %>
+                  <div class="categorical-scroll-container">
+                    <% firstHalf.forEach((cat)=> { %>
+                      <div class="categorical-card-wrap" data-image="<%= cat.Image %>">
+                        <div class="categorical-card">
+                          <div class="categorical-card-bg" style="background-image: url('<%= cat.Image %>');"></div>
+                          <div class="categorical-card-info">
+                            <h1>
+                              <%= cat.name %>
+                            </h1>
+                            <p>
+                              <%= cat.description || "Explore our latest collection." %>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <% }) %>
+                  </div>
+                  <% } %>
+
+                    <!-- ✅ SECOND ROW (rest) -->
+                    <% if (secondHalf && secondHalf.length> 0) { %>
+                      <div class="categorical-scroll-container2">
+                        <% secondHalf.forEach((cat)=> { %>
+                          <div class="categorical-card-wrap" data-image="<%= cat.Image %>">
+                            <div class="categorical-card">
+                              <div class="categorical-card-bg" style="background-image: url('<%= cat.Image %>');"></div>
+                              <div class="categorical-card-info">
+                                <h1>
+                                  <%= cat.name %>
+                                </h1>
+                                <p>
+                                  <%= cat.description || "Explore our latest collection." %>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <% }) %>
+                      </div>
+                      <% } %>
+
+              </div>
+            </section>
+          </div>
+
+
+
+
+          <div class="pagenew">
+            <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-black">
+              <div class="container mx-auto px-4 text-center">
+                <h2
+                  class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 to-gray-100 mb-4 tracking-tight">
+                  Featured Collection
+                </h2>
+
+                <div class="relative inline-block">
+                  <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
+                    Discover our premium selection of high-quality products
+                  </p>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="container">
+              <ul class="slides">
+                <% Products.slice(0, 5).forEach((product, index)=> { %>
+                  <li id="slide<%= index + 1 %>">
+                    <img src="<%= product.front_image %>" alt="<%= product.name %>" />
+                    <div class="slide-content">
+                      <a href="/products/<%= product._id %>" class="buy">Buy Now</a>
+                    </div>
+                  </li>
+                  <% }); %>
+              </ul>
+
+              <ul class="thumbnails">
+                <% Products.slice(0, 5).forEach((product, index)=> { %>
+                  <li>
+                    <a href="#slide<%= index + 1 %>">
+                      <img src="<%= product.front_image %>" alt="<%= product.name %>" />
+                    </a>
+                  </li>
+                  <% }); %>
+              </ul>
+            </div>
+          </div>
+
+
+          <div class="page4" id="page4">
+            <div class="scroller">
+              <% for(let i=0; i < 6; i++) { %>
+                <div class="card" data-url="/products/<%= Products[i]._id %>">
+                  <div class="imgBox">
+                    <div class="front">
+                      <img src="<%= Products[i].front_image %>" alt="<%= Products[i].name %>" />
+                    </div>
+                    <div class="back">
+                      <img src="<%= Products[i].back_image %>" alt="<%= Products[i].name %>" />
+                    </div>
+                  </div>
+                  <div class="contentBox">
+                    <h3>
+                      <%= Products[i].name %>
+                    </h3>
+                    <div class="price-row">
+                      <p class="MRP">₹<%= Products[i].MRP %>
+                      </p>
+                      <h2 class="price"><small>₹<%= Products[i].price %></small></h2>
+                    </div>
+                    <a href="/products/<%= Products[i]._id %>" class="buy">Buy Now</a>
+                  </div>
+
+                </div>
+                <% } %>
+                  <a href="/Products">
+                    <div
+                      class="card w-[250px] h-[370px] sm:w-[300px] sm:h-[450px] bg-[#1a1a1a] text-white rounded-2xl shadow-2xl flex items-center justify-center z-2 ">
+                      <span
+                        class="text-2xl font-bold tracking-widest uppercase transition-all duration-300 hover:text-[#870000] hover:underline hover:underline-offset-4 hover:scale-105 hover:drop-shadow-[0_0_6px_#903b3b] cursor-pointer"
+                        style="z-index: 2;">
+                        Explore More
+                      </span>
+
+                    </div>
+                  </a>
+            </div>
+          </div>
+
+
+          <div class="page5" id="page5">
+            <section class="bg-black text-white py-16 px-4 sm:px-6 lg:px-20">
+              <div class="container mx-auto px-4 text-center mb-12">
+                <h2
+                  class="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300 mb-4 tracking-tight">
+                  From Our Community
+                </h2>
+
+                <div class="relative inline-block max-w-2xl mx-auto">
+                  <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
+                    They Came. They Wore. They Slayed. Hear it straight from our AsUsual legends
+                  </p>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div
+                      class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent hidden sm:block">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Swiper Container -->
+              <div class="swiper-container testimonial-swiper">
+                <div class="swiper-wrapper">
+                  <% testimonials.forEach(function(testimonial) { %>
+                    <div class="swiper-slide">
+                      <div class="bg-zinc-900 p-6 rounded-2xl shadow-lg h-full">
+                        <p class="text-lg italic mb-4">"<%= testimonial.quote %>"</p>
+                        <img src="<%= testimonial.imageUrl %>" alt="User"
+                          class="w-12 h-12 rounded-full border-2 border-white" />
+                        <div class="flex items-center gap-4 mt-6">
+                          <div>
+                            <p class="font-semibold">
+                              <%= testimonial.name %>
+                            </p>
+                            <p class="text-sm text-gray-400">
+                              <%= testimonial.role %>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <% }); %>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div
+            class="flex flex-col items-center justify-center bg-black w-full h-auto sm:h-[474px] shadow-[0_10px_40px_rgba(0,0,0,0.6)] p-6 sm:p-10 font-['Mulish'] mx-auto border border-gray-800 transition-all duration-300 ease-in-out">
+            <h2 class="font-extrabold text-3xl sm:text-4xl mb-3 sm:mb-5 text-center text-white tracking-tight">
+              Join Our Community
+            </h2>
+            <p class="text-center text-gray-400 text-sm sm:text-base mb-6 max-w-[600px]">
+              Subscribe to receive our latest news, community updates, and exclusive
+              insights delivered monthly to your inbox.
+            </p>
+
+            <% if (message) { %>
+              <p class="text-red-500 font-medium mb-4 animate-pulse">
+                <%= message %>
+              </p>
+              <% } %>
+
+                <form method="POST" action="/user/subscribe" class="w-full" onsubmit="return validateCheckbox()">
+                  <div class="flex flex-col sm:flex-row items-center justify-center sm:items-start gap-4 w-full mb-6">
+                    <input type="email" name="email" placeholder="Enter your email address"
+                      class="w-full sm:w-[431px] px-6 py-4 rounded-lg border border-gray-700 bg-[#121212] text-white text-base focus:outline-none focus:ring-2 focus:ring-gray-600 placeholder-gray-500 transition-all duration-200"
+                      required />
+                    <button type="submit"
+                      class="w-full sm:w-[244px] px-6 py-4 bg-white text-black font-semibold rounded-lg text-sm sm:text-base transition-all duration-200 hover:bg-gray-300 shadow-md">
+                      Subscribe Now
+                    </button>
+                  </div>
+
+                  <div class="flex items-center justify-center gap-3 text-sm text-gray-400">
+                    <input type="checkbox" id="consent" class="mt-1 cursor-pointer" style="accent-color: #860505" />
+
+                    <label for="consent" class="cursor-pointer">I'm in — send me the latest updates each month.</label>
+                  </div>
+                </form>
+
+
+          </div>
+
+          <%- include('../partials/footer') %>
+
+
+
+            <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+            <script>
+              function validateCheckbox() {
+                const checkbox = document.getElementById("consent");
+                if (!checkbox.checked) {
+                  alert("Please agree to receive updates before subscribing.");
+                  return false;
+                }
+                return true;
+              }
+
+              var swiperT = new Swiper(".testimonial-swiper", {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                autoplay: {
+                  delay: 3000,
+                  disableOnInteraction: false,
+                },
+                pagination: {
+                  el: ".swiper-pagination",
+                  clickable: true,
+                },
+                navigation: {
+                  nextEl: ".swiper-button-next",
+                  prevEl: ".swiper-button-prev",
+                },
+                breakpoints: {
+                  640: {
+                    slidesPerView: 2,
+                  },
+                  1024: {
+                    slidesPerView: 3,
+                  },
+                },
+              });
+
+              function setupCardClickBehavior() {
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(
+                  navigator.userAgent
+                );
+                const screenWidth = window.innerWidth;
+
+                console.log("Screen width:", screenWidth);
+                console.log("isMobile (based on user agent):", isMobile);
+
+                document.querySelectorAll(".card").forEach((card) => {
+                  if (isMobile || screenWidth <= 768) {
+                    // Mobile behavior (or small screen in inspect)
+                    card.addEventListener("click", (e) => {
+                      if (e.target.classList.contains("buy")) return;
+
+                      if (!card.classList.contains("flipped")) {
+                        console.log("Flipping card...");
+                        card.classList.add("flipped");
+                      } else {
+                        console.log("Navigating to product detail...");
+                        const url = card.getAttribute("data-url");
+                        window.location.href = url;
+                      }
+                    });
+                  } else {
+                    // Desktop behavior
+                    card.addEventListener("click", (e) => {
+                      if (e.target.classList.contains("buy")) return;
+
+                      const url = card.getAttribute("data-url");
+                      console.log("Desktop click: navigating to", url);
+                      window.location.href = url;
+                    });
+                  }
+                });
+              }
+
+              document.addEventListener("DOMContentLoaded", setupCardClickBehavior);
+            </script>
+            <!-- Structured Data -->
+            <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ClothingStore",
+    "name": "AsUsual Clothing",
+    "url": "https://www.asusual.in",
+    "logo": "https://www.asusual.in/assests/horizontalLogo-removebg-preview.png",
+    "description": "Premium oversized t-shirts and streetwear fashion brand in India",
+    "priceRange": "₹299-₹"1500,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Rajasthan",
+      "addressRegion": "RJ",
+      "postalCode": "302026",
+      "addressCountry": "IN"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://www.asusual.in",
+      "priceCurrency": "INR",
+    }
+  }
+  </script>
+            <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+
+            <!-- GSAP Core and ScrollTrigger -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js    "></script>
+
+            <!-- Your Custom Script -->
+            <script src="/scripts/script.js"></script>
+            <script src="https://unpkg.com/feather-icons"></script>
+            <script>
+              feather.replace();
+            </script>
+            <script src="/scripts/slider.js"></script>
+</body>
+
+</html>

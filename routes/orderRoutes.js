@@ -135,7 +135,7 @@ router.get("/confirmation/:id", async (req, res) => {
       return res.status(404).send("Order not found");
     }
 
-    res.render("order-confirmation", {
+    res.render("User/order-confirmation", {
       user: req.user || { name: "Guest" },
       order,
     });
@@ -161,6 +161,7 @@ router.get("/", checkAdminAuth, async (req, res) => {
       .sort({ createdAt: -1 })
       .lean();
 
+    // Handle missing products gracefully
     orders.forEach((order) => {
       order.items = order.items.map((item) => {
         if (!item.product) {
@@ -173,7 +174,11 @@ router.get("/", checkAdminAuth, async (req, res) => {
       });
     });
 
-    res.render("order", { orders });
+    res.render("Admin/order", {
+      orders,
+      activePage: "orders", // ✅ used to highlight Orders in sidebar
+      title: "All Orders",  // optional for page title
+    });
   } catch (error) {
     console.error("Order fetch error:", error);
     res.status(500).render("error", {
@@ -217,7 +222,7 @@ router.get("/all-orders", async (req, res) => {
       };
     });
 
-    res.render("userallorders", {
+    res.render("User/userallorders", {
       orders: ordersWithStatus,
       user: req.user,
       cartCount: req.session.cartCount || 0,
@@ -253,25 +258,37 @@ router.post('/delete/:orderId', async (req, res) => {
 
 
 // Order details (admin)
-router.get("/:id", async (req, res) => {
+router.get("/:id", checkAdminAuth, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
       .populate("items.product", "name images price description")
       .populate("user", "name email")
       .populate("freeItem", "name images price description")
       .populate("offerUsed", "name offerType")
-      .populate("couponUsed", "code discountType discountValue");
+      .populate("couponUsed", "code discountType discountValue")
+      .lean();
 
     if (!order) {
-      return res.status(404).render("error", { message: "Order not found" });
+      return res.status(404).render("error", {
+        message: "Order not found",
+        error: {},
+      });
     }
 
-    res.render("order_detail", { order });
+    res.render("Admin/order_detail", {
+      order,
+      activePage: "orders", // ✅ Highlights "Orders" in sidebar
+      title: `Order Details - ${order._id}`, // Optional dynamic title
+    });
   } catch (error) {
     console.error("Error fetching order details:", error);
-    res.status(500).render("error", { message: "Server error fetching order details" });
+    res.status(500).render("error", {
+      message: "Server error fetching order details",
+      error: process.env.NODE_ENV === "development" ? error : {},
+    });
   }
 });
+
 
 
 
@@ -297,7 +314,7 @@ router.get("/all-orders/:id", async (req, res) => {
       });
     }
 
-    res.render("user-order_details", {
+    res.render("User/user-order_details", {
       order,
       user: req.user,
     });

@@ -30,7 +30,7 @@ const Subscription = require("./models/subscription");
 const Testimonial = require("./models/Testimonial");
 const DeliveryCost = require("./models/Deliveryschema");
 const Coupon = require("./models/CouponSchema");
-
+const Category = require("./models/Category")
 // Import routes
 const adminRoutes = require("./routes/adminRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -189,6 +189,7 @@ function sendOTP(email, otp) {
 app.get("/", async (req, res) => {
   try {
     const Products = await Product.find();
+    const Categories = await Category.find().sort({ createdAt: -1 }); // ✅ fetch all categories
 
     // Shuffle function
     function shuffle(array) {
@@ -201,15 +202,16 @@ app.get("/", async (req, res) => {
 
     const shuffledProducts = shuffle([...Products]);
     const testimonials = await Testimonial.find({});
-    const notification = (await Notification.findOne({})) || {
-      notification: "",
-    };
+    const notification = (await Notification.findOne({})) || { notification: "" };
     const poster = await Poster.findOne({});
     const posters = poster ? poster.image : [];
     const headings = poster ? poster.Heading : [];
     const titles = poster ? poster.Title : [];
 
-    // Get user information if logged in
+     const shuffledCategories = shuffle([...Categories]);
+    const mid = Math.ceil(shuffledCategories.length / 2);
+    const firstHalf = shuffledCategories.slice(0, mid);
+    const secondHalf = shuffledCategories.slice(mid);
     const userId = req.session.userId || req.cookies.userId;
     let user = null;
     let cartCount = 0;
@@ -217,14 +219,14 @@ app.get("/", async (req, res) => {
     if (userId) {
       user = await User.findById(userId, "name _id email phone createdAt");
 
-      // Fix: Use Cart model correctly
       const cart = await Cart.findOne({ user: userId });
       if (cart) {
         cartCount = cart.items.reduce((total, item) => total + item.quantity, 0);
       }
     }
 
-    res.render("index", {
+    // ✅ Pass categories to frontend
+    res.render("User/index", {
       Products: shuffledProducts,
       posters,
       headings,
@@ -233,14 +235,16 @@ app.get("/", async (req, res) => {
       notification,
       message: null,
       user,
-      cartCount
+      cartCount,
+      Categories,
+       firstHalf,
+      secondHalf, // ⬅️ new
     });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
   }
 });
-
 
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$OTP RoUTES$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -281,32 +285,32 @@ app.post("/verify-otp", (req, res) => {
 });
 
 app.get("/signup", (req, res) => {
-  res.render("signup2");
+  res.render("User/signup2");
 });
 
 // Simple routes
 app.get("/about", (req, res) => {
-  res.render("aboutUs");
+  res.render("User/aboutUs");
 });
 
 app.get("/Terms-and-conditions", (req, res) => {
-  res.render("termsandcondition");
+  res.render("User/termsandcondition");
 });
 
 app.get("/privacy_policy", (req, res) => {
-  res.render("privacypolicy");
+  res.render("User/privacypolicy");
 });
 
 app.get("/contact", (req, res) => {
-  res.render("contactUs");
+  res.render("User/contactUs");
 });
 
 app.get("/Shipping-policy", (req, res) => {
-  res.render("shipping_policy");
+  res.render("User/shipping_policy");
 })
 
 app.get("/Refund-policy", (req, res) => {
-  res.render("refund_policy");
+  res.render("User/refund_policy");
 })
 
 app.get("/logout", (req, res) => {

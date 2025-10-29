@@ -5,22 +5,22 @@ const router = express.Router({ mergeParams: true });
 const multer = require('multer');
 const path = require('path');
 const sharp = require('sharp');
-  const Product = require("../models/Product");
-  const User = require("../models/UserSchema");
-  const Cart = require("../models/CartSchema");
-  const Admin = require("../models/AdminSchema");
-  const CustomTshirt = require("../models/CustomTshirtSchema");
-  const Poster = require("../models/posterSchema");
-  const Order = require("../models/OrderSchema");
-  const Contact = require("../models/Contact");
-  const Notification = require("../models/Notification");
-  const Subscription = require("../models/subscription");
-  const Testimonial = require("../models/Testimonial");
-  const DeliveryCost = require("../models/Deliveryschema");
-  const Coupon = require("../models/CouponSchema");
+const Product = require("../models/Product");
+const User = require("../models/UserSchema");
+const Cart = require("../models/CartSchema");
+const Admin = require("../models/AdminSchema");
+const CustomTshirt = require("../models/CustomTshirtSchema");
+const Poster = require("../models/posterSchema");
+const Order = require("../models/OrderSchema");
+const Contact = require("../models/Contact");
+const Notification = require("../models/Notification");
+const Subscription = require("../models/subscription");
+const Testimonial = require("../models/Testimonial");
+const DeliveryCost = require("../models/Deliveryschema");
+const Coupon = require("../models/CouponSchema");
 
 
-  
+
 const checkAdminAuth = async (req, res, next) => {
   try {
     const adminId = req.session.adminId || req.cookies.adminId;
@@ -46,7 +46,7 @@ const checkAdminAuth = async (req, res, next) => {
 
 const uploads = multer({
   storage: multer.memoryStorage(),
-  limits: { 
+  limits: {
     fileSize: 50 * 1024 * 1024, // 50MB limit
     files: 1 // Limit to 1 file per upload
   },
@@ -90,6 +90,7 @@ router.post("/update-notification", async (req, res) => {
   }
 });
 
+// ========================= EDIT POSTER =========================
 router.get("/edit-poster", checkAdminAuth, async (req, res) => {
   try {
     const poster = (await Poster.findOne({})) || {
@@ -100,18 +101,25 @@ router.get("/edit-poster", checkAdminAuth, async (req, res) => {
     const notification = (await Notification.findOne({})) || {
       notification: "",
     };
-    res.render("edit_poster", { poster, notification });
+
+    res.render("Admin/edit_poster", {
+      poster,
+      notification,
+      activePage: "edit-poster", // ✅ sidebar highlight
+      title: "Edit Poster",      // optional
+    });
   } catch (error) {
     console.error("Error loading edit-poster:", error);
     res.status(500).send("Server Error");
   }
 });
 
+
 router.post(
   "/edit-poster/:index",
   checkAdminAuth,
   (req, res, next) => {
-    uploads.single("posterImage")(req, res, function(err) {
+    uploads.single("posterImage")(req, res, function (err) {
       if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading
         if (err.code === 'LIMIT_FILE_SIZE') {
@@ -175,7 +183,7 @@ router.post(
             .toBuffer();
 
           const dataUri = `data:${file.mimetype};base64,${compressedBuffer.toString('base64')}`;
-          
+
           const result = await cloudinary.uploader.upload(dataUri, {
             resource_type: "auto",
             quality: "auto:good",  // Slightly lower quality for smaller files

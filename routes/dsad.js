@@ -107,7 +107,7 @@ function extractPublicIdFromUrl(url) {
 
 // Add product form
 router.get("/add-product", checkAdminAuth, (req, res) => {
-  res.render("add_product");
+  res.render("Admin/add_product");
 });
 
 router.post(
@@ -239,7 +239,7 @@ router.get("/:id", async (req, res) => {
       }
     }
 
-    res.render("product_detail", {
+    res.render("User/product_detail", {
       product,
       user,
       productId: product._id,
@@ -278,7 +278,7 @@ router.get("/", async (req, res) => {
       cartCount = cart ? cart.items.reduce((total, item) => total + item.quantity, 0) : 0;
     }
 
-    res.render("allProduct", {
+    res.render("User/allProduct", {
       notification,
       products: products.map((p) => ({
         ...p,
@@ -314,7 +314,7 @@ router.get("/:id", async (req, res) => {
 
     const cartCount = req.session.cart ? req.session.cart.length : 0; // ✅ Add this line
 
-    res.render("product_detail", {
+    res.render("User/product_detail", {
       product,
       user,
       productId: product._id,
@@ -330,7 +330,7 @@ router.get("/:id", async (req, res) => {
 router.get('/edit-product', async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
-    res.render('edit-product', { products }); // Assuming you're using a templating engine like EJS
+    res.render('Admin/edit-product', { products }); // Assuming you're using a templating engine like EJS
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
@@ -344,7 +344,7 @@ router.get('/edit_product/:id', async (req, res) => {
     if (!product) {
       return res.status(404).send('Product not found');
     }
-    res.render('edit-product-images', { product }); // You'll need to create this view
+    res.render('User/edit-product-images', { product }); // You'll need to create this view
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');

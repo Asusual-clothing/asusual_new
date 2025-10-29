@@ -42,6 +42,27 @@ const cloudinaryUploadOptions = {
   ],
 };
 
+const uploadImage = async (file, oldUrl = null) => {
+  if (oldUrl) {
+    const publicId = extractPublicIdFromUrl(oldUrl);
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId);
+    }
+  }
+  const result = await cloudinary.uploader.upload(
+    `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+    {
+      quality: "auto:best",
+      fetch_format: "auto",
+      width: 800,
+      height: 1000,
+      crop: "fill",
+      gravity: "auto:faces",
+    }
+  );
+  return result.secure_url;
+};
+
 const checkAdminAuth = async (req, res, next) => {
   try {
     const adminId = req.session.adminId || req.cookies.adminId;
@@ -90,8 +111,12 @@ function extractPublicIdFromUrl(url) {
 
 // Add product form
 router.get("/add-product", checkAdminAuth, (req, res) => {
-  res.render("add_product");
+  res.render("Admin/add_product", {
+    activePage: "add-product", // ✅ pass this to highlight the correct link
+    title: "Add Product",      // optional page title
+  });
 });
+
 
 
 router.post(
@@ -254,7 +279,7 @@ router.get("/", async (req, res) => {
       cartCount = cart ? cart.items.reduce((total, item) => total + item.quantity, 0) : 0;
     }
 
-    res.render("allProduct", {
+    res.render("User/allProduct", {
       notification,
       products: products.map((p) => ({
         ...p,
@@ -270,7 +295,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Edit product form
 // GET route to display all products for editing
 router.get("/edit-product", checkAdminAuth, async (req, res) => {
   try {
@@ -278,7 +302,7 @@ router.get("/edit-product", checkAdminAuth, async (req, res) => {
       {},
       "name MRP price front_image category brand bestseller sizes description color categoryType"
     )
-      .populate("categoryType", "name _id") // populate category type name + id
+      .populate("categoryType", "name _id")
       .lean();
 
     const updatedProducts = products.map(product => ({
@@ -286,7 +310,11 @@ router.get("/edit-product", checkAdminAuth, async (req, res) => {
       front_image: product.front_image || null,
     }));
 
-    res.render("edit_product", { products: updatedProducts });
+    res.render("Admin/edit_product", {
+      products: updatedProducts,
+      activePage: "edit-product", // ✅ highlight correct sidebar link
+      title: "Edit Product",      // optional, for page <title> or heading
+    });
   } catch (error) {
     console.error("Error loading edit products:", error);
     res.status(500).send(`
@@ -297,6 +325,7 @@ router.get("/edit-product", checkAdminAuth, async (req, res) => {
     `);
   }
 });
+
 
 
 // Product details
@@ -319,7 +348,7 @@ router.get("/:id", async (req, res) => {
 
     const cartCount = req.session.cart ? req.session.cart.length : 0; // ✅ Add this line
 
-    res.render("product_detail", {
+    res.render("User/product_detail", {
       product,
       user,
       productId: product._id,
@@ -390,26 +419,7 @@ router.post(
       };
 
       // ✅ Helper: upload image to Cloudinary
-      const uploadImage = async (file, oldUrl = null) => {
-        if (oldUrl) {
-          const publicId = extractPublicIdFromUrl(oldUrl);
-          if (publicId) {
-            await cloudinary.uploader.destroy(publicId);
-          }
-        }
-        const result = await cloudinary.uploader.upload(
-          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
-          {
-            quality: "auto:best",
-            fetch_format: "auto",
-            width: 800,
-            height: 1000,
-            crop: "fill",
-            gravity: "auto:faces",
-          }
-        );
-        return result.secure_url;
-      };
+
 
       // ✅ Helper: get files by fieldname
       const getFilesByField = (fieldName) =>

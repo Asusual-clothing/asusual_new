@@ -267,12 +267,12 @@ async function createOrder(
 
 // Route to handle payment success
 router.get("/order-success/:orderId", (req, res) => {
-  res.render("order-success", { orderId: req.params.orderId });
+  res.render("User/order-success", { orderId: req.params.orderId });
 });
 
 // Route to handle payment failure
 router.get("/order-failed/:orderId", (req, res) => {
-  res.render("order-failed", { orderId: req.params.orderId });
+  res.render("User/order-failed", { orderId: req.params.orderId });
 });
 
 module.exports = router;

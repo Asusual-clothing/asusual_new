@@ -128,7 +128,7 @@ router.get("/", async (req, res) => {
 
     const cartCount = cart.items ? cart.items.length : 0;
 
-    res.render("cart", {
+    res.render("User/cart", {
       user,
       cart,
       cartCount,
@@ -529,7 +529,7 @@ router.get("/", async (req, res) => {
 
     const cartCount = cart.items ? cart.items.length : 0;
 
-    res.render("cart", {
+    res.render("User/cart", {
       user,
       cart,
       cartCount,

@@ -22,61 +22,8 @@
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col md:flex-row">
         <!-- Sidebar -->
-        <div class="bg-indigo-800 text-white w-full md:w-64 p-4">
-            <div class="mb-8 p-4 border-b border-indigo-700">
-                <h1 class="text-2xl font-bold">Admin Dashboard</h1>
-                <p class="text-indigo-300 text-sm">AsUsual</p>
-            </div>
 
-            <nav class="space-y-2">
-                <a href="/products/add-product"
-                    class="flex items-center space-x-2 p-3 rounded-lg bg-indigo-700 transition">
-                    <i class="fas fa-plus w-5"></i>
-                    <span>Add Product</span>
-                </a>
-                <a href="/products/edit-product"
-                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
-                    <i class="fas fa-edit w-5"></i>
-                    <span>Edit Quantity</span>
-                </a>
-                <a href="/posters/edit-poster"
-                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
-                    <i class="fas fa-image w-5"></i>
-                    <span>Edit Posters</span>
-                </a>
-                <a href="/coupons" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
-                    <i class="fas fa-tag w-5"></i>
-                    <span>Add Coupon</span>
-                </a>
-                <a href="/admin/contacts"
-                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
-                    <i class="fas fa-envelope w-5"></i>
-                    <span>Contact Requests</span>
-                </a>
-                <a href="/orders" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
-                    <i class="fas fa-shopping-bag w-5"></i>
-                    <span>Orders</span>
-                </a>
-                <a href="/admin/testimonials"
-                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
-                    <i class="fas fa-shopping-bag w-5"></i>
-                    <span>Testimonial</span>
-                </a>
-                <a href="/admin/delivery-cost"
-                    class="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-700 transition">
-                    <i class="fas fa-shopping-bag w-5"></i>
-                    <span>Delivery Charge</span>
-                </a>
-            </nav>
-
-            <div class="mt-auto pt-4 border-t border-indigo-700">
-                <button onclick="handleLogout()"
-                    class="flex items-center space-x-2 w-full p-3 rounded-lg hover:bg-indigo-700 transition text-red-300 hover:text-red-200">
-                    <i class="fas fa-sign-out-alt w-5"></i>
-                    <span>Logout</span>
-                </button>
-            </div>
-        </div>
+  <%- include('../partials/admin-navbar', { activePage: activePage }) %>
 
         <!-- Main Content -->
         <div class="flex-1 p-8">

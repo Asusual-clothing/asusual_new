@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
+  <meta name="keywords" content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
+  <title>Payment Failed</title>
+    <!-- Favicons -->
+  <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
+  <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
+  <link rel="manifest" href="/assests/site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
+    <h1 class="text-3xl md:text-4xl font-bold text-red-600 mb-4">❌ Payment Failed</h1>
+    <p class="text-gray-700 text-base md:text-lg mb-2">
+      Unfortunately, your payment could not be completed.
+    </p>
+    <p class="text-gray-600 text-sm md:text-base mb-6">
+      <strong>Order ID:</strong> <%= orderId %>
+    </p>
+    <a href="/cart" class="inline-block bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full text-sm md:text-base transition duration-300">
+      Try Again
+    </a>
+  </div>
+</body>
+</html>

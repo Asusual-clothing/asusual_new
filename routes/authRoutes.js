@@ -57,11 +57,11 @@ const otpCache = {};
 
 // Signup page
 router.get("/signup", (req, res) => {
-  res.render("signup2");
+  res.render("User/signup2");
 });
 
 router.get("/forget-password", (req, res) => {
-  res.render("forget_password", { message: "No user found with that email." });
+  res.render("User/forget_password", { message: "No user found with that email." });
 });
 
 // Generate OTP
@@ -200,7 +200,7 @@ router.get("/logout", (req, res) => {
 
 // Reset password
 router.get("/reset-password", (req, res) => {
-  res.render("forget_password", { message: null });
+  res.render("User/forget_password", { message: null });
 });
 
 router.get("/reset-password/:id", async (req, res) => {
@@ -209,7 +209,7 @@ router.get("/reset-password/:id", async (req, res) => {
     const user = await User.findById(id);
     if (!user) return res.status(400).send("Invalid or expired reset token");
 
-    res.render("reset_password", {
+    res.render("User/reset_password", {
       userId: user._id,
       token: user.resetToken,
     });
@@ -251,14 +251,14 @@ router.post("/reset-password-submit", async (req, res) => {
 router.post("/reset-password", async (req, res) => {
   const { email } = req.body;
   if (!email || email.trim() === "") {
-    return res.render("forget_password", {
+    return res.render("User/forget_password", {
       message: "Please enter your email address.",
     });
   }
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.render("forget_password", { message: "Email not registered" });
+    if (!user) return res.render("User/forget_password", { message: "Email not registered" });
 
     const resetToken = crypto.randomBytes(20).toString("hex");
     const resetTokenExpiration = Date.now() + 15 * 60 * 1000;
@@ -295,7 +295,7 @@ router.post("/reset-password", async (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log("Error:", error);
-        return res.render("forget_password", {
+        return res.render("User/forget_password", {
           message: "Failed to send email. Try again later.",
         });
       } else {
@@ -310,7 +310,7 @@ router.post("/reset-password", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    return res.render("forget_password", {
+    return res.render("User/forget_password", {
       message: "Something went wrong. Try again later.",
     });
   }

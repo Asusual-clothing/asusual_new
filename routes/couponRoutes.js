@@ -1,18 +1,18 @@
 const express = require("express");
 const router = express.Router();
-  const Product = require("../models/Product");
-  const User = require("../models/UserSchema");
-  const Cart = require("../models/CartSchema");
-  const Admin = require("../models/AdminSchema");
-  const CustomTshirt = require("../models/CustomTshirtSchema");
-  const Poster = require("../models/posterSchema");
-  const Order = require("../models/OrderSchema");
-  const Contact = require("../models/Contact");
-  const Notification = require("../models/Notification");
-  const Subscription = require("../models/subscription");
-  const Testimonial = require("../models/Testimonial");
-  const DeliveryCost = require("../models/Deliveryschema");
-  const Coupon = require("../models/CouponSchema")
+const Product = require("../models/Product");
+const User = require("../models/UserSchema");
+const Cart = require("../models/CartSchema");
+const Admin = require("../models/AdminSchema");
+const CustomTshirt = require("../models/CustomTshirtSchema");
+const Poster = require("../models/posterSchema");
+const Order = require("../models/OrderSchema");
+const Contact = require("../models/Contact");
+const Notification = require("../models/Notification");
+const Subscription = require("../models/subscription");
+const Testimonial = require("../models/Testimonial");
+const DeliveryCost = require("../models/Deliveryschema");
+const Coupon = require("../models/CouponSchema")
 // Middleware
 const checkAdminAuth = async (req, res, next) => {
   try {
@@ -37,13 +37,15 @@ const checkAdminAuth = async (req, res, next) => {
   }
 };
 
-// Get all coupons
+// ========================= COUPON LIST =========================
 router.get("/", checkAdminAuth, async (req, res) => {
   try {
     const coupons = await Coupon.find().sort({ createdAt: -1 });
-    res.render("coupon_form", {
+    res.render("Admin/coupon_form", {
       coupons,
       coupon: null,
+      activePage: "coupons", // ✅
+      title: "Manage Coupons",
     });
   } catch (err) {
     console.error("Error fetching coupons:", err);
@@ -51,15 +53,16 @@ router.get("/", checkAdminAuth, async (req, res) => {
   }
 });
 
-// Add new coupon form
+// ========================= ADD COUPON =========================
 router.get("/add", checkAdminAuth, (req, res) => {
-  res.render("coupon_form", {
+  res.render("Admin/coupon_form", {
     coupons: [],
     coupon: null,
+    activePage: "add-coupon", // ✅
+    title: "Add Coupon",
   });
 });
-
-// Edit coupon form
+// ========================= EDIT COUPON =========================
 router.get("/edit/:id", checkAdminAuth, async (req, res) => {
   try {
     const [coupons, coupon] = await Promise.all([
@@ -69,9 +72,11 @@ router.get("/edit/:id", checkAdminAuth, async (req, res) => {
 
     if (!coupon) return res.redirect("/coupons");
 
-    res.render("coupon_form", {
+    res.render("Admin/coupon_form", {
       coupons,
       coupon,
+      activePage: "edit-coupon", // ✅
+      title: "Edit Coupon",
     });
   } catch (err) {
     console.error("Error in edit route:", err);

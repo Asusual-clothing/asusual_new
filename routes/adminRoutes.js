@@ -4,25 +4,25 @@ const router = express.Router();
 const { uploads } = require("../config/cloudinary");
 const bcrypt = require("bcrypt");
 const checkAdminAuth = require("../middleware/checkAdminAuth");
-  const Product = require("../models/Product");
-  const User = require("../models/UserSchema");
-  const Cart = require("../models/CartSchema");
-  const Admin = require("../models/AdminSchema");
-  const CustomTshirt = require("../models/CustomTshirtSchema");
-  const Poster = require("../models/posterSchema");
-  const Order = require("../models/OrderSchema");
-  const Contact = require("../models/Contact");
-  const Notification = require("../models/Notification");
-  const Subscription = require("../models/subscription");
-  const Testimonial = require("../models/Testimonial");
-  const DeliveryCost = require("../models/Deliveryschema");
-  const Coupon = require("../models/CouponSchema");
-const Category= require("../models/Category")
+const Product = require("../models/Product");
+const User = require("../models/UserSchema");
+const Cart = require("../models/CartSchema");
+const Admin = require("../models/AdminSchema");
+const CustomTshirt = require("../models/CustomTshirtSchema");
+const Poster = require("../models/posterSchema");
+const Order = require("../models/OrderSchema");
+const Contact = require("../models/Contact");
+const Notification = require("../models/Notification");
+const Subscription = require("../models/subscription");
+const Testimonial = require("../models/Testimonial");
+const DeliveryCost = require("../models/Deliveryschema");
+const Coupon = require("../models/CouponSchema");
+const Category = require("../models/Category")
 
 
 // Admin Login Page
 router.get("/login", (req, res) => {
-  res.render("admin_login");
+  res.render("Admin/admin_login");
 });
 
 // Admin Signup
@@ -73,7 +73,7 @@ router.post("/logout", (req, res) => {
       return res.status(500).json({ message: "Failed to log out" });
     }
     res.clearCookie("adminId");
-    res.redirect("/");
+    res.redirect("/admin/login");
   });
 });
 
@@ -85,9 +85,11 @@ router.get("/dashboard", checkAdminAuth, async (req, res) => {
       Order.countDocuments(),
       Coupon.countDocuments({ active: true }),
     ]);
-    res.render("admin_option", {
+    res.render("Admin/admin_option", {
       counts: { totalProducts, totalOrders, activeCoupons },
+      activePage: "add-product", // ✅ define separately
     });
+    
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
     res.status(500).send("Server Error");
@@ -106,23 +108,45 @@ router.delete("/contacts/:id", async (req, res) => {
   }
 });
 
+
+// ========================= CONTACT REQUESTS =========================
 router.get("/contacts", checkAdminAuth, async (req, res) => {
   try {
     const contacts = await Contact.find().sort({ submittedAt: -1 });
-    res.render("contact_request", { contacts });
+    res.render("Admin/contact_request", {
+      contacts,
+      activePage: "contacts", // ✅
+      title: "Contact Requests",
+    });
   } catch (err) {
     console.error("Error fetching contacts:", err);
     res.status(500).send("Internal Server Error");
   }
 });
 
-router.get("/testimonials/:id?", async (req, res) => {
-  const testimonials = await Testimonial.find();
-  const testimonial = req.params.id
-    ? await Testimonial.findById(req.params.id)
-    : null;
-  res.render("testimonials", { testimonials, testimonial });
+
+// ========================= TESTIMONIALS =========================
+router.get("/testimonials/:id?", checkAdminAuth, async (req, res) => {
+  try {
+    const testimonials = await Testimonial.find();
+    const testimonial = req.params.id
+      ? await Testimonial.findById(req.params.id)
+      : null;
+
+    res.render("Admin/testimonials", {
+      testimonials,
+      testimonial,
+      activePage: "testimonials", // ✅
+      title: "Manage Testimonials",
+    });
+  } catch (err) {
+    console.error("Error fetching testimonials:", err);
+    res.status(500).send("Internal Server Error");
+  }
 });
+
+
+
 router.post("/testimonials", uploads.single("image"), async (req, res) => {
   try {
     let imageUrl = "";
@@ -184,16 +208,24 @@ router.get("/delivery-cost", checkAdminAuth, async (req, res) => {
   try {
     let delivery = await DeliveryCost.findOne();
     const categories = await Category.find().sort({ name: 1 });
+
     if (!delivery) {
       delivery = new DeliveryCost({ cost: 0 });
       await delivery.save();
     }
-    res.render("deliverycharge", { delivery, categories});
+
+    res.render("Admin/deliverycharge", {
+      delivery,
+      categories,
+      activePage: "delivery-cost", // ✅ added this line
+      title: "Delivery Charge",    // optional, for page title
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
   }
 });
+
 
 // Update delivery cost
 router.post("/delivery-cost", async (req, res) => {

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Offer = require("../models/OfferSchema");
 const Product = require("../models/Product");
-const Admin= require("../models/AdminSchema")
+const Admin = require("../models/AdminSchema")
 
 const checkAdminAuth = async (req, res, next) => {
   try {
@@ -27,7 +27,7 @@ const checkAdminAuth = async (req, res, next) => {
 };
 
 // 🟢 GET: Show Offer Creation Page + List All Offers
-router.get("/",async (req, res) => {
+router.get("/",checkAdminAuth, async (req, res) => {
   try {
     const products = await Product.find({}, "name price front_image");
     const offers = await Offer.find()
@@ -35,7 +35,12 @@ router.get("/",async (req, res) => {
       .populate("freeProductId", "name front_image")
       .sort({ createdAt: -1 });
 
-    res.render("createOffer", { products, offers });
+    res.render("Admin/createOffer", {
+      products,
+      offers,
+      activePage: "offers" // 👈 define this
+    });
+
   } catch (err) {
     console.error("Error loading offers page:", err);
     res.status(500).send("Server Error");
@@ -79,7 +84,7 @@ router.post("/", async (req, res) => {
 });
 
 // 🟡 GET: Edit Offer Page
-router.get("/edit/:id", async (req, res) => {
+router.get("/edit/:id",checkAdminAuth, async (req, res) => {
   try {
     const offer = await Offer.findById(req.params.id)
       .populate("productIds", "name price front_image")
@@ -94,7 +99,7 @@ router.get("/edit/:id", async (req, res) => {
       .sort({ createdAt: -1 });
 
     // Render same form but prefilled
-    res.render("edit-offer", { offer, products, offers });
+    res.render("Admin/edit-offer", { offer, products, offers,activePage: "offers" });
   } catch (err) {
     console.error("Error loading edit page:", err);
     res.status(500).send("Server Error");

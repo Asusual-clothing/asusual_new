@@ -1,0 +1,60 @@
+<nav class="As-navbar">
+  <div class="As-container">
+    <!-- Left Navigation Links -->
+    <ul class="As-nav-links">
+      <li><a href="/"><i class="fas fa-home"></i> <span>Home</span></a></li>
+      <li><a href="/about"><i class="fas fa-info-circle"></i> <span>About Us</span></a></li>
+      <li><a href="/Products"><i class="fas fa-box"></i> <span>All Products</span></a></li>
+      <li><a href="/orders/all-orders"><i class="fa fa-shirt"></i><span>Your Orders</span></a></li>
+      <li><a href="/contact"><i class="fas fa-phone"></i><span>Contact Us</span></a></li>
+    </ul>
+
+    <!-- Center Logo -->
+    <div class="As-logo">
+      <a href="/"><img src="/assests/horizontalLogo-removebg-preview.png" alt="Logo" /></a>
+    </div>
+
+    <!-- Right Side Buttons -->
+    <div class="AS-nav-btn">
+      <% if (user) { %>
+        <!-- Cart -->
+        <li>
+          <a href="/cart" class="cart-icon">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <% if (cartCount > 0) { %>
+              <span class="cart-count"><%= cartCount %></span>
+            <% } %>
+          </a>
+        </li>
+
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown">
+          <div class="profile-trigger">
+            <li><a href="#"><i class="fas fa-user-circle"></i><span>Profile</span></a></li>
+          </div>
+          <div class="profile-details">
+            <p><i class="fas fa-user"></i> Name: <%= user.name %></p>
+            <p><i class="fas fa-envelope"></i> Email: <%= user.email %></p>
+            <p><i class="fas fa-phone"></i> Phone: <%= user.phone || 'N/A' %></p>
+            <p><i class="fas fa-calendar"></i> Member Since: <%= user.createdAt ? new Date(user.createdAt).toDateString() : 'N/A' %></p>
+          </div>
+        </div>
+
+        <!-- Logout -->
+        <li><a href="/logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+
+      <% } else { %>
+        <!-- Sign-Up -->
+        <li><a href="/signup"><i class="fas fa-user-plus"></i> <span>Sign-Up</span></a></li>
+      <% } %>
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div class="As-hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</nav>

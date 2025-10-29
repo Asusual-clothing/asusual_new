@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add-Testimonials</title>
+
+  <!-- Favicons -->
+  <link rel="icon" href="/assests/favicon.ico" type="image/x-icon" sizes="any">
+  <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
+  <link rel="manifest" href="/assests/site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description"
+    content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
+  <meta name="keywords"
+    content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
+
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="min-h-screen flex flex-col md:flex-row">
+
+    <%- include('../partials/admin-navbar', { activePage: activePage }) %>
+
+      <div class="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-md">
+        <h1 class="text-2xl font-bold mb-4">Manage Testimonials</h1>
+
+        <!-- List of All Testimonials -->
+        <h2 class="text-xl font-semibold mb-3">All Testimonials</h2>
+        <ul class="space-y-4 mb-6">
+          <% testimonials.forEach(t=> { %>
+            <li class="flex items-start gap-4 bg-gray-50 p-4 rounded-md shadow-sm">
+              <img src="<%= t.imageUrl %>" alt="image"
+                class="w-12 h-12 rounded-full object-cover border border-gray-300" />
+              <div class="flex-1">
+                <strong class="block text-lg">
+                  <%= t.name %>
+                </strong>
+                <span class="text-sm text-gray-600">
+                  <%= t.role %>
+                </span>
+                <p class="mt-1 text-gray-800 italic">"<%= t.quote %>"</p>
+                <div class="mt-2 space-x-2">
+                  <a href="/admin/testimonials/<%= t._id %>" class="text-blue-600 hover:underline">Edit</a>
+                  |
+                  <form method="POST" action="/admin/testimonials/<%= t._id %>/delete" class="inline">
+                    <button type="submit" onclick="return confirm('Delete this testimonial?')"
+                      class="text-red-500 hover:underline">Delete</button>
+                  </form>
+                </div>
+              </div>
+            </li>
+            <% }) %>
+        </ul>
+
+        <!-- Add/Edit Testimonial Form -->
+        <h2 class="text-xl font-semibold mb-3">
+          <%= testimonial ? 'Edit' : 'Add' %> Testimonial
+        </h2>
+        <form method="POST" action="/admin/testimonials/<%= testimonial ? testimonial._id : '' %>"
+          enctype="multipart/form-data" class="space-y-4">
+          <input type="text" name="name" placeholder="Name" value="<%= testimonial?.name || '' %>" required
+            class="w-full p-2 border border-gray-300 rounded-md" />
+          <input type="text" name="role" placeholder="Role" value="<%= testimonial?.role || '' %>" required
+            class="w-full p-2 border border-gray-300 rounded-md" />
+          <input type="file" name="image" accept="image/*" <%=testimonial ? '' : 'required' %>
+          class="w-full p-2 border border-gray-300 rounded-md" />
+          <textarea name="quote" placeholder="Testimonial" required
+            class="w-full p-2 border border-gray-300 rounded-md resize-none h-28"><%= testimonial?.quote || '' %></textarea>
+          <button type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-all duration-200">
+            <%= testimonial ? 'Update' : 'Add' %> Testimonial
+          </button>
+        </form>
+      </div>
+
+
+
+</body>
+
+</html>

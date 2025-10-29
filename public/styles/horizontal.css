@@ -218,6 +218,8 @@
     filter: drop-shadow(0 0 6px #903b3b);
 }
 
+
+
 /* --- Responsive --- */
 @media (max-width: 1024px) {
     .featured-card-wrap {
@@ -229,7 +231,7 @@
     .featured-card-wrap {
         flex: 0 0 42%;
         width: 250px;
-        height: 400px;
+        height: 480px;
     }
 
     .featured-scroll-container {
@@ -244,11 +246,11 @@
     .featured-front img,
     .featured-back img {
         width: 100%;
-        margin-bottom: -10px;
+        margin-bottom: -62px;
     }
 
     .featured-contentBox {
-        margin-top: -3px;
+        margin-top: 65px;
 
         padding-left: 4px;
         padding-right: 5px;
@@ -264,27 +266,31 @@
     }
 
     .featured-card-wrap::after {
-        font-size: 3rem;
-        left: 0px;
+        font-size: 3.75rem;
+        left: 10px;
+        margin-bottom: 18px;
     }
 
     .featured-buy {
         top: 0;
         opacity: 1;
+        margin-top: 4px ;
     }
 }
 
 @media (max-width: 480px) {
-        .featured-card-wrap {
+    .featured-card-wrap {
         flex: 0 0 42%;
         width: 250px;
-        height: 440px;
+        height: 480px;
     }
+
     .featured-card-wrap {
         flex: 0 0 80%;
     }
+
     .featured-contentBox {
-        margin-top: 50px;
+        margin-top: 94px;
 
         padding-left: 4px;
         padding-right: 5px;
@@ -304,19 +310,25 @@
         left: 21px;
     }
 
+    .featured-front img,
+    .featured-back img {
+        width: 100%;
+        margin-bottom: -90px;
+    }
+
 }
 
 
-@media (max-width: 390px) {
+@media (max-width: 420px) {
     .featured-card-wrap {
         flex: 0 0 80%;
+        height: 465px;
     }
-    .featured-contentBox {
-        margin-top: 19px;
 
-        padding-left: 11px;
-        padding-right: 17px;
-    }
+    .featured-contentBox {
+        margin-top: 60px;
+        padding-left: 6px;
+        padding-right: 9px;
     }
 
     .featured-contentBox h3 {
@@ -331,19 +343,28 @@
     .featured-card-wrap::after {
         font-size: 3rem;
         left: 21px;
+        margin-bottom: 24px;
     }
 
 }
 
-@media (max-width: 320px) {
+@media (max-width: 370px) {
     .featured-card-wrap {
         flex: 0 0 80%;
+        height: 399px
     }
+
     .featured-contentBox {
         margin-top: -3px;
 
         padding-left: 4px;
         padding-right: 5px;
+    }
+
+    .featured-front img,
+    .featured-back img {
+        width: 100%;
+        margin-bottom: -12px;
     }
 
     .featured-contentBox h3 {

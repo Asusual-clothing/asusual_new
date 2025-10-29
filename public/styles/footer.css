@@ -286,7 +286,12 @@ body {
 
 /* this is reponsive css for the footer */
 /* Responsive CSS for Mobile and Tablet */
+@media (max-width: 1300px) {
+.footer__col {
+        margin-right: 138px;
+}
 
+}
 @media (max-width: 768px) {
 
   /* General adjustments */

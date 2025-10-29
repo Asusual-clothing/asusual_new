@@ -219,76 +219,6 @@ containers.forEach(container => {
   });
 });
 
-  // Script for horizontal scrolling
-  // --- Improved GSAP horizontal scroll with smooth touch/swipe ---
-  gsap.registerPlugin(ScrollTrigger);
-
-  const scroller = document.querySelector(".scroller");
-  const page4 = document.querySelector(".page4");
-
-  // GSAP horizontal scroll (desktop)
-  gsap.to(scroller, {
-    x: () => -(scroller.scrollWidth - document.documentElement.clientWidth) + "px",
-    ease: "none",
-    scrollTrigger: {
-      trigger: page4,
-      start: "top top",
-      end: () => "+=" + (scroller.scrollWidth - document.documentElement.clientWidth),
-      scrub: 1,
-      pin: true,
-      invalidateOnRefresh: true,
-    },
-  });
-
-  // --- Touch / swipe support for mobile ---
-  let startX = 0;
-  let scrollX = 0;
-  let currentX = 0;
-  let isTouching = false;
-  let velocity = 0;
-  let momentumID = null;
-
-  function updateTransform(x) {
-    gsap.to(scroller, { x: -x, duration: 0.3, ease: "power3.out" });
-  }
-
-  page4.addEventListener("touchstart", e => {
-    isTouching = true;
-    startX = e.touches[0].pageX;
-    scrollX = -gsap.getProperty(scroller, "x");
-    velocity = 0;
-    cancelAnimationFrame(momentumID);
-  });
-
-  page4.addEventListener("touchmove", e => {
-    if (!isTouching) return;
-    const x = e.touches[0].pageX;
-    const walk = (startX - x) * 1.3;
-    const newPos = Math.min(
-      Math.max(0, scrollX + walk),
-      scroller.scrollWidth - window.innerWidth
-    );
-    updateTransform(newPos);
-    velocity = newPos - currentX;
-    currentX = newPos;
-  });
-
-  page4.addEventListener("touchend", () => {
-    isTouching = false;
-    function momentum() {
-      currentX += velocity;
-      velocity *= 0.93; // friction
-      const bounded = Math.min(
-        Math.max(0, currentX),
-        scroller.scrollWidth - window.innerWidth
-      );
-      updateTransform(bounded);
-      if (Math.abs(velocity) > 0.5) {
-        momentumID = requestAnimationFrame(momentum);
-      }
-    }
-    momentum();
-  });
 
 
   // Script for notification text
@@ -393,6 +323,7 @@ containers.forEach(container => {
             disableHoverEffects();
         });
     });
+    
 
 
 

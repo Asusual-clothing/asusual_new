@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.preventDefault();
       disableHoverEffects();
-      featuredContainer.scrollLeft += e.deltaY * 1.5;
+      featuredContainer.scrollLeft += e.deltaY * 5;
 
       // At end → allow page scroll down
       if (featuredContainer.scrollLeft + featuredContainer.clientWidth >= featuredContainer.scrollWidth - 1) {

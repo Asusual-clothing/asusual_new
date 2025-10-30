@@ -6,16 +6,23 @@
 
 /* --- Scrollable container --- */
 .featured-scroll-container {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 1.5rem;
-    padding: 0 3rem;
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth; /* remove smooth here */
+  gap: 1.5rem;
+  padding: 0 3rem;
+  scrollbar-width: none;
 }
+  scroll-snap-type: x proximity; /* gentle snapping */
+  scrollbar-width: none; /* hide scrollbar in Firefox */
+
+.featured-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+
 
 .featured-scroll-container::-webkit-scrollbar {
     display: none;

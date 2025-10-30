@@ -15,8 +15,6 @@
   padding: 0 3rem;
   scrollbar-width: none;
 }
-  scroll-snap-type: x proximity; /* gentle snapping */
-  scrollbar-width: none; /* hide scrollbar in Firefox */
 
 .featured-scroll-container::-webkit-scrollbar {
   display: none;

@@ -79,7 +79,9 @@ body {
   transition: transform 0.3s ease-in-out;
   /* margin-bottom: 2px; */
 }
-
+    .card.flipped .imgBox {
+      transform: rotateY(180deg);
+    }
 .card:hover {
   transform: translateY(-8px);
 }

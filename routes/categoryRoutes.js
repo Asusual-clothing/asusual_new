@@ -57,6 +57,12 @@ router.get('/all', async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+
+router.get("/", async (req, res) => {
+  const categories = await Category.find(); // assuming MongoDB
+  res.render("User/categories", { categories });
+});
+
 router.post("/add-category", uploads.single("image"), async (req, res) => {
   try {
     const { name, description } = req.body;

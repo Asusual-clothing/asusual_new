@@ -19,6 +19,7 @@ const Subscription = require("../models/subscription");
 const Testimonial = require("../models/Testimonial");
 const DeliveryCost = require("../models/Deliveryschema");
 const Coupon = require("../models/CouponSchema");
+const Category= require("../models/Category")
 // Middleware
 
 // Use memory storage (recommended for Cloudinary)
@@ -251,34 +252,43 @@ router.post(
 
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: "desc" }).lean();
-    const notification = (await Notification.findOne({})) || {
-      notification: "",
-    };
+    const products = await Product.find()
+      .sort({ createdAt: "desc" })
+      .populate("categoryType", "name") // 🟢 populate category type name
+      .lean();
+
+    const notification = (await Notification.findOne({})) || { notification: "" };
+
     const availableColors = [
       ...new Set(
         products
           .flatMap((p) =>
-            Array.isArray(p.color) ? p.color.map((c) => c.toLowerCase()) :
-              typeof p.color === "string" ? [p.color.toLowerCase()] :
-                []
+            Array.isArray(p.color)
+              ? p.color.map((c) => c.toLowerCase())
+              : typeof p.color === "string"
+                ? [p.color.toLowerCase()]
+                : []
           )
       ),
     ];
 
+    // 🟢 Get distinct category types for filter list
+    const categoryTypes = [
+      ...new Set(products.map((p) => p.categoryType?.name).filter(Boolean)),
+    ];
 
-    // Get user data if logged in
     const userId = req.session.userId || req.cookies.userId;
     let user = null;
     let cartCount = 0;
 
     if (userId) {
       user = await User.findById(userId, "name _id email");
-      // Get cart count if needed
       const cart = await Cart.findOne({ userId });
-      cartCount = cart ? cart.items.reduce((total, item) => total + item.quantity, 0) : 0;
+      cartCount = cart
+        ? cart.items.reduce((total, item) => total + item.quantity, 0)
+        : 0;
     }
-
+    console.log(categoryTypes)
     res.render("User/allProduct", {
       notification,
       products: products.map((p) => ({
@@ -286,8 +296,9 @@ router.get("/", async (req, res) => {
         id: p._id.toString(),
       })),
       availableColors,
-      user, // Pass user to template
-      cartCount // Pass cart count if needed
+      categoryTypes, // 🟢 pass to frontend
+      user,
+      cartCount,
     });
   } catch (error) {
     console.error("Error fetching products:", error);

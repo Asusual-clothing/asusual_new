@@ -230,16 +230,17 @@ function initializeAnimations() {
   });
 }
 
-
 document.addEventListener("DOMContentLoaded", function () {
   const featuredContainer = document.querySelector('.featured-scroll-container');
   let isScrolling = false;
   let scrollTimer;
   let isDown = false;
-  let startX;
-  let scrollLeft;
+  let startX, startY;
+  let scrollLeft, scrollTop;
+  let verticalDragActive = false; // Detect vertical-based scroll
+  const verticalThreshold = 30; // Min vertical distance to trigger horizontal
+  const horizontalScrollSpeed = 2;
 
-  // Function to disable hover effects during scroll
   function disableHoverEffects() {
     featuredContainer.classList.add('scrolling');
     clearTimeout(scrollTimer);
@@ -248,16 +249,25 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 150);
   }
 
-  // Desktop: Horizontal scroll with mouse wheel
+  // --- Mouse Wheel (Desktop Horizontal Scroll) ---
   featuredContainer.addEventListener('wheel', function (e) {
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.preventDefault();
       disableHoverEffects();
       featuredContainer.scrollLeft += e.deltaY * 1.5;
+
+      // At end → allow page scroll down
+      if (featuredContainer.scrollLeft + featuredContainer.clientWidth >= featuredContainer.scrollWidth - 1) {
+        window.scrollBy(0, e.deltaY);
+      }
+      // At start → allow page scroll up
+      if (featuredContainer.scrollLeft <= 0 && e.deltaY < 0) {
+        window.scrollBy(0, e.deltaY);
+      }
     }
   }, { passive: false });
 
-  // Mouse down for drag scrolling
+  // --- Mouse Drag (Desktop) ---
   featuredContainer.addEventListener('mousedown', (e) => {
     isDown = true;
     featuredContainer.classList.add('scrolling');
@@ -283,36 +293,76 @@ document.addEventListener("DOMContentLoaded", function () {
     featuredContainer.scrollLeft = scrollLeft - walk;
   });
 
-  // Mobile: Touch/swipe handling
+  // --- Touch (Mobile & Touchscreen) ---
   featuredContainer.addEventListener('touchstart', (e) => {
     isDown = true;
+    verticalDragActive = false;
     featuredContainer.classList.add('scrolling');
     startX = e.touches[0].pageX - featuredContainer.offsetLeft;
+    startY = e.touches[0].pageY;
     scrollLeft = featuredContainer.scrollLeft;
+    scrollTop = window.scrollY;
   });
 
   featuredContainer.addEventListener('touchmove', (e) => {
     if (!isDown) return;
-    e.preventDefault();
-    disableHoverEffects();
+
     const x = e.touches[0].pageX - featuredContainer.offsetLeft;
-    const walk = (x - startX) * 2;
-    featuredContainer.scrollLeft = scrollLeft - walk;
+    const y = e.touches[0].pageY;
+    const xDiff = Math.abs(x - startX);
+    const yDiff = Math.abs(y - startY);
+
+    // Detect vertical-based movement (up/down)
+    if (!verticalDragActive && yDiff > verticalThreshold) {
+      verticalDragActive = true;
+    }
+
+    if (verticalDragActive) {
+      e.preventDefault();
+      disableHoverEffects();
+      const walk = (y - startY) * horizontalScrollSpeed;
+      featuredContainer.scrollLeft = scrollLeft - walk;
+
+      // --- Down → Up (scroll right) ---
+      if (y < startY) {
+        if (featuredContainer.scrollLeft + featuredContainer.clientWidth >= featuredContainer.scrollWidth - 1) {
+          window.scrollTo({
+            top: scrollTop + yDiff,
+            behavior: 'smooth'
+          });
+        }
+      }
+
+      // --- Up → Down (scroll left) ---
+      if (y > startY) {
+        if (featuredContainer.scrollLeft <= 0) {
+          window.scrollTo({
+            top: scrollTop - yDiff,
+            behavior: 'smooth'
+          });
+        }
+      }
+    } else if (xDiff > yDiff) {
+      // Normal horizontal swipe
+      e.preventDefault();
+      disableHoverEffects();
+      const walk = (x - startX) * horizontalScrollSpeed;
+      featuredContainer.scrollLeft = scrollLeft - walk;
+    }
   });
 
   featuredContainer.addEventListener('touchend', () => {
     isDown = false;
+    verticalDragActive = false;
     featuredContainer.classList.remove('scrolling');
   });
 
-  // Card click behavior
+  // --- Card Click Behavior ---
   document.querySelectorAll('.featured-card-wrap').forEach(card => {
     card.addEventListener('click', function (e) {
-      // Don't navigate if clicking on the Buy Now button or if we were scrolling
       if (e.target.classList.contains('featured-buy') || featuredContainer.classList.contains('scrolling')) {
         return;
       }
-
       const url = this.getAttribute('data-url');
       if (url) {
         window.location.href = url;
@@ -320,11 +370,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Prevent card hover effects during any scroll activity
+  // --- Disable Hover Effects During Scroll ---
   featuredContainer.addEventListener('scroll', () => {
     disableHoverEffects();
   });
 });
+
+
 
 const swiper = new Swiper('.mySwiper', {
   effect: "coverflow",

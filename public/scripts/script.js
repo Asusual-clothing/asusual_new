@@ -76,7 +76,7 @@ function initialize3DCards() {
       const rotateY = ((x / width) - 0.5) * 30;
       const rotateX = ((y / height) - 0.5) * -20;
       card.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
-      cardBg.style.transform = `translateX(${(x / width) * -40}px) translateY(${(y / height) * -40}px)`;
+      cardBg.style.backgroundPosition = `${50 - (x / width) * 10}% ${50 - (y / height) * 10}%`;
     });
 
     cardWrap.addEventListener('mouseleave', () => {

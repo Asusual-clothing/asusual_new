@@ -41,7 +41,7 @@ const uploadImage = async (file, oldUrl = null) => {
     {
       quality: "auto:best",
       fetch_format: "auto",
-      width: 800,
+      width: 1000,
       height: 1000,
       crop: "fill",
       gravity: "auto:faces",

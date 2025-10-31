@@ -2,7 +2,8 @@
   --background-dark: #121212;
   --background-light: #1a1a1a;
   --text-light: #ffffff;
-  --primary-color: #860505; /* Changed from orange to red */
+  --primary-color: #860505;
+  /* Changed from orange to red */
 }
 
 * {
@@ -10,6 +11,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 .custom-accent {
   accent-color: #860505;
 }
@@ -23,18 +25,22 @@ body {
   color: var(--text-light);
   overflow-x: hidden;
 }
+
 .price-row {
   display: flex;
   align-items: center;
-  gap: 8px; /* space between MRP and price */
+  gap: 8px;
+  /* space between MRP and price */
 }
 
 .MRP {
   text-decoration: line-through;
   color: #aaa;
   font-size: 1rem;
-  margin: 0; /* remove extra space */
+  margin: 0;
+  /* remove extra space */
 }
+
 /* Page 1 */
 .page1 {
   background-color: var(--background-light);
@@ -59,8 +65,10 @@ body {
 #page2 {
   overflow: hidden;
   display: flex;
+  margin-top: -100px;
   justify-content: center;
   flex-wrap: wrap;
+  padding: 78px;
   gap: 3rem;
   align-items: center;
   background: var(--background-dark);
@@ -79,9 +87,11 @@ body {
   transition: transform 0.3s ease-in-out;
   /* margin-bottom: 2px; */
 }
-    .card.flipped .imgBox {
-      transform: rotateY(180deg);
-    }
+
+.card.flipped .imgBox {
+  transform: rotateY(180deg);
+}
+
 .card:hover {
   transform: translateY(-8px);
 }
@@ -124,6 +134,7 @@ body {
   /* padding-top: 20px; */
   z-index: 1;
 }
+
 .card:hover .imgBox {
   transform: rotateY(180deg);
 }
@@ -193,13 +204,16 @@ body {
   justify-content: center;
   align-items: center;
 }
+
 .imgBox {
   width: 100%;
-  height: 300px; /* Adjust based on your image size */
+  height: 300px;
+  /* Adjust based on your image size */
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.6s;
 }
+
 .card:hover .front {
   visibility: hidden;
   opacity: 0;
@@ -220,7 +234,7 @@ body {
 .front img,
 .back img {
   width: 100%;
-    height: 100%;
+  height: 100%;
 }
 
 .back {
@@ -232,40 +246,53 @@ body {
   #page2 {
     height: 73vh;
   }
+
   #page1 {
     height: 100vh;
   }
+
   .card {
     flex: 1;
   }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
+
   /* Styles for medium devices */
   #page1 {
     height: 50vh;
   }
+
   .move_image {
     height: 260px;
     left: 40%;
   }
 }
-
+@media only screen and (max-width:800px){
+  #page2 {
+    margin-top: -96px;
+    margin-bottom: -33px;
+    padding: 60px;
+  }
+}
 @media only screen and (max-width: 600px) {
   #page1 {
     height: 20vh;
   }
+
   .move_image {
     height: 110px;
     /* left: 40%; */
     top: 24%;
   }
 
-  #page2 {  
+  #page2 {
     justify-content: center;
     align-items: center;
     gap: 2rem;
-    padding:0rem 1rem 1rem 1rem;
+    padding: 0rem 1rem 1rem 1rem;
+    margin-top: -136px;
+    margin-bottom: -65px;
   }
 
   .card {
@@ -279,7 +306,7 @@ body {
 
   .card img {
     width: 100%;
-    object-fit: fill;  
+    object-fit: fill;
     margin-bottom: 48px;
   }
 
@@ -290,7 +317,7 @@ body {
 
   .card .contentBox h3 {
     font-size: 13px;
-  margin-top: 20px;
+    margin-top: 20px;
   }
 
   .card .contentBox .price {
@@ -303,13 +330,14 @@ body {
 
   .card .contentBox {
     margin-top: -36px;
-    padding: 0  ;
+    padding: 0;
   }
 
   .card::after {
     font-size: 3rem;
     left: 11px;
   }
+
   .AS-nav-btn li a {
     padding: 0 15px;
   }
@@ -356,7 +384,8 @@ body {
 
 /* Style the dropdown */
 .profile-details {
-  display: none; /* Initially hidden */
+  display: none;
+  /* Initially hidden */
   position: absolute;
   top: 100%;
   left: 0;
@@ -383,23 +412,38 @@ body {
     left: -100%;
     font-size: smaller;
   }
+
   .profile-details i {
     display: none;
   }
-  .blank-notification{
+
+  .blank-notification {
     display: none;
   }
-  .MRP{
+
+  .MRP {
     display: none;
   }
 }
+
 /* Add this to your existing CSS */
 /* Blinking red text effect */
 /* Blinking red effect when Sign Up is disabled */
 @keyframes blinkRed {
-  0% { color: red; opacity: 1; }
-  50% { color: #ff4d4d; opacity: 0.6; }
-  100% { color: red; opacity: 1; }
+  0% {
+    color: red;
+    opacity: 1;
+  }
+
+  50% {
+    color: #ff4d4d;
+    opacity: 0.6;
+  }
+
+  100% {
+    color: red;
+    opacity: 1;
+  }
 }
 
 #signUp:disabled {

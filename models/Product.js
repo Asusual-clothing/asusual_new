@@ -9,7 +9,8 @@ const productSchema = new mongoose.Schema({
   colorImages: [
     {
       color: { type: String, required: true }, // e.g., "Red"
-      images: [{ type: String, required: true }] // e.g., ["img1.jpg", "img2.jpg"]
+      images: [{ type: String, required: true }], // e.g., ["img1.jpg", "img2.jpg"]
+      colorCode:{type:String, required:true}
     }
   ],
 

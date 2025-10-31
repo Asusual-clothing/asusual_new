@@ -672,13 +672,13 @@ router.post("/remove-item", async (req, res) => {
     if (!cart) {
       return res.status(404).json({ success: false, message: "Cart not found" });
     }
-
+console.log("no dikkt")
     // 🔒 Prevent item removal if couponLocked
-    if (cart.couponLocked) {
+    if (cart.couponLocked && cart.freeItem) {
       const itemToRemove = cart.items.find(
         (i) => i.product.toString() === productId && i.size === size
       );
-
+      console.log(itemToRemove)
       if (itemToRemove && !itemToRemove.isFree) {
         return res.status(400).json({
           success: false,
@@ -686,7 +686,7 @@ router.post("/remove-item", async (req, res) => {
         });
       }
     }
-
+    console.log("dikkt3")
     cart.items = cart.items.filter(
       (item) => !(item.product.toString() === productId && item.size === size)
     );

@@ -2,144 +2,208 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
-    content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
+    content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!" />
   <meta name="keywords"
-    content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
-  <title>
-    <%= product.name %> - Product Page
-  </title>
+    content="asusual, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india" />
+  <title><%= product.name %> - Product Page</title>
+
   <!-- Favicons -->
-  <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
-  <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
-  <link rel="manifest" href="/assests/site.webmanifest">
-  <meta name="theme-color" content="#ffffff">
-  <link rel="stylesheet" href="/styles/product_detail.css">
+  <link rel="icon" href="/assests/favicon.png" type="image/x-icon" />
+  <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png" />
+  <link rel="manifest" href="/assests/site.webmanifest" />
+  <meta name="theme-color" content="#ffffff" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/product_detail.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link rel="stylesheet" href="/styles/styles.css">
-  <link rel="stylesheet" href="/styles/footer.css">
-  <link rel="stylesheet" href="/styles/navbar.css">
+  <link rel="stylesheet" href="/styles/styles.css" />
+  <link rel="stylesheet" href="/styles/footer.css" />
+  <link rel="stylesheet" href="/styles/navbar.css" />
+
+  <style>
+    .As-navbar {
+      margin-bottom: 81px;
+    }
+
+    .footer__columns {
+      margin-top: 18px;
+    }
+
+    .active-thumb {
+      border: 2px solid black;
+    }
+
+    .color-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .color-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #ccc;
+      transition: transform 0.2s, border-color 0.3s, box-shadow 0.3s;
+      background-color: var(--circle-color, #ccc);
+    }
+
+    .color-circle:hover {
+      transform: scale(1.1);
+    }
+
+    .color-circle.selected {
+      border-color: black;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Common color fallbacks */
+    .color-circle[data-color*="lavender"],
+    .color-circle[data-color*="lavendar"] {
+      background-color: lavender;
+    }
+
+    .color-circle[data-color*="grey"],
+    .color-circle[data-color*="gray"] {
+      background-color: gray;
+    }
+
+    .color-circle[data-color*="cream"],
+    .color-circle[data-color*="offwhite"] {
+      background-color: #f5f5dc;
+    }
+
+    .color-circle[data-color*="maroon"] {
+      background-color: #800000;
+    }
+
+    .color-circle[data-color*="wine"] {
+      background-color: #722f37;
+    }
+
+    .color-circle[data-color*="beige"] {
+      background-color: #f5f5dc;
+    }
+
+    .color-circle[data-color*="peach"] {
+      background-color: #ffe5b4;
+    }
+
+    .color-circle[data-color*="sky"] {
+      background-color: #87ceeb;
+    }
+
+    .color-circle[data-color*="olive"] {
+      background-color: #808000;
+    }
+
+    .color-circle[data-color*="navy"] {
+      background-color: #000080;
+    }
+
+    .color-circle[data-color*="mustard"] {
+      background-color: #ffdb58;
+    }
+
+    .color-circle[data-color*="mint"] {
+      background-color: #98ff98;
+    }
+
+    .image-gallery {
+      max-width: 100%;
+    }
+
+    .display_image {
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .change_image {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 10px;
+    }
+
+    .change_image img {
+      flex: 0 0 auto;
+      border: 1px solid #ddd;
+      transition: border 0.3s;
+      max-width: 100px;
+      height: auto;
+      cursor: pointer;
+    }
+
+    .change_image img:hover {
+      border: 1px solid #999;
+    }
+
+    .change_image::-webkit-scrollbar {
+      height: 5px;
+    }
+
+    .change_image::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    .change_image::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+
+    .change_image::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
 </head>
-<style>
-  .As-navbar {
-    margin-bottom: 81px;
-  }
-
-  .footer__columns {
-    margin-top: 18px;
-
-  }
-  .active-thumb {
-    border: 2px solid black;
-  }
-
-</style>
 
 <body>
-  <!-- Page Loader -->
+  <!-- Loader -->
   <div id="page-loader" class="page-loader">
     <h1 class="slide-in">AsUsual</h1>
     <div class="spinner"></div>
   </div>
+
   <div class="notification-bar">
-    <span class="notification-text"> </span>
+    <span class="notification-text"></span>
   </div>
 
-  <%- include('../partials/navbar', { user: user, cartCount: cartCount }) %>
+  <%- include('../partials/navbar', { user, cartCount }) %>
+
   <div class="product_details_container">
-    <!-- Left Section: Scrollable Image Gallery -->
     <div class="image-gallery">
       <div class="display_image">
-        <% if (product.images && product.images.length> 0) { %>
-          <img id="mainImage" src="<%= product.images[0] %>" alt="<%= product.name %>" style="max-width: 100%;">
-          <% } else { %>
-            <p>No images available</p>
-            <% } %>
+        <% if (product.images && product.images.length > 0) { %>
+          <img id="mainImage" src="<%= product.images[0] %>" alt="<%= product.name %>" style="max-width: 100%;" />
+        <% } else { %>
+          <p>No images available</p>
+        <% } %>
       </div>
 
-      <% if (product.images && product.images.length> 1) { %>
+      <% if (product.images && product.images.length > 1) { %>
         <div class="change_image">
-          <% product.images.forEach((img, i)=> { %>
-            <img src="<%= img %>" alt="<%= product.name %>" class="thumb-img <%= i === 0 ? 'active-thumb' : '' %>"
-              data-index="<%= i %>" style="max-width: 100px; height: auto; cursor: pointer; margin-right: 10px;">
-            <% }) %>
+          <% product.images.forEach((img, i) => { %>
+            <img src="<%= img %>" alt="<%= product.name %>"
+              class="thumb-img <%= i === 0 ? 'active-thumb' : '' %>" data-index="<%= i %>" />
+          <% }) %>
         </div>
-        <% } %>
-
+      <% } %>
     </div>
 
-    <style>
-      .image-gallery {
-        max-width: 100%;
-      }
-
-      .display_image {
-        margin-bottom: 15px;
-      }
-
-      .change_image {
-        display: flex;
-        overflow-x: auto;
-        gap: 10px;
-        padding-bottom: 10px;
-        /* Space for scrollbar */
-      }
-
-      .change_image img {
-        flex: 0 0 auto;
-        border: 1px solid #ddd;
-        transition: border 0.3s;
-      }
-
-      .change_image img:hover {
-        border: 1px solid #999;
-      }
-
-      /* Style the scrollbar (optional) */
-      .change_image::-webkit-scrollbar {
-        height: 5px;
-      }
-
-      .change_image::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-
-      .change_image::-webkit-scrollbar-thumb {
-        background: #888;
-      }
-
-      .change_image::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
-    </style>
-
-    <script>
-      // Optional: Add click handler to change main image when thumbnails are clicked
-      document.querySelectorAll('.change_image img').forEach(thumb => {
-        thumb.addEventListener('click', function () {
-          const mainImage = document.querySelector('.display_image img');
-          mainImage.src = this.src;
-        });
-      });
-    </script>
-
     <div class="product-details">
-      <h1>
-        <%= product.name %>
-      </h1>
-      <p class="MRP2">₹<%= product.MRP %>
-      </p>
-      <p class="price">₹<%= product.price %>
-      </p>
-      <hr>
+      <h1><%= product.name %></h1>
+      <p class="MRP2">₹<%= product.MRP %></p>
+      <p class="price">₹<%= product.price %></p>
+      <hr />
 
       <h2>Category:</h2>
-      <p>
-        <%= product.category %>
-      </p>
+      <p><%= product.category %></p>
+      <hr />
 
       <!-- Size Chart -->
       <details>
@@ -147,438 +211,233 @@
         <% if (product.category && product.category.toLowerCase().includes('oversize')) { %>
           <table class="size-chart">
             <thead>
-              <tr>
-                <th>Size</th>
-                <th>Chest</th>
-                <th>Shoulder</th>
-                <th>Length</th>
-              </tr>
+              <tr><th>Size</th><th>Chest</th><th>Shoulder</th><th>Length</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>S</td>
-                <td>44"</td>
-                <td>21"</td>
-                <td>29"</td>
-              </tr>
-              <tr>
-                <td>M</td>
-                <td>46"</td>
-                <td>22"</td>
-                <td>29.5"</td>
-              </tr>
-              <tr>
-                <td>L</td>
-                <td>48"</td>
-                <td>23"</td>
-                <td>30"</td>
-              </tr>
-              <tr>
-                <td>XL</td>
-                <td>50"</td>
-                <td>24"</td>
-                <td>30.5"</td>
-              </tr>
+              <tr><td>S</td><td>44"</td><td>21"</td><td>29"</td></tr>
+              <tr><td>M</td><td>46"</td><td>22"</td><td>29.5"</td></tr>
+              <tr><td>L</td><td>48"</td><td>23"</td><td>30"</td></tr>
+              <tr><td>XL</td><td>50"</td><td>24"</td><td>30.5"</td></tr>
             </tbody>
           </table>
-          <% } else { %>
-            <table class="size-chart">
-              <thead>
-                <tr>
-                  <th>Size</th>
-                  <th>Chest</th>
-                  <th>Shoulder</th>
-                  <th>Length</th>
-                  <th>Sleeve</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>S</td>
-                  <td>38"</td>
-                  <td>17.5"</td>
-                  <td>27"</td>
-                  <td>8"</td>
-                </tr>
-                <tr>
-                  <td>M</td>
-                  <td>40"</td>
-                  <td>18.5"</td>
-                  <td>28"</td>
-                  <td>8.5"</td>
-                </tr>
-                <tr>
-                  <td>L</td>
-                  <td>42"</td>
-                  <td>19"</td>
-                  <td>29"</td>
-                  <td>9"</td>
-                </tr>
-                <tr>
-                  <td>XL</td>
-                  <td>44"</td>
-                  <td>20"</td>
-                  <td>30"</td>
-                  <td>10"</td>
-                </tr>
-                <tr>
-                  <td>XXL</td>
-                  <td>46"</td>
-                  <td>21"</td>
-                  <td>31"</td>
-                  <td>10.5"</td>
-                </tr>
-              </tbody>
-            </table>
-            <% } %>
+        <% } else { %>
+          <table class="size-chart">
+            <thead>
+              <tr><th>Size</th><th>Chest</th><th>Shoulder</th><th>Length</th><th>Sleeve</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>38"</td><td>17.5"</td><td>27"</td><td>8"</td></tr>
+              <tr><td>M</td><td>40"</td><td>18.5"</td><td>28"</td><td>8.5"</td></tr>
+              <tr><td>L</td><td>42"</td><td>19"</td><td>29"</td><td>9"</td></tr>
+              <tr><td>XL</td><td>44"</td><td>20"</td><td>30"</td><td>10"</td></tr>
+              <tr><td>XXL</td><td>46"</td><td>21"</td><td>31"</td><td>10.5"</td></tr>
+            </tbody>
+          </table>
+        <% } %>
       </details>
-      <hr>
+      <hr />
 
-      <!-- Color Options -->
-      <h2><label for="color-select">Available Colors:</label></h2>
-      <% if (product.color && product.color.length> 0) { %>
-        <select id="color-select" name="color" required>
-          <option value="">-- Select Color --</option>
-          <% product.color.forEach(clr=> { %>
-            <option value="<%= clr.trim() %>">
-              <%= clr.trim() %>
-            </option>
-            <% }) %>
-        </select>
+      <!-- Colors -->
+      <h2>Available Colors:</h2>
+      <div class="color-options">
+        <% if (product.color && product.color.length > 0) { %>
+          <% product.color.forEach(clr => { %>
+            <div class="color-circle" data-color="<%= clr.trim() %>" title="<%= clr.trim() %>"
+              style="--circle-color: <%= clr.trim().toLowerCase() %>"></div>
+          <% }) %>
         <% } else { %>
           <p>No colors available.</p>
-          <% } %>
-            <hr>
+        <% } %>
+      </div>
+      <hr />
 
-            <!-- Sizes -->
-            <h2>Available Sizes:</h2>
-            <div class="size-options">
-              <% const sizes=product.sizes || {}; %>
-                <% const isOutOfStock=Object.values(sizes).every(qty=> qty <= 0); %>
+      <!-- Sizes -->
+      <h2>Available Sizes:</h2>
+      <div class="size-options">
+        <% const sizes = product.sizes || {}; %>
+        <% const isOutOfStock = Object.values(sizes).every(q => q <= 0); %>
+        <% if (isOutOfStock) { %>
+          <p class="out-of-stock">Sorry, this product is currently unavailable.</p>
+        <% } else { %>
+          <% if (sizes.xsmall > 0) { %><button class="size-button" data-size="XS">XS</button><% } %>
+          <% if (sizes.small > 0) { %><button class="size-button" data-size="S">S</button><% } %>
+          <% if (sizes.medium > 0) { %><button class="size-button" data-size="M">M</button><% } %>
+          <% if (sizes.large > 0) { %><button class="size-button" data-size="L">L</button><% } %>
+          <% if (sizes.xlarge > 0) { %><button class="size-button" data-size="XL">XL</button><% } %>
+          <% if (sizes.xxlarge > 0) { %><button class="size-button" data-size="XXL">XXL</button><% } %>
+        <% } %>
+      </div>
+      <hr />
 
-                    <% if (isOutOfStock) { %>
-                      <p class="out-of-stock">Sorry, this product is currently unavailable.</p>
-                      <% } else { %>
-                        <% if (sizes.xsmall> 0) { %><button class="size-button" data-size="XS">XS</button>
-                          <% } %>
-                            <% if (sizes.small> 0) { %><button class="size-button" data-size="S">S</button>
-                              <% } %>
-                                <% if (sizes.medium> 0) { %><button class="size-button" data-size="M">M</button>
-                                  <% } %>
-                                    <% if (sizes.large> 0) { %><button class="size-button" data-size="L">L</button>
-                                      <% } %>
-                                        <% if (sizes.xlarge> 0) { %><button class="size-button"
-                                            data-size="XL">XL</button>
-                                          <% } %>
-                                            <% if (sizes.xxlarge> 0) { %><button class="size-button"
-                                                data-size="XXL">XXL</button>
-                                              <% } %>
-                                                <% } %>
-            </div>
-            <hr>
+      <!-- Cart -->
+      <div class="cart-actions">
+        <form action="/cart/add-to-cart" method="POST">
+          <input type="hidden" name="userId" value="<%= user?._id || '' %>" />
+          <input type="hidden" name="productId" value="<%= product.id %>" />
+          <input type="hidden" id="selected-size" name="size" value="" />
+          <input type="hidden" id="selected-color" name="color" value="" />
 
-            <!-- Quantity Counter and Add to Cart Button -->
-            <div class="cart-actions">
-              <form action="/cart/add-to-cart" method="POST">
-                <input type="hidden" name="userId" value="<%= user?._id || '' %>" />
-                <input type="hidden" name="productId" value="<%= product.id %>" />
-                <input type="hidden" id="selected-size" name="size" value="" />
-                <input type="hidden" id="selected-color" name="color" value="" />
+          <div class="quantity-controls">
+            <button type="button" onclick="changeQuantity(-1)">-</button>
+            <input type="text" id="quantity" name="quantity" value="1" readonly />
+            <button type="button" onclick="changeQuantity(1)">+</button>
+            <p id="quantity-message" class="quantity-message"></p>
+          </div>
 
-                <div class="quantity-controls">
-                  <button type="button" onclick="changeQuantity(-1)">-</button>
-                  <input type="text" id="quantity" name="quantity" value="1" readonly />
-                  <button type="button" onclick="changeQuantity(1)">+</button>
-                  <p id="quantity-message" class="quantity-message"></p>
-                </div>
+          <button type="submit" name="action" value="add" class="btn add-to-cart">Add to Cart</button>
+        </form>
+      </div>
+      <hr />
 
-                <button type="submit" name="action" value="add" class="btn add-to-cart">Add to Cart</button>
-              </form>
-            </div>
-            <hr>
-
-            <h2>Description</h2>
-            <p class="price">
-              <%= product.description %>
-            </p>
+      <h2>Description</h2>
+      <p class="price"><%= product.description %></p>
     </div>
   </div>
-  </div>
-  </div>
-  <!-- footer  -->
+
   <%- include('../partials/footer') %>
 
+  <!-- ================= JS SECTION ================= -->
   <script>
-  // ===============================
-  // ⚡ PRODUCT IMAGE SWITCHING BASED ON COLOR (with Preload & Loader)
-  // ===============================
+    document.addEventListener("DOMContentLoaded", function () {
+      const mainImage = document.getElementById("mainImage");
+      const changeImageContainer = document.querySelector(".change_image");
+      const colorImageData = <%- JSON.stringify(product.colorImages || []) %>;
+      let currentImages = <%- JSON.stringify(product.images || []) %>;
 
-  const colorSelect = document.getElementById("color-select");
-  const mainImage = document.getElementById("mainImage");
-  const changeImageContainer = document.querySelector(".change_image");
-  const colorImageData = <%- JSON.stringify(product.colorImages || []) %>; // From backend
-  let currentImages = <%- JSON.stringify(product.images || []) %>;
+      // Preload all variant images
+      function preloadImages(images) {
+        images.forEach(src => {
+          const img = new Image();
+          img.src = src;
+        });
+      }
 
-  // 🧩 Preload all variant images for instant switching
-  function preloadImages(imageUrls) {
-    imageUrls.forEach((url) => {
-      const img = new Image();
-      img.src = url;
-    });
-  }
+      colorImageData.forEach(item => preloadImages(item.images));
 
-  // Preload all variant images in background
-  if (colorImageData && colorImageData.length > 0) {
-    colorImageData.forEach((item) => preloadImages(item.images));
-  }
+      // Loader overlay
+      const loaderOverlay = document.createElement("div");
+      loaderOverlay.style = "position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.6);display:flex;justify-content:center;align-items:center;font-size:16px;font-weight:bold;display:none;";
+      loaderOverlay.textContent = "Loading...";
+      const displayImage = document.querySelector(".display_image");
+      displayImage.appendChild(loaderOverlay);
 
-  // 🌀 Add a small loading effect for smoother UX
-  const loaderOverlay = document.createElement("div");
-  loaderOverlay.style =
-    "position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.6);display:flex;justify-content:center;align-items:center;font-size:16px;font-weight:bold;display:none;";
-  loaderOverlay.textContent = "Loading...";
-  document.querySelector(".display_image").style.position = "relative";
-  document.querySelector(".display_image").appendChild(loaderOverlay);
+      function renderGallery(images) {
+        if (!images || !images.length) return;
+        loaderOverlay.style.display = "flex";
+        const temp = new Image();
+        temp.src = images[0];
+        temp.onload = function () {
+          mainImage.src = images[0];
+          loaderOverlay.style.display = "none";
+        };
+        changeImageContainer.innerHTML = "";
+        images.forEach((img, i) => {
+          const thumb = document.createElement("img");
+          thumb.src = img;
+          thumb.className = `thumb-img ${i === 0 ? "active-thumb" : ""}`;
+          thumb.addEventListener("click", function () {
+            mainImage.src = img;
+            document.querySelectorAll(".thumb-img").forEach(t => t.classList.remove("active-thumb"));
+            this.classList.add("active-thumb");
+          });
+          changeImageContainer.appendChild(thumb);
+        });
+      }
 
-  // 🎨 Render image gallery
-  function renderGallery(images) {
-    if (!images || images.length === 0) return;
+      renderGallery(currentImages);
 
-    loaderOverlay.style.display = "flex"; // Show loader
-
-    const tempImg = new Image();
-    tempImg.src = images[0];
-    tempImg.onload = function () {
-      mainImage.src = images[0];
-      loaderOverlay.style.display = "none"; // Hide loader when main image loaded
-    };
-
-    changeImageContainer.innerHTML = "";
-
-    images.forEach((img, i) => {
-      const thumb = document.createElement("img");
-      thumb.src = img;
-      thumb.alt = "Product Image";
-      thumb.className = `thumb-img ${i === 0 ? "active-thumb" : ""}`;
-      thumb.style = "max-width: 100px; height: auto; cursor: pointer; margin-right: 10px;";
-
-      thumb.addEventListener("click", function () {
-        mainImage.src = img;
-        document.querySelectorAll(".thumb-img").forEach(i => i.classList.remove("active-thumb"));
-        this.classList.add("active-thumb");
+      // Color Selection
+      document.querySelectorAll(".color-circle").forEach(circle => {
+        circle.addEventListener("click", function () {
+          document.querySelectorAll(".color-circle").forEach(c => c.classList.remove("selected"));
+          this.classList.add("selected");
+          document.getElementById("selected-color").value = this.dataset.color;
+          const match = colorImageData.find(c => c.color.toLowerCase() === this.dataset.color.toLowerCase());
+          if (match && match.images.length) renderGallery(match.images);
+          else renderGallery(currentImages);
+        });
       });
 
-      changeImageContainer.appendChild(thumb);
-    });
-  }
-
-  // Show default images on page load
-  renderGallery(currentImages);
-
-  // 🟡 Handle color selection
-  if (colorSelect) {
-    colorSelect.addEventListener("change", function () {
-      const selectedColor = this.value.trim();
-      document.getElementById("selected-color").value = selectedColor;
-
-      const matchedColor = colorImageData.find(
-        (c) => c.color.toLowerCase() === selectedColor.toLowerCase()
-      );
-
-      if (matchedColor && matchedColor.images && matchedColor.images.length > 0) {
-        renderGallery(matchedColor.images);
-      } else {
-        renderGallery(currentImages); // fallback
-      }
-    });
-  }
-
-    // ===============================
-    // 🟡 HAMBURGER MENU TOGGLE
-    // ===============================
-    const AsHamburger = document.querySelector(".As-hamburger");
-    const AsNavLinks = document.querySelector(".As-nav-links");
-    if (AsHamburger && AsNavLinks) {
-      AsHamburger.addEventListener("click", () => {
-        AsNavLinks.classList.toggle("active");
-      });
-    }
-
-    // ===============================
-    // 🟡 SIZE SELECTION LOGIC
-    // ===============================
-    function selectSize(size) {
-      const selectedSizeInput = document.getElementById("selected-size");
-      const allButtons = document.querySelectorAll(".size-button");
-
-      // Update hidden input
-      selectedSizeInput.value = size;
-
-      // Highlight active button
-      allButtons.forEach((button) => button.classList.remove("selected"));
-      const selectedButton = document.querySelector(`.size-button[data-size="${size}"]`);
-      if (selectedButton) selectedButton.classList.add("selected");
-
-      // Update quantity limit
-      updateMaxQuantity(size);
-    }
-
-    // ===============================
-    // 🟡 UPDATE MAX QUANTITY
-    // ===============================
-    function updateMaxQuantity(size) {
-      const sizeStock = {
-        XS: <%= product.sizes.xsmall || 0 %>,
-        S: <%= product.sizes.small || 0 %>,
-        M: <%= product.sizes.medium || 0 %>,
-        L: <%= product.sizes.large || 0 %>,
-        XL: <%= product.sizes.xlarge || 0 %>,
-        XXL: <%= product.sizes.xxlarge || 0 %>,
-      };
-
-      const maxQuantity = sizeStock[size] || 0;
-      const quantityInput = document.getElementById("quantity");
-      const quantityMessage = document.getElementById("quantity-message");
-      const currentQuantity = parseInt(quantityInput.value);
-
-      if (currentQuantity > maxQuantity) {
-        quantityInput.value = maxQuantity;
-        quantityMessage.textContent = `Maximum ${maxQuantity} items available in this size.`;
-        quantityMessage.style.display = "block";
-      } else {
-        quantityMessage.style.display = "none";
-      }
-    }
-
-    // ===============================
-    // 🟡 CHANGE QUANTITY (with stock check)
-    // ===============================
-    function changeQuantity(change) {
-      const selectedSize = document.getElementById("selected-size").value;
-      const quantityMessage = document.getElementById("quantity-message");
-      const quantityInput = document.getElementById("quantity");
-
-      if (!selectedSize) {
-        quantityMessage.textContent = "Please select a size first.";
-        quantityMessage.style.display = "block";
-        return;
+      // Size Logic
+      function selectSize(size) {
+        const selectedSizeInput = document.getElementById("selected-size");
+        const allButtons = document.querySelectorAll(".size-button");
+        selectedSizeInput.value = size;
+        allButtons.forEach(b => b.classList.remove("selected"));
+        const btn = document.querySelector(`.size-button[data-size='${size}']`);
+        if (btn) btn.classList.add("selected");
+        updateMaxQuantity(size);
       }
 
-      const sizeStock = {
-        XS: <%= product.sizes.xsmall || 0 %>,
-        S: <%= product.sizes.small || 0 %>,
-        M: <%= product.sizes.medium || 0 %>,
-        L: <%= product.sizes.large || 0 %>,
-        XL: <%= product.sizes.xlarge || 0 %>,
-        XXL: <%= product.sizes.xxlarge || 0 %>,
-      };
-
-      const maxQuantity = sizeStock[selectedSize] || 0;
-      let current = parseInt(quantityInput.value);
-
-      if (change === -1 && current > 1) {
-        current--;
-        quantityMessage.style.display = "none";
-      } else if (change === 1) {
-        if (current >= maxQuantity) {
-          quantityMessage.textContent = `Maximum ${maxQuantity} items available in this size.`;
-          quantityMessage.style.display = "block";
-          return;
-        }
-        current++;
-        quantityMessage.style.display = "none";
+      function updateMaxQuantity(size) {
+        const stock = {
+          XS: <%= product.sizes?.xsmall || 0 %>,
+          S: <%= product.sizes?.small || 0 %>,
+          M: <%= product.sizes?.medium || 0 %>,
+          L: <%= product.sizes?.large || 0 %>,
+          XL: <%= product.sizes?.xlarge || 0 %>,
+          XXL: <%= product.sizes?.xxlarge || 0 %>,
+        };
+        const max = stock[size] || 0;
+        const qInput = document.getElementById("quantity");
+        const qMsg = document.getElementById("quantity-message");
+        if (parseInt(qInput.value) > max) {
+          qInput.value = max;
+          qMsg.textContent = `Maximum ${max} items available.`;
+          qMsg.style.display = "block";
+        } else qMsg.style.display = "none";
       }
 
-      quantityInput.value = current;
-    }
-
-    // ===============================
-    // 🟡 ADD EVENT LISTENERS TO SIZE BUTTONS
-    // ===============================
-    document.querySelectorAll(".size-button").forEach((button) => {
-      button.addEventListener("click", () => {
-        const size = button.getAttribute("data-size");
-        selectSize(size);
-      });
-    });
-
-    // ===============================
-    // 🟡 FORM VALIDATION ON SUBMIT
-    // ===============================
-    const addToCartForm = document.querySelector("form");
-    if (addToCartForm) {
-      addToCartForm.addEventListener("submit", (event) => {
+      function changeQuantity(change) {
         const selectedSize = document.getElementById("selected-size").value;
-        const selectedColor = document.getElementById("selected-color").value;
-        const quantity = parseInt(document.getElementById("quantity").value);
-
-        if (!selectedColor) {
-          event.preventDefault();
-          alert("Please select a color before adding to cart.");
-          return;
-        }
+        const qInput = document.getElementById("quantity");
+        const qMsg = document.getElementById("quantity-message");
         if (!selectedSize) {
-          event.preventDefault();
-          alert("Please select a size before adding to cart.");
+          qMsg.textContent = "Please select a size first.";
+          qMsg.style.display = "block";
           return;
         }
-        if (isNaN(quantity) || quantity < 1) {
-          event.preventDefault();
-          alert("Please select a valid quantity.");
-        }
-      });
-    }
-
-    // ===============================
-    // 🟡 PRODUCT IMAGE GALLERY
-    // ===============================
-    function toggleImage(index) {
-      const displayImage = document.querySelector(".display_image img");
-      const galleryImages = document.querySelectorAll(".change_image img");
-      if (displayImage && galleryImages[index]) {
-        displayImage.src = galleryImages[index].src;
+        const stock = {
+          XS: <%= product.sizes?.xsmall || 0 %>,
+          S: <%= product.sizes?.small || 0 %>,
+          M: <%= product.sizes?.medium || 0 %>,
+          L: <%= product.sizes?.large || 0 %>,
+          XL: <%= product.sizes?.xlarge || 0 %>,
+          XXL: <%= product.sizes?.xxlarge || 0 %>,
+        };
+        const max = stock[selectedSize] || 0;
+        let current = parseInt(qInput.value);
+        if (change === -1 && current > 1) current--;
+        else if (change === 1 && current < max) current++;
+        qInput.value = current;
+        qMsg.style.display = current >= max ? "block" : "none";
+        qMsg.textContent = current >= max ? `Maximum ${max} items available.` : "";
       }
-    }
+      window.changeQuantity = changeQuantity;
 
+      document.querySelectorAll(".size-button").forEach(btn => btn.addEventListener("click", () => selectSize(btn.dataset.size)));
 
-    // Initialize default image
-    toggleImage(0);
-
-    // Add click event for thumbnails
-    document.querySelectorAll(".change_image img").forEach((img, index) => {
-      img.addEventListener("click", () => toggleImage(index));
-    });
-  </script>
-  <script>
-    // Show selected image when thumbnail clicked
-    document.querySelectorAll('.thumb-img').forEach((img) => {
-      img.addEventListener('click', function () {
-        const mainImage = document.getElementById('mainImage');
-        if (mainImage) mainImage.src = this.src;
-
-        // Highlight the active thumbnail
-        document.querySelectorAll('.thumb-img').forEach(i => i.classList.remove('active-thumb'));
-        this.classList.add('active-thumb');
+      // Form Validation
+      document.querySelector("form").addEventListener("submit", (e) => {
+        const color = document.getElementById("selected-color").value;
+        const size = document.getElementById("selected-size").value;
+        const qty = parseInt(document.getElementById("quantity").value);
+        if (!color) { e.preventDefault(); alert("Please select a color."); }
+        else if (!size) { e.preventDefault(); alert("Please select a size."); }
+        else if (isNaN(qty) || qty < 1) { e.preventDefault(); alert("Please select a valid quantity."); }
       });
+    });
+
+    // Loader fade-out
+    window.addEventListener("load", () => {
+      const loader = document.getElementById("page-loader");
+      loader.classList.add("fade-out");
+      setTimeout(() => (loader.style.display = "none"), 500);
     });
   </script>
 
   <script src="https://unpkg.com/feather-icons"></script>
-  <script>
-    feather.replace();
-  </script>
-
-  <script>
-    window.addEventListener("load", function () {
-      const loader = document.getElementById("page-loader");
-      if (loader) {
-        loader.classList.add("fade-out");
-        setTimeout(() => (loader.style.display = "none"), 500);
-      }
-    });
-  </script>
-
+  <script>feather.replace();</script>
   <script src="scripts/script.js"></script>
 </body>
-
 </html>

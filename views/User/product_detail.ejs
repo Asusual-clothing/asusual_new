@@ -8,7 +8,9 @@
     content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!" />
   <meta name="keywords"
     content="asusual, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india" />
-  <title><%= product.name %> - Product Page</title>
+  <title>
+    <%= product.name %> - Product Page
+  </title>
 
   <!-- Favicons -->
   <link rel="icon" href="/assests/favicon.png" type="image/x-icon" />
@@ -175,269 +177,348 @@
 
   <%- include('../partials/navbar', { user, cartCount }) %>
 
-  <div class="product_details_container">
-    <div class="image-gallery">
-      <div class="display_image">
-        <% if (product.images && product.images.length > 0) { %>
-          <img id="mainImage" src="<%= product.images[0] %>" alt="<%= product.name %>" style="max-width: 100%;" />
-        <% } else { %>
-          <p>No images available</p>
-        <% } %>
-      </div>
-
-      <% if (product.images && product.images.length > 1) { %>
-        <div class="change_image">
-          <% product.images.forEach((img, i) => { %>
-            <img src="<%= img %>" alt="<%= product.name %>"
-              class="thumb-img <%= i === 0 ? 'active-thumb' : '' %>" data-index="<%= i %>" />
-          <% }) %>
+    <div class="product_details_container">
+      <div class="image-gallery">
+        <div class="display_image">
+          <% if (product.images && product.images.length> 0) { %>
+            <img id="mainImage" src="<%= product.images[0] %>" alt="<%= product.name %>" style="max-width: 100%;" />
+            <% } else { %>
+              <p>No images available</p>
+              <% } %>
         </div>
-      <% } %>
-    </div>
 
-    <div class="product-details">
-      <h1><%= product.name %></h1>
-      <p class="MRP2">₹<%= product.MRP %></p>
-      <p class="price">₹<%= product.price %></p>
-      <hr />
-
-      <h2>Category:</h2>
-      <p><%= product.category %></p>
-      <hr />
-
-      <!-- Size Chart -->
-      <details>
-        <summary>Size Chart</summary>
-        <% if (product.category && product.category.toLowerCase().includes('oversize')) { %>
-          <table class="size-chart">
-            <thead>
-              <tr><th>Size</th><th>Chest</th><th>Shoulder</th><th>Length</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>S</td><td>44"</td><td>21"</td><td>29"</td></tr>
-              <tr><td>M</td><td>46"</td><td>22"</td><td>29.5"</td></tr>
-              <tr><td>L</td><td>48"</td><td>23"</td><td>30"</td></tr>
-              <tr><td>XL</td><td>50"</td><td>24"</td><td>30.5"</td></tr>
-            </tbody>
-          </table>
-        <% } else { %>
-          <table class="size-chart">
-            <thead>
-              <tr><th>Size</th><th>Chest</th><th>Shoulder</th><th>Length</th><th>Sleeve</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>S</td><td>38"</td><td>17.5"</td><td>27"</td><td>8"</td></tr>
-              <tr><td>M</td><td>40"</td><td>18.5"</td><td>28"</td><td>8.5"</td></tr>
-              <tr><td>L</td><td>42"</td><td>19"</td><td>29"</td><td>9"</td></tr>
-              <tr><td>XL</td><td>44"</td><td>20"</td><td>30"</td><td>10"</td></tr>
-              <tr><td>XXL</td><td>46"</td><td>21"</td><td>31"</td><td>10.5"</td></tr>
-            </tbody>
-          </table>
-        <% } %>
-      </details>
-      <hr />
-
-      <!-- Colors -->
-      <h2>Available Colors:</h2>
-      <div class="color-options">
-        <% if (product.color && product.color.length > 0) { %>
-          <% product.color.forEach(clr => { %>
-            <div class="color-circle" data-color="<%= clr.trim() %>" title="<%= clr.trim() %>"
-              style="--circle-color: <%= clr.trim().toLowerCase() %>"></div>
-          <% }) %>
-        <% } else { %>
-          <p>No colors available.</p>
-        <% } %>
-      </div>
-      <hr />
-
-      <!-- Sizes -->
-      <h2>Available Sizes:</h2>
-      <div class="size-options">
-        <% const sizes = product.sizes || {}; %>
-        <% const isOutOfStock = Object.values(sizes).every(q => q <= 0); %>
-        <% if (isOutOfStock) { %>
-          <p class="out-of-stock">Sorry, this product is currently unavailable.</p>
-        <% } else { %>
-          <% if (sizes.xsmall > 0) { %><button class="size-button" data-size="XS">XS</button><% } %>
-          <% if (sizes.small > 0) { %><button class="size-button" data-size="S">S</button><% } %>
-          <% if (sizes.medium > 0) { %><button class="size-button" data-size="M">M</button><% } %>
-          <% if (sizes.large > 0) { %><button class="size-button" data-size="L">L</button><% } %>
-          <% if (sizes.xlarge > 0) { %><button class="size-button" data-size="XL">XL</button><% } %>
-          <% if (sizes.xxlarge > 0) { %><button class="size-button" data-size="XXL">XXL</button><% } %>
-        <% } %>
-      </div>
-      <hr />
-
-      <!-- Cart -->
-      <div class="cart-actions">
-        <form action="/cart/add-to-cart" method="POST">
-          <input type="hidden" name="userId" value="<%= user?._id || '' %>" />
-          <input type="hidden" name="productId" value="<%= product.id %>" />
-          <input type="hidden" id="selected-size" name="size" value="" />
-          <input type="hidden" id="selected-color" name="color" value="" />
-
-          <div class="quantity-controls">
-            <button type="button" onclick="changeQuantity(-1)">-</button>
-            <input type="text" id="quantity" name="quantity" value="1" readonly />
-            <button type="button" onclick="changeQuantity(1)">+</button>
-            <p id="quantity-message" class="quantity-message"></p>
+        <% if (product.images && product.images.length> 1) { %>
+          <div class="change_image">
+            <% product.images.forEach((img, i)=> { %>
+              <img src="<%= img %>" alt="<%= product.name %>" class="thumb-img <%= i === 0 ? 'active-thumb' : '' %>"
+                data-index="<%= i %>" />
+              <% }) %>
           </div>
-
-          <button type="submit" name="action" value="add" class="btn add-to-cart">Add to Cart</button>
-        </form>
+          <% } %>
       </div>
-      <hr />
 
-      <h2>Description</h2>
-      <p class="price"><%= product.description %></p>
+      <div class="product-details">
+        <h1>
+          <%= product.name %>
+        </h1>
+        <p class="MRP2">₹<%= product.MRP %>
+        </p>
+        <p class="price">₹<%= product.price %>
+        </p>
+        <hr />
+
+        <h2>Category:</h2>
+        <p>
+          <%= product.category %>
+        </p>
+        <hr />
+
+        <!-- Size Chart -->
+        <details>
+          <summary>Size Chart</summary>
+          <% if (product.category && product.category.toLowerCase().includes('oversize')) { %>
+            <table class="size-chart">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>Chest</th>
+                  <th>Shoulder</th>
+                  <th>Length</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>S</td>
+                  <td>44"</td>
+                  <td>21"</td>
+                  <td>29"</td>
+                </tr>
+                <tr>
+                  <td>M</td>
+                  <td>46"</td>
+                  <td>22"</td>
+                  <td>29.5"</td>
+                </tr>
+                <tr>
+                  <td>L</td>
+                  <td>48"</td>
+                  <td>23"</td>
+                  <td>30"</td>
+                </tr>
+                <tr>
+                  <td>XL</td>
+                  <td>50"</td>
+                  <td>24"</td>
+                  <td>30.5"</td>
+                </tr>
+              </tbody>
+            </table>
+            <% } else { %>
+              <table class="size-chart">
+                <thead>
+                  <tr>
+                    <th>Size</th>
+                    <th>Chest</th>
+                    <th>Shoulder</th>
+                    <th>Length</th>
+                    <th>Sleeve</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>S</td>
+                    <td>38"</td>
+                    <td>17.5"</td>
+                    <td>27"</td>
+                    <td>8"</td>
+                  </tr>
+                  <tr>
+                    <td>M</td>
+                    <td>40"</td>
+                    <td>18.5"</td>
+                    <td>28"</td>
+                    <td>8.5"</td>
+                  </tr>
+                  <tr>
+                    <td>L</td>
+                    <td>42"</td>
+                    <td>19"</td>
+                    <td>29"</td>
+                    <td>9"</td>
+                  </tr>
+                  <tr>
+                    <td>XL</td>
+                    <td>44"</td>
+                    <td>20"</td>
+                    <td>30"</td>
+                    <td>10"</td>
+                  </tr>
+                  <tr>
+                    <td>XXL</td>
+                    <td>46"</td>
+                    <td>21"</td>
+                    <td>31"</td>
+                    <td>10.5"</td>
+                  </tr>
+                </tbody>
+              </table>
+              <% } %>
+        </details>
+        <hr />
+
+        <!-- Colors -->
+        <h2>Available Colors:</h2>
+        <div class="color-options">
+          <% if (product.colorImages && product.colorImages.length> 0) { %>
+            <% product.colorImages.forEach((item)=> { %>
+              <div class="color-circle" data-color="<%= item.color.trim() %>" data-code="<%= item.colorCode %>"
+                title="<%= item.color.trim() %> (<%= item.colorCode %>)"
+                style="background-color: <%= item.colorCode %>;"></div>
+              <% }) %>
+                <% } else { %>
+                  <p>No colors available.</p>
+                  <% } %>
+        </div>
+
+        <hr />
+
+        <!-- Sizes -->
+        <h2>Available Sizes:</h2>
+        <div class="size-options">
+          <% const sizes=product.sizes || {}; %>
+            <% const isOutOfStock=Object.values(sizes).every(q=> q <= 0); %>
+                <% if (isOutOfStock) { %>
+                  <p class="out-of-stock">Sorry, this product is currently unavailable.</p>
+                  <% } else { %>
+                    <% if (sizes.xsmall> 0) { %><button class="size-button" data-size="XS">XS</button>
+                      <% } %>
+                        <% if (sizes.small> 0) { %><button class="size-button" data-size="S">S</button>
+                          <% } %>
+                            <% if (sizes.medium> 0) { %><button class="size-button" data-size="M">M</button>
+                              <% } %>
+                                <% if (sizes.large> 0) { %><button class="size-button" data-size="L">L</button>
+                                  <% } %>
+                                    <% if (sizes.xlarge> 0) { %><button class="size-button" data-size="XL">XL</button>
+                                      <% } %>
+                                        <% if (sizes.xxlarge> 0) { %><button class="size-button"
+                                            data-size="XXL">XXL</button>
+                                          <% } %>
+                                            <% } %>
+        </div>
+        <hr />
+
+        <!-- Cart -->
+        <div class="cart-actions">
+          <form action="/cart/add-to-cart" method="POST">
+            <input type="hidden" name="userId" value="<%= user?._id || '' %>" />
+            <input type="hidden" name="productId" value="<%= product.id %>" />
+            <input type="hidden" id="selected-size" name="size" value="" />
+            <input type="hidden" id="selected-color" name="color" value="" />
+
+            <div class="quantity-controls">
+              <button type="button" onclick="changeQuantity(-1)">-</button>
+              <input type="text" id="quantity" name="quantity" value="1" readonly />
+              <button type="button" onclick="changeQuantity(1)">+</button>
+              <p id="quantity-message" class="quantity-message"></p>
+            </div>
+
+            <button type="submit" name="action" value="add" class="btn add-to-cart">Add to Cart</button>
+          </form>
+        </div>
+        <hr />
+
+        <h2>Description</h2>
+        <p class="price">
+          <%= product.description %>
+        </p>
+      </div>
     </div>
-  </div>
 
-  <%- include('../partials/footer') %>
+    <%- include('../partials/footer') %>
 
-  <!-- ================= JS SECTION ================= -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const mainImage = document.getElementById("mainImage");
-      const changeImageContainer = document.querySelector(".change_image");
-      const colorImageData = <%- JSON.stringify(product.colorImages || []) %>;
-      let currentImages = <%- JSON.stringify(product.images || []) %>;
+      <!-- ================= JS SECTION ================= -->
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const mainImage = document.getElementById("mainImage");
+          const changeImageContainer = document.querySelector(".change_image");
+          const colorImageData = <%- JSON.stringify(product.colorImages || []) %>;
+          let currentImages = <%- JSON.stringify(product.images || []) %>;
 
-      // Preload all variant images
-      function preloadImages(images) {
-        images.forEach(src => {
-          const img = new Image();
-          img.src = src;
-        });
-      }
+          // Preload all variant images
+          function preloadImages(images) {
+            images.forEach(src => {
+              const img = new Image();
+              img.src = src;
+            });
+          }
 
-      colorImageData.forEach(item => preloadImages(item.images));
+          colorImageData.forEach(item => preloadImages(item.images));
 
-      // Loader overlay
-      const loaderOverlay = document.createElement("div");
-      loaderOverlay.style = "position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.6);display:flex;justify-content:center;align-items:center;font-size:16px;font-weight:bold;display:none;";
-      loaderOverlay.textContent = "Loading...";
-      const displayImage = document.querySelector(".display_image");
-      displayImage.appendChild(loaderOverlay);
+          // Loader overlay
+          const loaderOverlay = document.createElement("div");
+          loaderOverlay.style = "position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.6);display:flex;justify-content:center;align-items:center;font-size:16px;font-weight:bold;display:none;";
+          loaderOverlay.textContent = "Loading...";
+          const displayImage = document.querySelector(".display_image");
+          displayImage.appendChild(loaderOverlay);
 
-      function renderGallery(images) {
-        if (!images || !images.length) return;
-        loaderOverlay.style.display = "flex";
-        const temp = new Image();
-        temp.src = images[0];
-        temp.onload = function () {
-          mainImage.src = images[0];
-          loaderOverlay.style.display = "none";
-        };
-        changeImageContainer.innerHTML = "";
-        images.forEach((img, i) => {
-          const thumb = document.createElement("img");
-          thumb.src = img;
-          thumb.className = `thumb-img ${i === 0 ? "active-thumb" : ""}`;
-          thumb.addEventListener("click", function () {
-            mainImage.src = img;
-            document.querySelectorAll(".thumb-img").forEach(t => t.classList.remove("active-thumb"));
-            this.classList.add("active-thumb");
+          function renderGallery(images) {
+            if (!images || !images.length) return;
+            loaderOverlay.style.display = "flex";
+            const temp = new Image();
+            temp.src = images[0];
+            temp.onload = function () {
+              mainImage.src = images[0];
+              loaderOverlay.style.display = "none";
+            };
+            changeImageContainer.innerHTML = "";
+            images.forEach((img, i) => {
+              const thumb = document.createElement("img");
+              thumb.src = img;
+              thumb.className = `thumb-img ${i === 0 ? "active-thumb" : ""}`;
+              thumb.addEventListener("click", function () {
+                mainImage.src = img;
+                document.querySelectorAll(".thumb-img").forEach(t => t.classList.remove("active-thumb"));
+                this.classList.add("active-thumb");
+              });
+              changeImageContainer.appendChild(thumb);
+            });
+          }
+
+          renderGallery(currentImages);
+
+          // Color Selection
+          document.querySelectorAll(".color-circle").forEach(circle => {
+            circle.addEventListener("click", function () {
+              document.querySelectorAll(".color-circle").forEach(c => c.classList.remove("selected"));
+              this.classList.add("selected");
+              document.getElementById("selected-color").value = this.dataset.color;
+              const match = colorImageData.find(c => c.color.toLowerCase() === this.dataset.color.toLowerCase());
+              if (match && match.images.length) renderGallery(match.images);
+              else renderGallery(currentImages);
+            });
           });
-          changeImageContainer.appendChild(thumb);
+
+          // Size Logic
+          function selectSize(size) {
+            const selectedSizeInput = document.getElementById("selected-size");
+            const allButtons = document.querySelectorAll(".size-button");
+            selectedSizeInput.value = size;
+            allButtons.forEach(b => b.classList.remove("selected"));
+            const btn = document.querySelector(`.size-button[data-size='${size}']`);
+            if (btn) btn.classList.add("selected");
+            updateMaxQuantity(size);
+          }
+
+          function updateMaxQuantity(size) {
+            const stock = {
+              XS: <%= product.sizes?.xsmall || 0 %>,
+              S: <%= product.sizes?.small || 0 %>,
+              M: <%= product.sizes?.medium || 0 %>,
+              L: <%= product.sizes?.large || 0 %>,
+              XL: <%= product.sizes?.xlarge || 0 %>,
+              XXL: <%= product.sizes?.xxlarge || 0 %>,
+            };
+            const max = stock[size] || 0;
+            const qInput = document.getElementById("quantity");
+            const qMsg = document.getElementById("quantity-message");
+            if (parseInt(qInput.value) > max) {
+              qInput.value = max;
+              qMsg.textContent = `Maximum ${max} items available.`;
+              qMsg.style.display = "block";
+            } else qMsg.style.display = "none";
+          }
+
+          function changeQuantity(change) {
+            const selectedSize = document.getElementById("selected-size").value;
+            const qInput = document.getElementById("quantity");
+            const qMsg = document.getElementById("quantity-message");
+            if (!selectedSize) {
+              qMsg.textContent = "Please select a size first.";
+              qMsg.style.display = "block";
+              return;
+            }
+            const stock = {
+              XS: <%= product.sizes?.xsmall || 0 %>,
+              S: <%= product.sizes?.small || 0 %>,
+              M: <%= product.sizes?.medium || 0 %>,
+              L: <%= product.sizes?.large || 0 %>,
+              XL: <%= product.sizes?.xlarge || 0 %>,
+              XXL: <%= product.sizes?.xxlarge || 0 %>,
+            };
+            const max = stock[selectedSize] || 0;
+            let current = parseInt(qInput.value);
+            if (change === -1 && current > 1) current--;
+            else if (change === 1 && current < max) current++;
+            qInput.value = current;
+            qMsg.style.display = current >= max ? "block" : "none";
+            qMsg.textContent = current >= max ? `Maximum ${max} items available.` : "";
+          }
+          window.changeQuantity = changeQuantity;
+
+          document.querySelectorAll(".size-button").forEach(btn => btn.addEventListener("click", () => selectSize(btn.dataset.size)));
+
+          // Form Validation
+          document.querySelector("form").addEventListener("submit", (e) => {
+            const color = document.getElementById("selected-color").value;
+            const size = document.getElementById("selected-size").value;
+            const qty = parseInt(document.getElementById("quantity").value);
+            if (!color) { e.preventDefault(); alert("Please select a color."); }
+            else if (!size) { e.preventDefault(); alert("Please select a size."); }
+            else if (isNaN(qty) || qty < 1) { e.preventDefault(); alert("Please select a valid quantity."); }
+          });
         });
-      }
 
-      renderGallery(currentImages);
-
-      // Color Selection
-      document.querySelectorAll(".color-circle").forEach(circle => {
-        circle.addEventListener("click", function () {
-          document.querySelectorAll(".color-circle").forEach(c => c.classList.remove("selected"));
-          this.classList.add("selected");
-          document.getElementById("selected-color").value = this.dataset.color;
-          const match = colorImageData.find(c => c.color.toLowerCase() === this.dataset.color.toLowerCase());
-          if (match && match.images.length) renderGallery(match.images);
-          else renderGallery(currentImages);
+        // Loader fade-out
+        window.addEventListener("load", () => {
+          const loader = document.getElementById("page-loader");
+          loader.classList.add("fade-out");
+          setTimeout(() => (loader.style.display = "none"), 500);
         });
-      });
+      </script>
 
-      // Size Logic
-      function selectSize(size) {
-        const selectedSizeInput = document.getElementById("selected-size");
-        const allButtons = document.querySelectorAll(".size-button");
-        selectedSizeInput.value = size;
-        allButtons.forEach(b => b.classList.remove("selected"));
-        const btn = document.querySelector(`.size-button[data-size='${size}']`);
-        if (btn) btn.classList.add("selected");
-        updateMaxQuantity(size);
-      }
-
-      function updateMaxQuantity(size) {
-        const stock = {
-          XS: <%= product.sizes?.xsmall || 0 %>,
-          S: <%= product.sizes?.small || 0 %>,
-          M: <%= product.sizes?.medium || 0 %>,
-          L: <%= product.sizes?.large || 0 %>,
-          XL: <%= product.sizes?.xlarge || 0 %>,
-          XXL: <%= product.sizes?.xxlarge || 0 %>,
-        };
-        const max = stock[size] || 0;
-        const qInput = document.getElementById("quantity");
-        const qMsg = document.getElementById("quantity-message");
-        if (parseInt(qInput.value) > max) {
-          qInput.value = max;
-          qMsg.textContent = `Maximum ${max} items available.`;
-          qMsg.style.display = "block";
-        } else qMsg.style.display = "none";
-      }
-
-      function changeQuantity(change) {
-        const selectedSize = document.getElementById("selected-size").value;
-        const qInput = document.getElementById("quantity");
-        const qMsg = document.getElementById("quantity-message");
-        if (!selectedSize) {
-          qMsg.textContent = "Please select a size first.";
-          qMsg.style.display = "block";
-          return;
-        }
-        const stock = {
-          XS: <%= product.sizes?.xsmall || 0 %>,
-          S: <%= product.sizes?.small || 0 %>,
-          M: <%= product.sizes?.medium || 0 %>,
-          L: <%= product.sizes?.large || 0 %>,
-          XL: <%= product.sizes?.xlarge || 0 %>,
-          XXL: <%= product.sizes?.xxlarge || 0 %>,
-        };
-        const max = stock[selectedSize] || 0;
-        let current = parseInt(qInput.value);
-        if (change === -1 && current > 1) current--;
-        else if (change === 1 && current < max) current++;
-        qInput.value = current;
-        qMsg.style.display = current >= max ? "block" : "none";
-        qMsg.textContent = current >= max ? `Maximum ${max} items available.` : "";
-      }
-      window.changeQuantity = changeQuantity;
-
-      document.querySelectorAll(".size-button").forEach(btn => btn.addEventListener("click", () => selectSize(btn.dataset.size)));
-
-      // Form Validation
-      document.querySelector("form").addEventListener("submit", (e) => {
-        const color = document.getElementById("selected-color").value;
-        const size = document.getElementById("selected-size").value;
-        const qty = parseInt(document.getElementById("quantity").value);
-        if (!color) { e.preventDefault(); alert("Please select a color."); }
-        else if (!size) { e.preventDefault(); alert("Please select a size."); }
-        else if (isNaN(qty) || qty < 1) { e.preventDefault(); alert("Please select a valid quantity."); }
-      });
-    });
-
-    // Loader fade-out
-    window.addEventListener("load", () => {
-      const loader = document.getElementById("page-loader");
-      loader.classList.add("fade-out");
-      setTimeout(() => (loader.style.display = "none"), 500);
-    });
-  </script>
-
-  <script src="https://unpkg.com/feather-icons"></script>
-  <script>feather.replace();</script>
-  <script src="scripts/script.js"></script>
+      <script src="https://unpkg.com/feather-icons"></script>
+      <script>feather.replace();</script>
+      <script src="scripts/script.js"></script>
 </body>
+
 </html>

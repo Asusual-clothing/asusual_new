@@ -19,7 +19,7 @@ const Subscription = require("../models/subscription");
 const Testimonial = require("../models/Testimonial");
 const DeliveryCost = require("../models/Deliveryschema");
 const Coupon = require("../models/CouponSchema");
-const Category= require("../models/Category")
+const Category = require("../models/Category")
 // Middleware
 
 // Use memory storage (recommended for Cloudinary)
@@ -126,7 +126,7 @@ router.post(
   async (req, res) => {
     try {
       const { name, description, MRP, price, brand, bestseller, category, categoryType } = req.body;
-      let { color } = req.body;
+      let { color,colorCode  } = req.body;
 
       if (!name || !description || !price || !MRP || !category) {
         return res.status(400).json({
@@ -152,6 +152,9 @@ router.post(
       if (!Array.isArray(color)) color = [color];
       color = color.filter((c) => c && c.trim() !== "");
 
+      
+      if (!colorCode) colorCode = [];
+      if (!Array.isArray(colorCode)) colorCode = [colorCode];
       // Upload helper
       const uploadToCloudinary = async (file) => {
         const result = await new Promise((resolve, reject) => {
@@ -189,18 +192,15 @@ router.post(
       const colorImages = [];
       for (let i = 0; i < color.length; i++) {
         const fieldname = `colorImages${i}[]`;
-        const files = req.files.filter((f) => f.fieldname === fieldname);
-
-        const urls = await Promise.all(
-          files.map((file) => uploadToCloudinary(file))
-        );
+        const files = req.files.filter(f => f.fieldname === fieldname);
+        const urls = await Promise.all(files.map(file => uploadToCloudinary(file)));
 
         colorImages.push({
           color: color[i],
+          colorCode: colorCode[i] || "#000000", // fallback if missing
           images: urls,
         });
       }
-
       // Sizes
       const sizes = {
         xsmall: parseInt(req.body.sizes?.xsmall) || 0,

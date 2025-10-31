@@ -23,187 +23,203 @@
     <div class="min-h-screen flex flex-col md:flex-row">
         <!-- Sidebar -->
 
-  <%- include('../partials/admin-navbar', { activePage: activePage }) %>
+        <%- include('../partials/admin-navbar', { activePage: activePage }) %>
 
-        <!-- Main Content -->
-        <div class="flex-1 p-8">
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Add New Product</h2>
-                </div>
+            <!-- Main Content -->
+            <div class="flex-1 p-8">
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-800">Add New Product</h2>
+                    </div>
 
-                <form id="productForm" action="/products/add-product" method="POST" enctype="multipart/form-data"
-                    class="space-y-6">
-                    <!-- Product Info Section -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
-                            <input type="text" id="name" name="name" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label for="MRP" class="block text-sm font-medium text-gray-700 mb-1">MRP</label>
-                            <input type="number" id="MRP" name="MRP" step="0.01" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price</label>
-                            <input type="number" id="price" name="price" step="0.01" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
+                    <form id="productForm" action="/products/add-product" method="POST" enctype="multipart/form-data"
+                        class="space-y-6">
+                        <!-- Product Info Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Product
+                                    Name</label>
+                                <input type="text" id="name" name="name" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="MRP" class="block text-sm font-medium text-gray-700 mb-1">MRP</label>
+                                <input type="number" id="MRP" name="MRP" step="0.01" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                                <input type="number" id="price" name="price" step="0.01" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
 
-                        <div>
-                            <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
-                            <input type="text" id="brand" name="brand" placeholder="AsUsual"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
+                            <div>
+                                <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                                <input type="text" id="brand" name="brand" placeholder="AsUsual"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
 
-                        <div>
-                            <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Colors</label>
+                            <div>
+                                <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Colors</label>
 
-                            <div id="colorContainer" class="space-y-2">
-                                <div class="color-input flex flex-col gap-2 border p-2 rounded-lg">
-                                    <div class="flex gap-2">
-                                        <input type="text" name="color[]" placeholder="Color"
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                                        <button type="button"
-                                            class="removeColor hidden text-red-600 hover:text-red-800">
-                                            <i class="fas fa-minus-circle"></i>
-                                        </button>
+                                <div id="colorContainer" class="space-y-2">
+                                    <div class="color-input flex flex-col gap-2 border p-2 rounded-lg">
+                                        <div class="flex gap-2 items-center">
+                                            <input type="text" name="color[]" placeholder="Color name (e.g. Red)"
+                                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+
+                                            <!-- Add this color picker -->
+                                            <input type="color" name="colorCode[]" value="#000000"
+                                                class="w-10 h-10 border rounded cursor-pointer">
+
+                                            <button type="button"
+                                                class="removeColor hidden text-red-600 hover:text-red-800">
+                                                <i class="fas fa-minus-circle"></i>
+                                            </button>
+                                        </div>
+
+                                        <input type="file" name="colorImages0[]" multiple accept="image/*"
+                                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0">
+
+                                        <p class="text-xs text-gray-400">Upload up to 5 images for this color</p>
                                     </div>
-                                    <input type="file" name="colorImages0[]" multiple accept="image/*"
-                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0">
-                                    <p class="text-xs text-gray-400">Upload up to 5 images for this color</p>
+
                                 </div>
+
+
+                                <button type="button" id="addColorBtn"
+                                    class="mt-2 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition">
+                                    <i class="fas fa-plus mr-1"></i> Add Color
+                                </button>
                             </div>
 
 
-                            <button type="button" id="addColorBtn"
-                                class="mt-2 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition">
-                                <i class="fas fa-plus mr-1"></i> Add Color
-                            </button>
+                            <div>
+                                <label for="category"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <select id="category" name="category"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">Select Category</option>
+                                    <option value="Regular">Regular</option>
+                                    <option value="Oversized">Oversized</option>
+                                </select>
+                            </div>
                         </div>
-
-
                         <div>
-                            <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                            <select id="category" name="category"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                                <option value="">Select Category</option>
-                                <option value="Regular">Regular</option>
-                                <option value="Oversized">Oversized</option>
+                            <label for="categoryType" class="block text-sm font-medium text-gray-700 mb-1">
+                                Category Type
+                            </label>
+                            <select id="categoryType" name="categoryType" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md text-black focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">Select Category Type</option>
                             </select>
                         </div>
-                    </div>
-                    <div>
-                        <label for="categoryType" class="block text-sm font-medium text-gray-700 mb-1">
-                            Category Type
-                        </label>
-                        <select id="categoryType" name="categoryType" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md text-black focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="">Select Category Type</option>
-                        </select>
-                    </div>
 
 
-                    <!-- Description -->
-                    <div>
-                        <label for="description"
-                            class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                        <textarea id="description" name="description" required rows="4"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
-                    </div>
+                        <!-- Description -->
+                        <div>
+                            <label for="description"
+                                class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea id="description" name="description" required rows="4"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                        </div>
 
-                    <!-- Size Quantities -->
-                    <div class="border-t pt-4">
-                        <h3 class="text-lg font-medium text-gray-700 mb-4">Size Quantities</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                            <div>
-                                <label for="x-small"
-                                    class="block text-sm font-medium text-gray-700 mb-1">X-Small</label>
-                                <input type="number" id="x-small" name="sizes[xsmall]" min="0" value="0"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label for="small" class="block text-sm font-medium text-gray-700 mb-1">Small</label>
-                                <input type="number" id="small" name="sizes[small]" min="0" value="0"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label for="medium" class="block text-sm font-medium text-gray-700 mb-1">Medium</label>
-                                <input type="number" id="medium" name="sizes[medium]" min="0" value="0"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label for="large" class="block text-sm font-medium text-gray-700 mb-1">Large</label>
-                                <input type="number" id="large" name="sizes[large]" min="0" value="0"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label for="xlarge" class="block text-sm font-medium text-gray-700 mb-1">X-Large</label>
-                                <input type="number" id="xlarge" name="sizes[xlarge]" min="0" value="0"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label for="xxlarge"
-                                    class="block text-sm font-medium text-gray-700 mb-1">XX-Large</label>
-                                <input type="number" id="xxlarge" name="sizes[xxlarge]" min="0" value="0"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        <!-- Size Quantities -->
+                        <div class="border-t pt-4">
+                            <h3 class="text-lg font-medium text-gray-700 mb-4">Size Quantities</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                <div>
+                                    <label for="x-small"
+                                        class="block text-sm font-medium text-gray-700 mb-1">X-Small</label>
+                                    <input type="number" id="x-small" name="sizes[xsmall]" min="0" value="0"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
+                                <div>
+                                    <label for="small"
+                                        class="block text-sm font-medium text-gray-700 mb-1">Small</label>
+                                    <input type="number" id="small" name="sizes[small]" min="0" value="0"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
+                                <div>
+                                    <label for="medium"
+                                        class="block text-sm font-medium text-gray-700 mb-1">Medium</label>
+                                    <input type="number" id="medium" name="sizes[medium]" min="0" value="0"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
+                                <div>
+                                    <label for="large"
+                                        class="block text-sm font-medium text-gray-700 mb-1">Large</label>
+                                    <input type="number" id="large" name="sizes[large]" min="0" value="0"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
+                                <div>
+                                    <label for="xlarge"
+                                        class="block text-sm font-medium text-gray-700 mb-1">X-Large</label>
+                                    <input type="number" id="xlarge" name="sizes[xlarge]" min="0" value="0"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
+                                <div>
+                                    <label for="xxlarge"
+                                        class="block text-sm font-medium text-gray-700 mb-1">XX-Large</label>
+                                    <input type="number" id="xxlarge" name="sizes[xxlarge]" min="0" value="0"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Best Seller -->
-                    <div class="border-t pt-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Best Seller:</label>
-                        <div class="flex space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="bestseller" value="true" class="text-indigo-600" />
-                                <span class="ml-2">Yes</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="bestseller" value="false" checked class="text-indigo-600" />
-                                <span class="ml-2">No</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Images Upload -->
-                    <div class="border-t pt-4">
-                        <h3 class="text-lg font-medium text-gray-700 mb-4">Product Images</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label for="front_image" class="block text-sm font-medium text-gray-700 mb-1">Front
-                                    Image (Required)</label>
-                                <input type="file" id="front_image" name="front_images" required
-                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                            </div>
-                            <div>
-                                <label for="back_image" class="block text-sm font-medium text-gray-700 mb-1">Back Image
-                                    (Required)</label>
-                                <input type="file" id="back_image" name="back_image" required
-                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                            </div>
-                            <div>
-                                <label for="images" class="block text-sm font-medium text-gray-700 mb-1">Additional
-                                    Images (Max 5)</label>
-                                <input type="file" id="images" name="images" multiple accept="image/*"
-                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                                <p class="mt-1 text-sm text-gray-500">Select multiple images (max 5)</p>
+                        <!-- Best Seller -->
+                        <div class="border-t pt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Best Seller:</label>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="bestseller" value="true" class="text-indigo-600" />
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="bestseller" value="false" checked
+                                        class="text-indigo-600" />
+                                    <span class="ml-2">No</span>
+                                </label>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Submit Button -->
-                    <div class="flex justify-end pt-4 border-t">
-                        <button type="submit" id="submitBtn"
-                            class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition flex items-center gap-2">
-                            <i class="fas fa-plus"></i> Add Product
-                        </button>
-                    </div>
-                </form>
+                        <!-- Images Upload -->
+                        <div class="border-t pt-4">
+                            <h3 class="text-lg font-medium text-gray-700 mb-4">Product Images</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="front_image" class="block text-sm font-medium text-gray-700 mb-1">Front
+                                        Image (Required)</label>
+                                    <input type="file" id="front_image" name="front_images" required
+                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                </div>
+                                <div>
+                                    <label for="back_image" class="block text-sm font-medium text-gray-700 mb-1">Back
+                                        Image
+                                        (Required)</label>
+                                    <input type="file" id="back_image" name="back_image" required
+                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                </div>
+                                <div>
+                                    <label for="images" class="block text-sm font-medium text-gray-700 mb-1">Additional
+                                        Images (Max 5)</label>
+                                    <input type="file" id="images" name="images" multiple accept="image/*"
+                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                    <p class="mt-1 text-sm text-gray-500">Select multiple images (max 5)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end pt-4 border-t">
+                            <button type="submit" id="submitBtn"
+                                class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition flex items-center gap-2">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
     </div>
 
     <script>
@@ -232,6 +248,7 @@
         // Handle product form submission
         // Dynamic Color Fields
         let colorIndex = 1;
+
         document.getElementById("addColorBtn").addEventListener("click", () => {
             const container = document.getElementById("colorContainer");
 
@@ -239,22 +256,31 @@
             div.className = "color-input flex flex-col gap-2 border p-2 rounded-lg";
 
             div.innerHTML = `
-        <div class="flex gap-2">
-            <input type="text" name="color[]" placeholder="Color"
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-            <button type="button" class="removeColor text-red-600 hover:text-red-800">
-                <i class="fas fa-minus-circle"></i>
-            </button>
-        </div>
-        <input type="file" name="colorImages${colorIndex}[]" multiple accept="image/*"
-            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0">
-        <p class="text-xs text-gray-400">Upload up to 5 images for this color</p>
+      <div class="flex gap-2 items-center">
+        <!-- Color name -->
+        <input type="text" name="color[]" placeholder="Color name (e.g. Red)"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+
+        <!-- Color picker -->
+        <input type="color" name="colorCode[]" value="#000000"
+          class="w-10 h-10 border rounded cursor-pointer">
+
+        <!-- Remove button -->
+        <button type="button" class="removeColor text-red-600 hover:text-red-800">
+          <i class="fas fa-minus-circle"></i>
+        </button>
+      </div>
+
+      <!-- File input -->
+      <input type="file" name="colorImages${colorIndex}[]" multiple accept="image/*"
+        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0">
+
+      <p class="text-xs text-gray-400">Upload up to 5 images for this color</p>
     `;
 
             container.appendChild(div);
             colorIndex++;
         });
-
         // Remove color field
         document.getElementById("colorContainer").addEventListener("click", (e) => {
             if (e.target.closest(".removeColor")) {

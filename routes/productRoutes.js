@@ -371,11 +371,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post(
-  "/edit-product/:id",
-  checkAdminAuth,
-  uploads.any(),
-  async (req, res) => {
+router.post( "/edit-product/:id", checkAdminAuth, uploads.any(), async (req, res) => {
     const { id } = req.params;
     try {
       const sizes = req.body.sizes || {};

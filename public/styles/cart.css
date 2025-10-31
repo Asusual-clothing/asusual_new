@@ -90,6 +90,12 @@ body {
   margin: 0;
 }
 
+.cart-item-color {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
 .cart-item-price {
   margin: 0 20px;
   font-weight: bold;

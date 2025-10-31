@@ -401,40 +401,39 @@
 
 
             <!-- CATEGORY SECTION -->
-            <section class="categorical-section">
-              <div id="categorical-app">
-                <% if (firstHalf && firstHalf.length> 0) { %>
-                  <div class="categorical-scroll-container">
-                    <% firstHalf.forEach((cat)=> { %>
-                      <div class="categorical-card-wrap" data-image="<%= cat.Image %>">
-                        <div class="categorical-card">
-                          <div class="categorical-card-bg" style="background-image: url('<%= cat.Image %>');"></div>
-                          <div class="categorical-card-info">
-                            <h1>
-                              <%= cat.name %>
-                            </h1>
-                            <p>
-                              <%= cat.description || "Explore our latest collection." %>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <% }) %>
-
-                        <!-- 🚀 Explore All Card -->
-                        <div class="categorical-card-wrap explore-all-card">
-                          <a href="/category">
-                            <div class="categorical-card explore-card">
-                              <div class="categorical-card-info explore-info">
-                                <h1>Explore All</h1>
-                              </div>
-                            </div>
-                          </a>
-                        </div>
-                  </div>
-                  <% } %>
+<section class="categorical-section">
+  <div id="categorical-app">
+    <% if (firstHalf && firstHalf.length > 0) { %>
+      <div class="categorical-scroll-container">
+        <% firstHalf.forEach((cat)=> { %>
+          <a href="/category/<%= cat._id %>" class="categorical-link">
+            <div class="categorical-card-wrap" data-image="<%= cat.Image %>">
+              <div class="categorical-card">
+                <div class="categorical-card-bg" style="background-image: url('<%= cat.Image %>');"></div>
+                <div class="categorical-card-info">
+                  <h1><%= cat.name %></h1>
+                  <p><%= cat.description || "Explore our latest collection." %></p>
+                </div>
               </div>
-            </section>
+            </div>
+          </a>
+        <% }) %>
+
+        <!-- Explore All -->
+        <div class="categorical-card-wrap explore-all-card">
+          <a href="/category">
+            <div class="categorical-card explore-card">
+              <div class="categorical-card-info explore-info">
+                <h1>Explore All</h1>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</section>
+
           </div>
 
 

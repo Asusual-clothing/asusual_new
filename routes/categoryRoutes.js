@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Category = require("../models/Category");
+const Product = require("../models/Product")
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 
@@ -52,6 +53,40 @@ router.get('/all', async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+// GET products by category
+
+router.get("/:id", async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+
+    // ✅ Find category
+    const category = await Category.findById(categoryId);
+    if (!category) return res.status(404).send("Category not found");
+
+    // ✅ Find products with this category
+    const products = await Product.find({ categoryType: categoryId });
+
+    // ✅ Prepare filter lists
+    const availableColors = [...new Set(products.flatMap(p => p.color))];
+    const categoryTypes = [category.name];
+
+    res.render("User/categoryProducts", {
+      products,
+      categoryName: category.name,
+      categoryImage: category.Image,
+      categoryTypes,
+      availableColors,
+      user: req.user,
+      cartCount: req.cartCount || 0
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+
 
 router.get("/", async (req, res) => {
   const categories = await Category.find(); // assuming MongoDB

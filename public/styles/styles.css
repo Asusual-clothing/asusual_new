@@ -291,8 +291,8 @@ body {
     align-items: center;
     gap: 2rem;
     padding: 0rem 1rem 1rem 1rem;
-    margin-top: -136px;
-    margin-bottom: -65px;
+    margin-top: -50px;
+    margin-bottom: 10px;
   }
 
   .card {

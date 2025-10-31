@@ -26,54 +26,106 @@
         .category-header {
             position: relative;
             width: 100%;
-            height: 170px;
+            padding: 60px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: transparent;
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 900;
+            font-size: clamp(2.2rem, 6vw, 4rem);
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 3px;
-            margin-bottom: 40px;
-            background: linear-gradient(135deg, #0f0f0f, #1c1c1c);
+            background: #000;
+            color: #e60023;
+            /* sleek red */
             overflow: hidden;
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* Shiny Gradient Text Effect */
+        /* Minimal red glow */
         .category-header::before {
             content: attr(data-category);
             position: absolute;
-            background: linear-gradient(90deg, #ff0055, #ffbb00, #00ffcc, #ff0055);
-            background-size: 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e60023;
+            opacity: 0.2;
+            filter: blur(8px);
         }
 
-        /* Subtle neon glow */
+        /* Soft underline reveal */
+        .category-header span {
+            position: relative;
+        }
+
+        .category-header span::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -8px;
+            width: 0;
+            height: 2px;
+            background: #e60023;
+            transform: translateX(-50%);
+            transition: width 0.6s ease;
+        }
+
+        /* Animate underline on page load */
+        .category-header.loaded span::after {
+            width: 60%;
+        }
+
+        /* Shadow Flash / Glitch back layer */
         .category-header::after {
             content: attr(data-category);
             position: absolute;
-            color: rgba(255, 255, 255, 0.1);
-            filter: blur(10px);
-            transform: scale(1.2);
+            color: rgba(255, 0, 0, 0.2);
+            font-size: inherit;
+            transform: translate(3px, 3px);
+            filter: blur(3px);
+        }
+        /* OPTIONAL — subtle scanline flicker */
+        .category-header::before {
+            animation:
+                pulseGlow 2.2s ease-in-out infinite,
+                flicker 4s linear infinite;
         }
 
-        /* Gradient motion animation */
-        @keyframes shine {
+        @keyframes flicker {
             0% {
-                background-position: 0% 50%;
+                opacity: 1;
             }
 
-            50% {
-                background-position: 100% 50%;
+            5% {
+                opacity: 0.85;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            15% {
+                opacity: 0.9;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            30% {
+                opacity: 0.95;
+            }
+
+            80% {
+                opacity: 1;
             }
 
             100% {
-                background-position: 0% 50%;
+                opacity: 0.9;
             }
         }
+
 
         /* Optional background overlay pattern */
         .category-header::before,
@@ -83,15 +135,21 @@
             text-transform: inherit;
             letter-spacing: inherit;
         }
+
         .card::after {
-    content: "ASUSUAL";
-    position: absolute;
-    bottom: 0;
-    left: 3px;
-    font-weight: 600;
-    font-size: 3.8rem;
-    color: rgba(255, 255, 255, 0.1);
-}
+            content: "ASUSUAL";
+            position: absolute;
+            bottom: 0;
+            left: 3px;
+            font-weight: 600;
+            font-size: 3.8rem;
+            color: rgba(255, 255, 255, 0.1);
+        }
+
+        .card .contentBox .buy {
+
+            margin-top: 10px;
+        }
     </style>
 
 </head>
@@ -108,9 +166,10 @@
 
         <!-- Category Header -->
         <div class="category-header" data-category="<%= categoryName %>">
-            <%= categoryName %>
+            <span>
+                <%= categoryName %>
+            </span>
         </div>
-
 
         <div class="All-product-container">
             <!-- Filters -->
@@ -319,6 +378,12 @@
                     if (loader) { loader.classList.add("fade-out"); setTimeout(() => loader.style.display = "none", 500); }
                 });
             </script>
+            <script>
+                window.addEventListener("load", () => {
+                    document.querySelector(".category-header")?.classList.add("loaded");
+                });
+            </script>
+
 </body>
 
 </html>

@@ -118,7 +118,16 @@
                                                                         </button>
                                                                     </div>
 
-                                                                    <!-- File upload for this color -->
+                                                                    <!-- 🎨 COLOR PICKER -->
+                                                                    <div class="flex items-center gap-2">
+                                                                        <label class="text-sm text-gray-600">Pick
+                                                                            Color:</label>
+                                                                        <input type="color" name="colorCode_<%= col %>"
+                                                                            value="<%= (product.colorImages.find(c=>c.color === col)?.colorCode) || '#000000' %>"
+                                                                            class="w-10 h-8 border rounded" />
+                                                                    </div>
+
+                                                                    <!-- 🖼️ File upload -->
                                                                     <div>
                                                                         <label
                                                                             class="block text-sm text-gray-600">Upload
@@ -129,6 +138,7 @@
                                                                             class="w-full mt-1 border border-gray-300 rounded-md p-2 text-black" />
                                                                     </div>
                                                                 </div>
+
                                                                 <% }) %>
                                                                     <% } %>
                                                     </div>
@@ -324,26 +334,38 @@
             div.id = `color-block-${productId}-${color}`;
 
             div.innerHTML = `
-    <div class="flex justify-between items-center">
-      <span class="font-semibold text-black">${color}</span>
-      <button type="button" class="text-red-500 hover:text-red-700"
-        onclick="removeColor('${productId}', '${color}')">
-        <i class='fas fa-times'></i>
-      </button>
-    </div>
+<div class="flex justify-between items-center">
+  <span class="font-semibold text-black">${color}</span>
+  <button type="button" class="text-red-500 hover:text-red-700"
+    onclick="removeColor('${productId}', '${color}')">
+    <i class='fas fa-times'></i>
+  </button>
+</div>
 
-    <div>
-      <label class="block text-sm text-gray-600">Upload Images for ${color}:</label>
-      <input
-        type="file"
-        name="colorImages_${color}"
-        id="colorImages-${productId}-${color}"
-        multiple
-        accept="image/*"
-        class="w-full mt-1 border border-gray-300 rounded-md p-2 text-black"
-      />
-    </div>
-  `;
+<!-- 🎨 COLOR PICKER -->
+<div class="flex items-center gap-2">
+  <label class="text-sm text-gray-600">Pick Color:</label>
+  <input 
+    type="color"
+    name="colorCode_${color}"
+    value="#000000"
+    class="w-10 h-8 border rounded"
+  />
+</div>
+
+<div>
+  <label class="block text-sm text-gray-600">Upload Images for ${color}:</label>
+  <input
+    type="file"
+    name="colorImages_${color}"
+    id="colorImages-${productId}-${color}"
+    multiple
+    accept="image/*"
+    class="w-full mt-1 border border-gray-300 rounded-md p-2 text-black"
+  />
+</div>
+`;
+
 
             colorContainer.appendChild(div);
             input.value = "";

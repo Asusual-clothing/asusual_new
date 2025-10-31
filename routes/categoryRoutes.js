@@ -36,19 +36,14 @@ const uploadImage = async (file, oldUrl = null) => {
       await cloudinary.uploader.destroy(publicId);
     }
   }
+
   const result = await cloudinary.uploader.upload(
-    `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
-    {
-      quality: "auto:best",
-      fetch_format: "auto",
-      width: 1000,
-      height: 1000,
-      crop: "fill",
-      gravity: "auto:faces",
-    }
+    `data:${file.mimetype};base64,${file.buffer.toString("base64")}`
   );
+
   return result.secure_url;
 };
+
 router.get('/all', async (req, res) => {
   try {
     const categories = await Category.find().sort({ name: 1 });

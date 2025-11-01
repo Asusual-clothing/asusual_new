@@ -78,7 +78,7 @@
   list-style: none;
   display: flex;
   gap: 1.5rem;
-  margin-left: -62px;
+  margin-left: -23px;
   padding: 0;
 }
 
@@ -206,7 +206,7 @@
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
+    left: 63px;
     width: 100%;
     background: rgba(26, 26, 26, 0.95);
     flex-direction: column;

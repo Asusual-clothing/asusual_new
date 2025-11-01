@@ -202,13 +202,13 @@ function initializeAnimations() {
 
     container.addEventListener('touchmove', e => {
       const x = e.touches[0].pageX - container.offsetLeft;
-      const walk = (startX - x) * 0.01; // less sensitive
+      const walk = (startX - x) * 0.2; // less sensitive
       const maxScrollLeft = container.scrollWidth - container.clientWidth;
       const newScroll = scrollLeft + walk;
 
       if (newScroll <= 0 || newScroll >= maxScrollLeft) {
         window.scrollBy({
-          top: (startX - x) * 0.04,
+          top: (startX - x) * 0.3,
           behavior: 'smooth'
         });
         return;

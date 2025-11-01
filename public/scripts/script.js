@@ -208,7 +208,7 @@ function initializeAnimations() {
 
       if (newScroll <= 0 || newScroll >= maxScrollLeft) {
         window.scrollBy({
-          top: (startX - x) * 0.1,
+          top: (startX - x) * 0.04,
           behavior: 'smooth'
         });
         return;

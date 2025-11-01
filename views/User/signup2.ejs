@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,269 +8,156 @@
   <!-- Toastify -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <!-- Favicons -->
+  <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
+  <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
+  <link rel="manifest" href="/assests/site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description"
+    content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
+  <meta name="keywords"
+    content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- <link rel="stylesheet" href="styles/signup.css"> -->
+  <!-- <link rel="stylesheet" href="/styles/styles.css" /> -->
+   <link rel="stylesheet" href="/styles/signup2.css">
+  <link rel="stylesheet" href="/styles/navbar.css" />
+  <link rel="stylesheet" href="/styles/footer.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet" />
+  <!-- Add these in your head section -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
   <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-      background: linear-gradient(to bottom, #2a0000, #0a0000);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      position: relative;
-    }
-
-    .card {
-      background: #fff0f0;
-      width: 100%;
-      max-width: 28rem;
-      border-radius: 1rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      padding: 2rem;
-    }
-
-    .tabs {
-      display: flex;
-      background: #e0d0d0;
-      border-radius: 2rem;
-      margin-bottom: 2rem;
-      overflow: hidden;
-    }
-
-    .tab-button {
-      width: 50%;
-      padding: 0.75rem;
-      border: none;
-      border-radius: 2rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .3s;
-      background: transparent;
-      color: #500;
-    }
-
-    .tab-button.active {
-      background: linear-gradient(to right, #a00000, #600000);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(160, 0, 0, 0.3);
-    }
-
-    .form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .form-group {
-      text-align: left;
-    }
-
-    .form-label {
-      display: block;
-      font-size: .875rem;
-      font-weight: 600;
-      color: #500;
-      margin-bottom: .5rem;
-    }
-
-    .input-container {
-      display: flex;
-      align-items: center;
-      border: 1px solid #c0a0a0;
-      border-radius: .5rem;
-      padding: .75rem;
-      background: white;
-    }
-
-    .input-container i {
-      width: 1rem;
-      height: 1rem;
-      color: #a05050;
-      margin-right: .5rem;
-    }
-
-    .input-field {
-      width: 100%;
-      border: none;
-      outline: none;
-      font-size: .875rem;
-      color: #300;
-      background: transparent;
-    }
-
-    .input-field::placeholder {
-      color: #a0a0a0;
-    }
-
-    .submit-button {
-      width: 100%;
-      background: linear-gradient(to right, #a00000, #600000);
-      color: #fff;
-      padding: .75rem;
-      border: none;
-      border-radius: .5rem;
-      font-weight: 600;
-      box-shadow: 0 2px 8px rgba(160, 0, 0, 0.3);
-      cursor: pointer;
-      transition: opacity .3s;
-    }
-
-    .submit-button:hover {
-      opacity: .9;
-    }
-
-    .submit-button:disabled {
-      opacity: .7;
-      cursor: not-allowed;
-    }
-
-    .error-message {
-      color: #d00000;
-      font-size: .875rem;
-      text-align: center;
-      margin-top: .75rem;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    #passwordRequirements li {
-      color: red;
-      font-size: .8rem;
-    }
-  </style>
 </head>
 
 <body>
-
-  <div class="card">
-    <div class="tabs">
-      <button class="tab-button active" onclick="switchTab('login')">Login</button>
-      <button class="tab-button" onclick="switchTab('signup')">Signup</button>
-    </div>
-
-    <!-- LOGIN FORM -->
-    <form id="loginForm" class="form" action="/auth/login" method="POST">
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <div class="input-container">
-          <i data-lucide="mail"></i>
-          <input type="email" name="email" placeholder="you@example.com" class="input-field" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <div class="input-container">
-          <i data-lucide="lock"></i>
-          <input type="password" name="password" placeholder="••••••••" class="input-field" required>
-        </div>
-      </div>
-
-      <a href="/auth/forget-password" style="font-size:.85rem;text-align:right;color:#600;">Forgot password?</a>
-
-      <button type="submit" class="submit-button">Sign in</button>
-    </form>
-
-    <!-- SIGNUP FORM -->
-    <form id="signupForm" class="form hidden" action="/auth/signup" method="POST">
-      <div class="form-group">
-        <label class="form-label">Full Name</label>
-        <div class="input-container">
-          <i data-lucide="user"></i>
-          <input type="text" name="name" placeholder="John Doe" class="input-field" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <div class="input-container">
-          <i data-lucide="mail"></i>
-          <input type="email" name="email" id="signupEmail" placeholder="you@example.com" class="input-field" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Phone</label>
-        <div class="input-container">
-          <i data-lucide="phone"></i>
-          <input type="tel" name="phone" placeholder="9876543210" class="input-field" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <div class="input-container">
-          <i data-lucide="lock"></i>
-          <input type="password" name="password" id="passwordSignup" placeholder="••••••••" class="input-field"
-            required>
-        </div>
-        <ul id="passwordRequirements">
-          <li id="length">❌ At least 8 characters</li>
-          <li id="lowercase">❌ At least one lowercase letter</li>
-          <li id="uppercase">❌ At least one uppercase letter</li>
-          <li id="number">❌ At least one number</li>
-          <li id="special">❌ At least one special character</li>
-        </ul>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Confirm Password</label>
-        <div class="input-container">
-          <i data-lucide="lock"></i>
-          <input type="password" name="confirmPassword" id="confirmPasswordSignup" placeholder="••••••••"
-            class="input-field" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <button type="button" id="generateOtpSignup" class="submit-button" disabled>
-          Generate OTP
-        </button>
-
-        <!-- OTP Section (hidden initially) -->
-        <div id="otpSection" style="display: none; margin-top: 0.6rem;">
-          <label class="form-label" style="margin-bottom: 0.3rem;">Enter OTP</label>
-          <div class="input-container">
-            <i data-lucide="key"></i>
-            <input type="text" name="otp" id="otpSignup" placeholder="Enter the OTP sent to your email"
-              class="input-field" required />
-          </div>
-          <button type="button" id="verifyOtpSignup" class="submit-button" style="margin-top: 0.6rem;">
-            Verify
-          </button>
-        </div>
-      </div>
-
-
-      <input type="hidden" id="otpVerifiedSignup" name="otpVerified" value="false">
-
-      <button type="submit" id="signUp" class="submit-button" disabled>Sign up</button>
-    </form>
+    <!-- Page Loader -->
+  <div id="page-loader" class="page-loader">
+    <h1 class="slide-in">AsUsual</h1>
+    <div class="spinner"></div>
   </div>
+  <!-- Navbar -->
+  <!-- Include Navbar -->
+  <%- include('../partials/navbar') %>
+
+  <!-- Flash Messages -->
+  <%- include('../partials/flash') %>
+
+  <main>
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-button active" onclick="switchTab('login')">Login</button>
+        <button class="tab-button" onclick="switchTab('signup')">Signup</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="loginForm" class="form" action="/auth/login" method="POST">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <div class="input-container">
+            <i data-lucide="mail"></i>
+            <input type="email" name="email" placeholder="you@example.com" class="input-field" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-container">
+            <i data-lucide="lock"></i>
+            <input type="password" name="password" placeholder="••••••••" class="input-field" required>
+          </div>
+        </div>
+
+        <a href="/auth/forget-password" style="font-size:.85rem;text-align:right;color:#600;">Forgot password?</a>
+
+        <button type="submit" class="submit-button">Sign in</button>
+      </form>
+
+      <!-- SIGNUP FORM -->
+      <form id="signupForm" class="form hidden" action="/auth/signup" method="POST">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <div class="input-container">
+            <i data-lucide="user"></i>
+            <input type="text" name="name" placeholder="John Doe" class="input-field" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <div class="input-container">
+            <i data-lucide="mail"></i>
+            <input type="email" name="email" id="signupEmail" placeholder="you@example.com" class="input-field" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <div class="input-container">
+            <i data-lucide="phone"></i>
+            <input type="tel" name="phone" placeholder="9876543210" class="input-field" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-container">
+            <i data-lucide="lock"></i>
+            <input type="password" name="password" id="passwordSignup" placeholder="••••••••" class="input-field" required>
+          </div>
+          <ul id="passwordRequirements">
+            <li id="length">❌ At least 8 characters</li>
+            <li id="lowercase">❌ At least one lowercase letter</li>
+            <li id="uppercase">❌ At least one uppercase letter</li>
+            <li id="number">❌ At least one number</li>
+            <li id="special">❌ At least one special character</li>
+          </ul>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <div class="input-container">
+            <i data-lucide="lock"></i>
+            <input type="password" name="confirmPassword" id="confirmPasswordSignup" placeholder="••••••••" class="input-field" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button type="button" id="generateOtpSignup" class="submit-button" disabled>Generate OTP</button>
+
+          <div id="otpSection" style="display: none; margin-top: 0.6rem;">
+            <label class="form-label" style="margin-bottom: 0.3rem;">Enter OTP</label>
+            <div class="input-container">
+              <i data-lucide="key"></i>
+              <input type="text" name="otp" id="otpSignup" placeholder="Enter the OTP sent to your email" class="input-field" required />
+            </div>
+            <button type="button" id="verifyOtpSignup" class="submit-button" style="margin-top: 0.6rem;">Verify</button>
+          </div>
+        </div>
+
+        <input type="hidden" id="otpVerifiedSignup" name="otpVerified" value="false">
+        <button type="submit" id="signUp" class="submit-button" disabled>Sign up</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Include Footer -->
+  <%- include('../partials/footer') %>
 
   <script>
     lucide.createIcons();
 
-    // Toastify helper
     const notify = (msg, ok = true) => Toastify({
       text: msg, duration: 4000, close: true, gravity: "top", position: "center",
       style: { borderRadius: "5px", padding: "10px", fontSize: "14px" },
       backgroundColor: ok ? "#4CAF50" : "#f44336"
     }).showToast();
 
-    // Tabs
     function switchTab(tab) {
       const login = document.getElementById('loginForm');
       const signup = document.getElementById('signupForm');
@@ -285,7 +171,6 @@
       }
     }
 
-    // OTP Generation
     document.getElementById('generateOtpSignup').addEventListener('click', () => {
       const email = document.getElementById('signupEmail').value;
       if (!email) return notify("Please enter your email.", false);
@@ -298,30 +183,32 @@
         .then(res => res.json())
         .then(d => {
           if (d.success) {
-            document.getElementById("otpSection").style.display = "block"; // Show OTP input and Verify
+            document.getElementById("otpSection").style.display = "block";
             notify("OTP sent to your email!");
           } else notify(d.message || "Failed to send OTP", false);
         })
         .catch(() => notify("Network error.", false));
     });
 
-
-
-    // OTP Verify
     document.getElementById('verifyOtpSignup').addEventListener('click', () => {
       const email = document.getElementById('signupEmail').value;
       const otp = document.getElementById('otpSignup').value;
-      fetch("/verify-otp", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, otp }) })
-        .then(res => res.json()).then(d => {
+      fetch("/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp })
+      })
+        .then(res => res.json())
+        .then(d => {
           if (d.success) {
             document.getElementById('otpVerifiedSignup').value = "true";
             document.getElementById('signUp').disabled = false;
             notify("OTP verified successfully!");
           } else notify(d.message || "Invalid OTP", false);
-        }).catch(() => notify("Verification failed.", false));
+        })
+        .catch(() => notify("Verification failed.", false));
     });
 
-    // Password validation
     const password = document.getElementById("passwordSignup");
     password.addEventListener("input", () => {
       const v = password.value;
@@ -340,7 +227,6 @@
       document.getElementById("generateOtpSignup").disabled = !Object.values(rules).every(Boolean);
     });
 
-    // Prevent signup without OTP
     document.getElementById("signupForm").addEventListener("submit", e => {
       if (document.getElementById("otpVerifiedSignup").value !== "true") {
         e.preventDefault();
@@ -348,6 +234,13 @@
       }
     });
   </script>
+   <script>window.addEventListener('load', () => {
+  const loader = document.getElementById('page-loader');
+  if (loader) {
+    loader.classList.add('fade-out'); // You can define .fade-out in CSS
+    setTimeout(() => loader.style.display = 'none', 500);
+  }
+});
+</script>
 </body>
-
 </html>

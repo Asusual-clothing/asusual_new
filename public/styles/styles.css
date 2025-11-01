@@ -243,9 +243,7 @@ body {
 
 /* Responsive Design */
 @media only screen and (min-width: 1024px) {
-  #page2 {
-    height: 73vh;
-  }
+
 
   #page1 {
     height: 100vh;

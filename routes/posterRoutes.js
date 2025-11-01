@@ -122,28 +122,16 @@ router.post(
     uploads.single("posterImage")(req, res, function (err) {
       if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading
-        if (err.code === 'LIMIT_FILE_SIZE') {
-          return res.status(400).send(`
-            <script>
-              alert('File size too large. Maximum allowed is 50MB');
-              window.location.href = '/posters/edit-poster';
-            </script>
-          `);
+        if (err.code === "LIMIT_FILE_SIZE") {
+          req.flash("error_msg", "File size too large. Maximum allowed is 50MB");
+          return res.redirect("/posters/edit-poster");
         }
-        return res.status(400).send(`
-          <script>
-            alert('File upload error: ${err.message}');
-            window.location.href = '/posters/edit-poster';
-          </script>
-        `);
+        req.flash("error_msg", `File upload error: ${err.message}`);
+        return res.redirect("/posters/edit-poster");
       } else if (err) {
         // An unknown error occurred
-        return res.status(500).send(`
-          <script>
-            alert('Error: ${err.message}');
-            window.location.href = '/posters/edit-poster';
-          </script>
-        `);
+        req.flash("error_msg", `Error: ${err.message}`);
+        return res.redirect("/posters/edit-poster");
       }
       // Everything went fine
       next();
@@ -153,7 +141,8 @@ router.post(
     try {
       const index = parseInt(req.params.index);
       if (isNaN(index) || index < 0 || index > 2) {
-        return res.status(400).send("Invalid poster index");
+        req.flash("error_msg", "Invalid poster index");
+        return res.redirect("/posters/edit-poster");
       }
 
       const { Heading, Title } = req.body;
@@ -175,29 +164,30 @@ router.post(
         try {
           // Compress image before uploading
           const compressedBuffer = await sharp(file.buffer)
-            .resize(1920, 1080, {  // Adjust dimensions as needed
-              fit: 'inside',
-              withoutEnlargement: true
+            .resize(1920, 1080, {
+              fit: "inside",
+              withoutEnlargement: true,
             })
-            .jpeg({ quality: 80 })  // or .png({ quality: 80 })
+            .jpeg({ quality: 80 })
             .toBuffer();
 
-          const dataUri = `data:${file.mimetype};base64,${compressedBuffer.toString('base64')}`;
+          const dataUri = `data:${file.mimetype};base64,${compressedBuffer.toString(
+            "base64"
+          )}`;
 
           const result = await cloudinary.uploader.upload(dataUri, {
             resource_type: "auto",
-            quality: "auto:good",  // Slightly lower quality for smaller files
+            quality: "auto:good",
           });
 
           update.image[index] = result.secure_url;
         } catch (uploadError) {
           console.error("Cloudinary upload error:", uploadError);
-          return res.status(500).send(`
-            <script>
-              alert('Failed to upload image. Please try a smaller file or different image.');
-              window.location.href = '/posters/edit-poster';
-            </script>
-          `);
+          req.flash(
+            "error_msg",
+            "Failed to upload image. Please try a smaller file or different image."
+          );
+          return res.redirect("/posters/edit-poster");
         }
       }
 
@@ -210,23 +200,16 @@ router.post(
         setDefaultsOnInsert: true,
       });
 
-      return res.send(`
-        <script>
-          alert('Poster updated successfully');
-          window.location.href = '/posters/edit-poster';
-        </script>
-      `);
+      req.flash("success_msg", "Poster updated successfully");
+      return res.redirect("/posters/edit-poster");
     } catch (error) {
       console.error("Error updating poster:", error);
-      return res.status(500).send(`
-        <script>
-          alert('Error updating poster: ${error.message}');
-          window.location.href = '/posters/edit-poster';
-        </script>
-      `);
+      req.flash("error_msg", `Error updating poster: ${error.message}`);
+      return res.redirect("/posters/edit-poster");
     }
   }
 );
+
 
 // Remove the duplicate /edit-poster route (the one with uploads.fields())
 

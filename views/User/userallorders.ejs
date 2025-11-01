@@ -34,6 +34,8 @@
   <!-- Navbar -->
 
   <%- include('../partials/navbar', { user: user, cartCount: cartCount }) %>
+  <%- include('../partials/flash') %>
+
 
     <main class="orders-section">
       <% if (orders.length===0) { %>
@@ -230,7 +232,16 @@
             toggleImage(index);
           });
         });
+        
       </script>
+      <script>window.addEventListener('load', () => {
+  const loader = document.getElementById('page-loader');
+  if (loader) {
+    loader.classList.add('fade-out'); // You can define .fade-out in CSS
+    setTimeout(() => loader.style.display = 'none', 500);
+  }
+});
+</script>
 
 </body>
 

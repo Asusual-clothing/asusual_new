@@ -272,6 +272,8 @@
     </div>
 
     <%- include('../partials/navbar', { user: user, cartCount: cartCount }) %>
+    <%- include('../partials/flash') %>
+
       <!-- this is slider of poster  -->
 
       <div class="slider" id="slider" style="--img-prev: url(<%=posters[posters.length-1]||''%>)">
@@ -625,7 +627,7 @@
               function validateCheckbox() {
                 const checkbox = document.getElementById("consent");
                 if (!checkbox.checked) {
-                  alert("Please agree to receive updates before subscribing.");
+                  alert("Please mark the checkbox to subscribe.");
                   return false;
                 }
                 return true;

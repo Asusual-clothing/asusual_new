@@ -70,9 +70,11 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).json({ message: "Failed to log out" });
+      req.flash("error_msg", "Failed to log out");
+      return res.redirect("/admin/dashboard"); // redirect back to dashboard on failure
     }
     res.clearCookie("adminId");
+    req.flash("success_msg", "You have been logged out successfully!");
     res.redirect("/admin/login");
   });
 });

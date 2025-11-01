@@ -192,14 +192,10 @@ router.get("/", checkAdminAuth, async (req, res) => {
 // User view all orders
 router.get("/all-orders", async (req, res) => {
   if (!req.user) {
-    return res.send(`
-      <script>
-        alert('Please log in to view your orders');
-        window.location.href = '/auth/signup';
-      </script>
-    `);
+    req.flash("error_msg", "Please log in to view your orders");
+    return res.redirect("/auth/signup");
   }
-
+  userId= req.user._id;
   try {
     const orders = await Order.find({ user: req.user._id })
       .sort({ createdAt: -1 })
@@ -213,6 +209,17 @@ router.get("/all-orders", async (req, res) => {
         select: "name images price",
         model: "Product",
       });
+      let  cartCount;
+       if (userId) {
+      user = await User.findById(userId, "name _id");
+
+      // Fetch user's cart and calculate cartCount
+      const cart = await Cart.findOne({ user: userId });
+      if (cart && Array.isArray(cart.items)) {
+        // Total quantity of all items in the cart
+        cartCount = cart.items.reduce((total, item) => total + item.quantity, 0);
+      }
+    }
 
     const ordersWithStatus = orders.map((order) => {
       const hasDeletedProducts = order.items.some((item) => !item.product);
@@ -225,11 +232,12 @@ router.get("/all-orders", async (req, res) => {
     res.render("User/userallorders", {
       orders: ordersWithStatus,
       user: req.user,
-      cartCount: req.session.cartCount || 0,
+      cartCount:cartCount,
     });
   } catch (error) {
     console.error("Error fetching orders:", error);
-    res.status(500).render("error", { message: "Error fetching your orders" });
+    req.flash("error_msg", "Error fetching your orders");
+    res.redirect("/");
   }
 });
 

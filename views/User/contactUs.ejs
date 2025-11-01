@@ -36,6 +36,8 @@
     </div>
 
   <%- include('../partials/navbar', { user: user, cartCount: cartCount }) %>
+  <%- include('../partials/flash') %>
+
   <section id="contact">
     <div class="container">
       <h1 class="section-title">Get In Touch</h1>
@@ -43,7 +45,7 @@
 
       <!-- Contact Form -->
       <div class="contact-content">
-        <form id="contact-form" class="contact-form" action="/contact" method="post">
+        <form id="contact-form" class="contact-form" action="/user/contact" method="post">
           <div class="form-group">
             <input type="text" id="name" name="name" placeholder="Your Name" required>
           </div>

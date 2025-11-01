@@ -24,6 +24,8 @@
         <!-- Sidebar - Same as dashboard -->
 
         <%- include('../partials/admin-navbar', { activePage: activePage }) %>
+        <%- include('../partials/flash') %>
+
 
             <!-- Main Content -->
             <div class="flex-1 p-8">
@@ -401,6 +403,15 @@
 
 
     </script>
+    <script>
+setTimeout(() => {
+    const success = document.getElementById("toast-success");
+    const error = document.getElementById("toast-error");
+    success?.remove();
+    error?.remove();
+}, 3000);
+</script>
+
 </body>
 
 </html>

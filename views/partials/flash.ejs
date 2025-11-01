@@ -1,0 +1,66 @@
+<% if (success_msg && success_msg.length> 0) { %>
+    <div class="toast-message toast-success">
+        <%= success_msg %>
+    </div>
+    <% } else if (typeof query !=='undefined' && query.success) { %>
+        <div class="toast-message toast-success">
+            <%= query.success %>
+        </div>
+        <% } %>
+
+            <% if (error_msg && error_msg.length> 0) { %>
+                <div class="toast-message toast-error">
+                    <%= error_msg %>
+                </div>
+                <% } else if (typeof query !=='undefined' && query.error) { %>
+                    <div class="toast-message toast-error">
+                        <%= query.error %>
+                    </div>
+                    <% } %>
+
+
+                        <style>
+                            .toast-message {
+                                position: fixed;
+                                top: 35px;
+                                right: 20px;
+                                z-index: 9999;
+                                padding: 14px 18px;
+                                border-radius: 8px;
+                                font-weight: 600;
+                                box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+                                opacity: 0;
+                                transform: translateX(100%);
+                                animation: slideIn 0.4s forwards, fadeOut 0.4s 2.6s forwards;
+                            }
+
+                            .toast-success {
+                                background: #4CAF50;
+                                color: white;
+                            }
+
+                            .toast-error {
+                                background-color: red;
+                                color: white;
+                            }
+
+                            @keyframes slideIn {
+                                to {
+                                    opacity: 1;
+                                    transform: translateX(0);
+                                }
+                            }
+
+                            @keyframes fadeOut {
+                                to {
+                                    opacity: 0;
+                                    transform: translateX(100%);
+                                }
+                            }
+                        </style>
+
+                        <script>
+                            setTimeout(() => {
+                                document.querySelectorAll('.toast-message').forEach(e => e.remove());
+                            }, 3000);
+                        </script>

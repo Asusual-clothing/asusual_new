@@ -324,35 +324,27 @@ router.post("/add-to-cart", async (req, res) => {
   const { productId, quantity, size, action, color } = req.body;
   const userId = req.session.userId || req.cookies.userId;
 
+  // 🔒 If user not logged in
   if (!userId) {
-    return res.send(`
-      <script>
-        alert('Please log in to add item to cart');
-        window.location.href = '/auth/signup';
-      </script>
-    `);
+    req.flash("error_msg", "Please log in to add items to your cart");
+    return res.redirect("/signup"); // Redirect to signup or login page
   }
 
   try {
-    console.log("=>", color)
     let cart = await Cart.findOne({ user: userId });
 
     if (cart) {
-      // 🔍 Find item with same product, size, and color
+      // 🔍 Check if same product, size & color already exists
       const existingItem = cart.items.find(
         (item) =>
           item.product.toString() === productId &&
           item.size === size &&
           item.color === color
       );
+
       if (existingItem) {
-        console.log("1")
-        // ✅ If same product + size + color exists, just increase quantity
         existingItem.quantity += parseInt(quantity, 10);
       } else {
-        console.log("2", color)
-
-        // 🆕 Otherwise, add it as a new line item (different color or size)
         cart.items.push({
           product: productId,
           quantity: parseInt(quantity, 10),
@@ -362,8 +354,7 @@ router.post("/add-to-cart", async (req, res) => {
       }
       await cart.save();
     } else {
-      console.log("3")
-      // 🛒 Create new cart for user if it doesn’t exist
+      // 🛒 Create new cart
       const newCart = new Cart({
         user: userId,
         items: [
@@ -378,20 +369,19 @@ router.post("/add-to-cart", async (req, res) => {
       await newCart.save();
     }
 
+    // ✅ Set flash and redirect
+    req.flash("success_msg", "Item added to cart successfully!");
     const redirectUrl = action === "buy" ? "/cart" : `/products/${productId}`;
-    res.send(`
-      <script>
-        alert('Item added to cart successfully');
-        window.location.href = '${redirectUrl}';
-      </script>
-    `);
+
+    // Save flash to session before redirect
+    req.session.save((err) => {
+      if (err) console.error("Session save error:", err);
+      res.redirect(redirectUrl);
+    });
   } catch (error) {
     console.error("Error adding to cart:", error);
-    res.send(`
-      <script>
-        alert('Error adding item to cart');
-      </script>
-    `);
+    req.flash("error_msg", "Something went wrong while adding to cart");
+    res.redirect(`/products/${productId}`);
   }
 });
 
@@ -644,8 +634,8 @@ router.post("/update-quantity", async (req, res) => {
 router.post("/update-freeitem-size", async (req, res) => {
   try {
     const { cartId, size } = req.body;
-    console.log("caled=>",cartId)
-    console.log("=>",size)
+    console.log("caled=>", cartId)
+    console.log("=>", size)
     if (!cartId || !size) {
       return res.status(400).json({ success: false, message: "Invalid data" });
     }
@@ -672,7 +662,7 @@ router.post("/remove-item", async (req, res) => {
     if (!cart) {
       return res.status(404).json({ success: false, message: "Cart not found" });
     }
-console.log("no dikkt")
+    console.log("no dikkt")
     // 🔒 Prevent item removal if couponLocked
     if (cart.couponLocked && cart.freeItem) {
       const itemToRemove = cart.items.find(

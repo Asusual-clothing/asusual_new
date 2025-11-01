@@ -44,6 +44,8 @@
     </div>
 
   <%- include('../partials/navbar', { user: user, cartCount: cartCount }) %>
+  <%- include('../partials/flash') %>
+
   <!-- Download Button -->
   <div class="fixed bottom-4 right-4 z-50">
     <button onclick="downloadPDF()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg">

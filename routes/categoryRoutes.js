@@ -98,30 +98,43 @@ router.post("/add-category", uploads.single("image"), async (req, res) => {
     const { name, description } = req.body;
     const file = req.file;
 
+    // 🔍 Validation
     if (!name || !file) {
-      return res.status(400).send("Category name and image are required.");
+      req.flash("error_msg", "Category name and image are required.");
+      return req.session.save(() => res.redirect("/admin/delivery-cost"));
     }
 
     const existing = await Category.findOne({ name: name.trim() });
     if (existing) {
-      return res.status(400).send("Category already exists.");
+      req.flash("error_msg", "Category already exists.");
+      return req.session.save(() => res.redirect("/admin/delivery-cost"));
     }
 
+    // ✅ Upload image and save category
     const imageUrl = await uploadImage(file);
-    const newCategory = new Category({ name: name.trim(), description, Image: imageUrl });
+    const newCategory = new Category({
+      name: name.trim(),
+      description,
+      Image: imageUrl,
+    });
     await newCategory.save();
 
-    res.send(`
-      <script>
-        alert("Category added successfully!");
-        window.location.href = "/admin/delivery-cost";
-      </script>
-    `);
+    // ✅ Flash success message
+    req.flash("success_msg", "Category added successfully!");
+    req.session.save((err) => {
+      if (err) console.error("Session save error:", err);
+      res.redirect("/admin/delivery-cost");
+    });
   } catch (error) {
     console.error("Error adding category:", error);
-    res.status(500).send("Internal Server Error");
+    req.flash("error_msg", "Error adding category. Please try again.");
+    req.session.save((err) => {
+      if (err) console.error("Session save error:", err);
+      res.redirect("/admin/delivery-cost");
+    });
   }
 });
+
 
 // ✏️ EDIT CATEGORY
 router.post("/edit/:id", uploads.single("image"), async (req, res) => {
@@ -131,7 +144,8 @@ router.post("/edit/:id", uploads.single("image"), async (req, res) => {
 
     const category = await Category.findById(req.params.id);
     if (!category) {
-      return res.status(404).send("Category not found.");
+      req.flash("error_msg", "Category not found.");
+      return res.redirect("/admin/delivery-cost");
     }
 
     let imageUrl = category.Image;
@@ -144,15 +158,20 @@ router.post("/edit/:id", uploads.single("image"), async (req, res) => {
     category.Image = imageUrl;
     await category.save();
 
-    res.send(`
-      <script>
-        alert("Category updated successfully!");
-        window.location.href = "/admin/delivery-cost";
-      </script>
-    `);
+    // ✅ Flash success message and redirect
+    req.flash("success_msg", "Category updated successfully!");
+    req.session.save((err) => {
+      if (err) console.error("Session save error:", err);
+      res.redirect("/admin/delivery-cost");
+    });
   } catch (error) {
     console.error("Error updating category:", error);
-    res.status(500).send("Internal Server Error");
+    req.flash("error_msg", "Error updating category. Please try again.");
+    req.session.save((err) => {
+      if (err) console.error("Session save error:", err);
+      res.redirect("/admin/delivery-cost");
+    });
   }
 });
+
 module.exports = router;

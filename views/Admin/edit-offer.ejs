@@ -73,6 +73,8 @@
   <div>
 
     <%- include('../partials/admin-navbar', { activePage: activePage }) %>
+    <%- include('../partials/flash') %>
+
       <h1>Edit Offer</h1>
 
       <form action="/offers/edit/<%= offer._id %>" method="POST">

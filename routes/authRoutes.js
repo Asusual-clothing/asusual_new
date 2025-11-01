@@ -5,19 +5,19 @@ const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-  const Product = require("../models/Product");
-  const User = require("../models/UserSchema");
-  const Cart = require("../models/CartSchema");
-  const Admin = require("../models/AdminSchema");
-  const CustomTshirt = require("../models/CustomTshirtSchema");
-  const Poster = require("../models/posterSchema");
-  const Order = require("../models/OrderSchema");
-  const Contact = require("../models/Contact");
-  const Notification = require("../models/Notification");
-  const Subscription = require("../models/subscription");
-  const Testimonial = require("../models/Testimonial");
-  const DeliveryCost = require("../models/Deliveryschema");
-  const Coupon = require("../models/CouponSchema");
+const Product = require("../models/Product");
+const User = require("../models/UserSchema");
+const Cart = require("../models/CartSchema");
+const Admin = require("../models/AdminSchema");
+const CustomTshirt = require("../models/CustomTshirtSchema");
+const Poster = require("../models/posterSchema");
+const Order = require("../models/OrderSchema");
+const Contact = require("../models/Contact");
+const Notification = require("../models/Notification");
+const Subscription = require("../models/subscription");
+const Testimonial = require("../models/Testimonial");
+const DeliveryCost = require("../models/Deliveryschema");
+const Coupon = require("../models/CouponSchema");
 
 // Generate OTP
 function generateOTP() {
@@ -128,60 +128,58 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// User login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate input
     if (!email || !password) {
-      req.session.loginError = "Please provide both email and password";
+      req.flash("error_msg", "Please provide both email and password");
       return res.redirect("/signup");
     }
 
     const user = await User.findOne({ email });
-
     if (!user) {
-      req.session.loginError = "Invalid email or password";
-      return res.send(`
-                <script>
-                  alert('wrong email or password');
-                  window.location.href = '/signup';
-                </script>
-            `);
+      req.flash("error_msg", "Wrong email or password");
+      return res.redirect("/signup");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      req.session.loginError = "Invalid email or password";
-      return res.send(`
-                <script>
-                  alert('wrong email or password');
-                  window.location.href = '/signup';
-                </script>
-            `);
+      req.flash("error_msg", "Wrong email or password");
+      return res.redirect("/signup");
     }
 
-    // Create JWT token
+    // ✅ Create JWT token
     const SECRET_KEY = process.env.JWT_SECRET || "Preaveen@8233";
-    const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: "1h" });
 
-    // Set session and cookies
+    // ✅ Set session first
     req.session.userId = user._id.toString();
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 3600000, // 1 hour
-      secure: process.env.NODE_ENV === "production",
-    });
 
-    // Successful login redirect
-    return res.redirect("/");
+    // ✅ Set flash BEFORE saving session
+    req.flash("success_msg", "Logged in successfully!");
+
+    // ✅ Save session before redirecting
+    req.session.save((err) => {
+      if (err) {
+        console.error("Session save error:", err);
+        req.flash("error_msg", "Something went wrong. Please try again.");
+        return res.redirect("/signup");
+      }
+
+      // ✅ Only now set cookie & redirect
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 3600000,
+        secure: process.env.NODE_ENV === "production",
+      });
+
+      res.redirect("/");
+    });
   } catch (error) {
     console.error("Error logging in user:", error);
-    req.session.loginError = "Error logging in. Please try again.";
-    res.redirect("/signup");
+    req.flash("error_msg", "Error logging in. Please try again.");
+    return res.redirect("/signup");
   }
 });
 
@@ -190,10 +188,14 @@ router.post("/login", async (req, res) => {
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).send("Could not log out, please try again");
+      req.flash("error_msg", "Could not log out, please try again");
+      return res.redirect("/");
     }
+
     res.clearCookie("connect.sid");
     res.clearCookie("userId");
+
+    req.flash("success_msg", "Logged out successfully");
     res.redirect("/");
   });
 });
@@ -236,12 +238,8 @@ router.post("/reset-password-submit", async (req, res) => {
     user.resetTokenExpiration = undefined;
     await user.save();
 
-    return res.send(`
-      <script>
-        alert('Password has been reset successfully');
-        window.location.href = '/auth/signup';
-      </script>
-    `);
+    req.flash("success", "Password has been reset successfully. Please login.");
+    return res.redirect("/auth/signup");
   } catch (err) {
     console.error(err);
     res.status(500).send("Something went wrong. Try again later.");
@@ -292,20 +290,14 @@ router.post("/reset-password", async (req, res) => {
       },
     });
 
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, (error) => {
       if (error) {
         console.log("Error:", error);
-        return res.render("User/forget_password", {
-          message: "Failed to send email. Try again later.",
-        });
+        req.flash("error", "Failed to send email. Try again later.");
+        return res.redirect("/auth/reset-password");
       } else {
-        console.log("Reset Password Email sent:", info.response);
-        return res.send(`
-          <script>
-            alert('Reset link has been sent to your email');
-            window.location.href = '/auth/reset-password';
-          </script>
-        `);
+        req.flash("success", "Reset link has been sent to your email.");
+        return res.redirect("/auth/reset-password");
       }
     });
   } catch (err) {

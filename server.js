@@ -67,7 +67,9 @@ Cashfree.XEnvironment = process.env.CASHFREE_MODE === 'PROD' ? 'PRODUCTION' : 'S
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 app.use(methodOverride("_method"));
@@ -77,19 +79,19 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
-    cookie: { secure: false, maxAge: 3600000 },
+    cookie: { secure: false },
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(flash());
 
 // Make flash messages available to all views
 app.use((req, res, next) => {
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  res.locals.query = req.query; // <-- Add this line
   next();
 });
+
 
 
 const attachUser = async (req, res, next) => {
@@ -208,7 +210,7 @@ app.get("/", async (req, res) => {
     const headings = poster ? poster.Heading : [];
     const titles = poster ? poster.Title : [];
 
-     const shuffledCategories = shuffle([...Categories]);
+    const shuffledCategories = shuffle([...Categories]);
     const mid = Math.ceil(shuffledCategories.length / 2);
     const firstHalf = shuffledCategories.slice(0, mid);
     const secondHalf = shuffledCategories.slice(mid);
@@ -237,7 +239,7 @@ app.get("/", async (req, res) => {
       user,
       cartCount,
       Categories,
-       firstHalf,
+      firstHalf,
       secondHalf, // ⬅️ new
     });
   } catch (err) {
@@ -312,17 +314,33 @@ app.get("/Shipping-policy", (req, res) => {
 app.get("/Refund-policy", (req, res) => {
   res.render("User/refund_policy");
 })
+app.get("/logout", (req, res, next) => {
+  if (!req.session) {
+    return res.redirect("/");
+  }
 
-app.get("/logout", (req, res) => {
+  // Store flash messages temporarily
+  const successMessage = "You have been logged out successfully!";
+
+  // Destroy session first
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).send("Could not log out, please try again");
+      console.error("Logout error:", err);
+      // Use query parameter fallback (since flash can't persist without session)
+      return res.redirect("/?error=Could not log out. Please try again.");
     }
-    res.clearCookie("connect.sid"); // Clear the session cookie
-    res.clearCookie("userId"); // Clear the user ID cookie
-    res.redirect("/");
+
+    // Clear cookies
+    res.clearCookie("connect.sid");
+    res.clearCookie("userId");
+
+    // Redirect and attach flash message via query string (safe way)
+    res.redirect("/?success=" + encodeURIComponent(successMessage));
   });
 });
+
+
+
 
 // Start the server
 app.listen(PORT, "0.0.0.0", () => {

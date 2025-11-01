@@ -202,7 +202,7 @@ function initializeAnimations() {
 
     container.addEventListener('touchmove', e => {
       const x = e.touches[0].pageX - container.offsetLeft;
-      const walk = (startX - x) * 0.1; // less sensitive
+      const walk = (startX - x) * 0.01; // less sensitive
       const maxScrollLeft = container.scrollWidth - container.clientWidth;
       const newScroll = scrollLeft + walk;
 

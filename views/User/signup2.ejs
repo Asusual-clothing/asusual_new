@@ -1,313 +1,353 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Sign Up / Sign In</title>
-  <!-- Favicons -->
-  <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
-  <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
-  <link rel="manifest" href="/assests/site.webmanifest">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="description"
-    content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
-  <meta name="keywords"
-    content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
-
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- <link rel="stylesheet" href="styles/signup.css"> -->
-  <link rel="stylesheet" href="/styles/styles.css" />
-  <link rel="stylesheet" href="/styles/navbar.css" />
-  <link rel="stylesheet" href="/styles/signup2.css" />
-  <link rel="stylesheet" href="/styles/footer.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet" />
-  <!-- Add these in your head section -->
+  <title>Login / Signup</title>
+
+  <!-- Toastify -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #2a0000, #0a0000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      position: relative;
+    }
+
+    .card {
+      background: #fff0f0;
+      width: 100%;
+      max-width: 28rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      padding: 2rem;
+    }
+
+    .tabs {
+      display: flex;
+      background: #e0d0d0;
+      border-radius: 2rem;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .tab-button {
+      width: 50%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .3s;
+      background: transparent;
+      color: #500;
+    }
+
+    .tab-button.active {
+      background: linear-gradient(to right, #a00000, #600000);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(160, 0, 0, 0.3);
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .form-group {
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: .875rem;
+      font-weight: 600;
+      color: #500;
+      margin-bottom: .5rem;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      border: 1px solid #c0a0a0;
+      border-radius: .5rem;
+      padding: .75rem;
+      background: white;
+    }
+
+    .input-container i {
+      width: 1rem;
+      height: 1rem;
+      color: #a05050;
+      margin-right: .5rem;
+    }
+
+    .input-field {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: .875rem;
+      color: #300;
+      background: transparent;
+    }
+
+    .input-field::placeholder {
+      color: #a0a0a0;
+    }
+
+    .submit-button {
+      width: 100%;
+      background: linear-gradient(to right, #a00000, #600000);
+      color: #fff;
+      padding: .75rem;
+      border: none;
+      border-radius: .5rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(160, 0, 0, 0.3);
+      cursor: pointer;
+      transition: opacity .3s;
+    }
+
+    .submit-button:hover {
+      opacity: .9;
+    }
+
+    .submit-button:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
+
+    .error-message {
+      color: #d00000;
+      font-size: .875rem;
+      text-align: center;
+      margin-top: .75rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #passwordRequirements li {
+      color: red;
+      font-size: .8rem;
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Page Loader -->
 
-  <div class="notification-bar">
-    <span class="notification-text"> </span>
-  </div>
-  <div id="page-loader" class="page-loader">
-    <h1 class="slide-in">AsUsual</h1>
-    <div class="spinner"></div>
-  </div>
-  <nav class="As-navbar" style="height: 70px">
-    <div class="As-container" style="margin-top: 1rem">
-      <ul class="As-nav-links">
-        <li>
-          <a href="/"><i class="fas fa-home"></i> <span>Home</span></a>
-        </li>
-        <li>
-          <a href="/about"><i class="fas fa-info-circle"></i> <span>About Us</span></a>
-        </li>
-        <li>
-          <a href="/Products"><i class="fas fa-box"></i> <span>All Products</span></a>
-        </li>
-        <li>
-          <a href="/contact"><i class="fas fa-phone"></i><span>Contact Us</span></a>
-        </li>
-      </ul>
-      <div class="As-logo">
-        <a href="/"><img src="/assests/horizontalLogo-removebg-preview.png" alt="Logo" /></a>
-      </div>
-      <div class="AS-nav-btn">
-        <!-- Sign-up link for all users -->
-      </div>
-
-      <div class="As-hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </nav>
-
-  <%- include('../partials/flash') %>
-    <div class="singup-main-container">
-      <div class="main">
-        <input type="checkbox" id="chk" aria-hidden="true" />
-
-        <div class="login">
-          <form action="/auth/login" method="POST" id="loginForm">
-            <label for="chk" aria-hidden="true" class="login_label">Login</label>
-            <input type="email" name="email" placeholder="Email" required />
-            <input type="password" name="password" id="passwordSignin" placeholder="Password" required />
-
-            <label for="" class="remember-me">
-              <a href="/auth/forget-password">Forgot password?</a>
-            </label>
-            <button type="submit" id="signIn">Sign In</button>
-          </form>
-        </div>
-
-        <div class="signup">
-          <form action="/auth/signup" method="POST" id="signupForm">
-            <label for="chk" aria-hidden="true" class="signup-toggle-label">
-              Sign up <i class="fas fa-chevron-down arrow-icon"></i>
-            </label>
-
-            <input type="text" name="name" placeholder="Name" required />
-            <input type="email" name="email" placeholder="Email" required />
-            <input type="tel" name="phone" id="phone" placeholder="Phone" required />
-            <input type="password" name="password" id="passwordSignup" placeholder="Password" required />
-            <div id="passwordRequirements"
-              style="font-size: 0.9rem; margin-top: 5px; color: #555 ;display: flex; width: 100%; justify-content: center;">
-              <ul style="list-style-type: none; padding-left: 0">
-                <li id="length" style="color: red">❌ At least 8 characters</li>
-                <li id="lowercase" style="color: red">
-                  ❌ At least one lowercase letter
-                </li>
-                <li id="uppercase" style="color: red">
-                  ❌ At least one uppercase letter
-                </li>
-                <li id="number" style="color: red">❌ At least one number</li>
-                <li id="special" style="color: red">
-                  ❌ At least one special character
-                </li>
-              </ul>
-            </div>
-
-            <input type="password" name="confirmPassword" id="confirmPasswordSignup" placeholder="Confirm Password"
-              required />
-
-            <button type="button" id="generateOtpSignup">Generate OTP</button>
-            <div class="otpverification">
-              <input type="text" name="otp" id="otpSignup" placeholder="Enter OTP" style="display: none" required />
-              <button type="button" id="verifyOtpSignup" style="display: none">
-                Verify OTP
-              </button>
-            </div>
-
-            <input type="hidden" id="otpVerifiedSignup" name="otpVerified" value="false" />
-
-            <button type="submit" id="signUp" disabled>Sign Up</button>
-          </form>
-        </div>
-      </div>
+  <div class="card">
+    <div class="tabs">
+      <button class="tab-button active" onclick="switchTab('login')">Login</button>
+      <button class="tab-button" onclick="switchTab('signup')">Signup</button>
     </div>
 
-    <%- include('../partials/footer') %>
+    <!-- LOGIN FORM -->
+    <form id="loginForm" class="form" action="/auth/login" method="POST">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <div class="input-container">
+          <i data-lucide="mail"></i>
+          <input type="email" name="email" placeholder="you@example.com" class="input-field" required>
+        </div>
+      </div>
 
-      <script>
-        // Toastify notification configuration
-        const notificationConfig = {
-          duration: 4000,
-          close: true,
-          gravity: "top",
-          position: "center",
-          stopOnFocus: true,
-          style: {
-            fontSize: "14px",
-            padding: "10px ",
-            borderRadius: "4px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-          },
-        };
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-container">
+          <i data-lucide="lock"></i>
+          <input type="password" name="password" placeholder="••••••••" class="input-field" required>
+        </div>
+      </div>
 
-        // Show notification function
-        function showNotification(message, isSuccess = true) {
-          Toastify({
-            text: message,
-            ...notificationConfig,
-            backgroundColor: isSuccess ? "#4CAF50" : "#f44336",
-            className: isSuccess ? "toastify-success" : "toastify-error",
-          }).showToast();
-        }
+      <a href="/auth/forget-password" style="font-size:.85rem;text-align:right;color:#600;">Forgot password?</a>
 
-        // Function to generate and send OTP
-        function generateAndSendOTP(email, otpFieldId, verifyButtonId) {
-          if (!email) {
-            showNotification("Please enter your email first.", false);
-            return;
-          }
+      <button type="submit" class="submit-button">Sign in</button>
+    </form>
 
-          fetch("/generate-otp", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                document.getElementById(otpFieldId).style.display = "block";
-                document.getElementById(verifyButtonId).style.display = "block";
-                showNotification("OTP sent to your email!");
-              } else {
-                showNotification(
-                  data.message || "Failed to send OTP. Maybe user already exists",
-                  false
-                );
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              showNotification("Failed to send OTP. Please try again.", false);
-            });
-        }
+    <!-- SIGNUP FORM -->
+    <form id="signupForm" class="form hidden" action="/auth/signup" method="POST">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <div class="input-container">
+          <i data-lucide="user"></i>
+          <input type="text" name="name" placeholder="John Doe" class="input-field" required>
+        </div>
+      </div>
 
-        // Function to verify OTP
-        function verifyOTP(email, otp, verifiedFieldId, submitButtonId) {
-          if (!email || !otp) {
-            showNotification("Please enter both email and OTP.", false);
-            return;
-          }
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <div class="input-container">
+          <i data-lucide="mail"></i>
+          <input type="email" name="email" id="signupEmail" placeholder="you@example.com" class="input-field" required>
+        </div>
+      </div>
 
-          fetch("/verify-otp", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, otp }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                document.getElementById(verifiedFieldId).value = "true";
-                document.getElementById(submitButtonId).disabled = false;
-                showNotification("OTP verified successfully!");
-              } else {
-                showNotification(data.message || "Invalid OTP.", false);
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              showNotification("Failed to verify OTP. Please try again.", false);
-            });
-        }
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <div class="input-container">
+          <i data-lucide="phone"></i>
+          <input type="tel" name="phone" placeholder="9876543210" class="input-field" required>
+        </div>
+      </div>
 
-        // Signup OTP Generation
-        document
-          .getElementById("generateOtpSignup")
-          .addEventListener("click", function () {
-            const email = document.querySelector(
-              '#signupForm input[name="email"]'
-            ).value;
-            generateAndSendOTP(email, "otpSignup", "verifyOtpSignup");
-          });
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-container">
+          <i data-lucide="lock"></i>
+          <input type="password" name="password" id="passwordSignup" placeholder="••••••••" class="input-field"
+            required>
+        </div>
+        <ul id="passwordRequirements">
+          <li id="length">❌ At least 8 characters</li>
+          <li id="lowercase">❌ At least one lowercase letter</li>
+          <li id="uppercase">❌ At least one uppercase letter</li>
+          <li id="number">❌ At least one number</li>
+          <li id="special">❌ At least one special character</li>
+        </ul>
+      </div>
 
-        // Signup OTP Verification
-        document
-          .getElementById("verifyOtpSignup")
-          .addEventListener("click", function () {
-            const email = document.querySelector(
-              '#signupForm input[name="email"]'
-            ).value;
-            const otp = document.getElementById("otpSignup").value;
-            verifyOTP(email, otp, "otpVerifiedSignup", "signUp");
-          });
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <div class="input-container">
+          <i data-lucide="lock"></i>
+          <input type="password" name="confirmPassword" id="confirmPasswordSignup" placeholder="••••••••"
+            class="input-field" required>
+        </div>
+      </div>
 
-        // Form submission handling
-        document
-          .getElementById("signupForm")
-          .addEventListener("submit", function (e) {
-            const otpVerified =
-              document.getElementById("otpVerifiedSignup").value;
-            if (otpVerified !== "true") {
-              e.preventDefault();
-              showNotification("Please verify your OTP first.", false);
-            }
-          });
+      <div class="form-group">
+        <button type="button" id="generateOtpSignup" class="submit-button" disabled>
+          Generate OTP
+        </button>
 
-        // Login form handling
-        document
-          .getElementById("loginForm")
-          .addEventListener("submit", function (e) {
-            // Add any login form validation here if needed
-          });
-      </script>
-      <script src="scripts/script.js"></script>
-      <script src="https://unpkg.com/feather-icons"></script>
-      <script>
-        feather.replace();
-      </script>
+        <!-- OTP Section (hidden initially) -->
+        <div id="otpSection" style="display: none; margin-top: 0.6rem;">
+          <label class="form-label" style="margin-bottom: 0.3rem;">Enter OTP</label>
+          <div class="input-container">
+            <i data-lucide="key"></i>
+            <input type="text" name="otp" id="otpSignup" placeholder="Enter the OTP sent to your email"
+              class="input-field" required />
+          </div>
+          <button type="button" id="verifyOtpSignup" class="submit-button" style="margin-top: 0.6rem;">
+            Verify
+          </button>
+        </div>
+      </div>
 
-      <script>
-        window.addEventListener("load", function () {
-          const loader = document.getElementById("page-loader");
-          if (loader) {
-            loader.classList.add("fade-out");
-            setTimeout(() => (loader.style.display = "none"), 500);
-          }
-        });
-      </script>
-      <script>
-        const passwordInput = document.getElementById("passwordSignup");
 
-        passwordInput.addEventListener("input", function () {
-          const value = passwordInput.value;
+      <input type="hidden" id="otpVerifiedSignup" name="otpVerified" value="false">
 
-          const rules = {
-            length: value.length >= 8,
-            lowercase: /[a-z]/.test(value),
-            uppercase: /[A-Z]/.test(value),
-            number: /\d/.test(value),
-            special: /[\W_]/.test(value)
-          };
+      <button type="submit" id="signUp" class="submit-button" disabled>Sign up</button>
+    </form>
+  </div>
 
-          for (const [id, isValid] of Object.entries(rules)) {
-            const item = document.getElementById(id);
-            if (isValid) {
-              item.style.display = "none"; // Hide if valid
-            } else {
-              item.style.display = "list-item"; // Show if invalid
-              item.textContent = `❌ ${item.textContent.slice(2)}`; // Ensure ❌ is there
-            }
-          }
+  <script>
+    lucide.createIcons();
 
-          // Optionally enable/disable button
-          const allValid = Object.values(rules).every(Boolean);
-          document.getElementById("generateOtpSignup").disabled = !allValid;
-        });
-      </script>
+    // Toastify helper
+    const notify = (msg, ok = true) => Toastify({
+      text: msg, duration: 4000, close: true, gravity: "top", position: "center",
+      style: { borderRadius: "5px", padding: "10px", fontSize: "14px" },
+      backgroundColor: ok ? "#4CAF50" : "#f44336"
+    }).showToast();
 
+    // Tabs
+    function switchTab(tab) {
+      const login = document.getElementById('loginForm');
+      const signup = document.getElementById('signupForm');
+      const buttons = document.querySelectorAll('.tab-button');
+      if (tab === 'login') {
+        login.classList.remove('hidden'); signup.classList.add('hidden');
+        buttons[0].classList.add('active'); buttons[1].classList.remove('active');
+      } else {
+        signup.classList.remove('hidden'); login.classList.add('hidden');
+        buttons[1].classList.add('active'); buttons[0].classList.remove('active');
+      }
+    }
+
+    // OTP Generation
+    document.getElementById('generateOtpSignup').addEventListener('click', () => {
+      const email = document.getElementById('signupEmail').value;
+      if (!email) return notify("Please enter your email.", false);
+
+      fetch("/generate-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      })
+        .then(res => res.json())
+        .then(d => {
+          if (d.success) {
+            document.getElementById("otpSection").style.display = "block"; // Show OTP input and Verify
+            notify("OTP sent to your email!");
+          } else notify(d.message || "Failed to send OTP", false);
+        })
+        .catch(() => notify("Network error.", false));
+    });
+
+
+
+    // OTP Verify
+    document.getElementById('verifyOtpSignup').addEventListener('click', () => {
+      const email = document.getElementById('signupEmail').value;
+      const otp = document.getElementById('otpSignup').value;
+      fetch("/verify-otp", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, otp }) })
+        .then(res => res.json()).then(d => {
+          if (d.success) {
+            document.getElementById('otpVerifiedSignup').value = "true";
+            document.getElementById('signUp').disabled = false;
+            notify("OTP verified successfully!");
+          } else notify(d.message || "Invalid OTP", false);
+        }).catch(() => notify("Verification failed.", false));
+    });
+
+    // Password validation
+    const password = document.getElementById("passwordSignup");
+    password.addEventListener("input", () => {
+      const v = password.value;
+      const rules = {
+        length: v.length >= 8,
+        lowercase: /[a-z]/.test(v),
+        uppercase: /[A-Z]/.test(v),
+        number: /\d/.test(v),
+        special: /[\W_]/.test(v)
+      };
+      for (const [id, valid] of Object.entries(rules)) {
+        const el = document.getElementById(id);
+        el.style.color = valid ? "green" : "red";
+        el.textContent = `${valid ? "✅" : "❌"} ${el.textContent.slice(2)}`;
+      }
+      document.getElementById("generateOtpSignup").disabled = !Object.values(rules).every(Boolean);
+    });
+
+    // Prevent signup without OTP
+    document.getElementById("signupForm").addEventListener("submit", e => {
+      if (document.getElementById("otpVerifiedSignup").value !== "true") {
+        e.preventDefault();
+        notify("Please verify your OTP first.", false);
+      }
+    });
+  </script>
 </body>
 
 </html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/1.0.0/lucide.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #2a0000, #0a0000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: #fff0f0;
+            padding: 0.5rem;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #ffe0e0;
+        }
+
+        .card {
+            background: #fff0f0;
+            width: 100%;
+            max-width: 28rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: #e0d0d0;
+            border-radius: 2rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .tab-button {
+            width: 50%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: #500;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(to right, #a00000, #600000);
+            color: white;
+            box-shadow: 0 2px 8px rgba(160, 0, 0, 0.3);
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #500;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #c0a0a0;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            background: white;
+        }
+
+        .input-container i {
+            width: 1rem;
+            height: 1rem;
+            color: #a05050;
+            margin-right: 0.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 0.875rem;
+            color: #300;
+            background: transparent;
+        }
+
+        .input-field::placeholder {
+            color: #a0a0a0;
+        }
+
+        .phone-input {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .phone-code {
+            border: none;
+            outline: none;
+            font-size: 0.875rem;
+            color: #300;
+            background: transparent;
+        }
+
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            font-size: 0.875rem;
+            color: #500;
+        }
+
+        .terms input {
+            accent-color: #a00000;
+            margin-top: 0.25rem;
+        }
+
+        .terms p {
+            margin-left: 0.5rem;
+        }
+
+        .terms span {
+            font-weight: 600;
+        }
+
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(to right, #a00000, #600000);
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(160, 0, 0, 0.3);
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .submit-button:hover {
+            opacity: 0.9;
+        }
+
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #d00000;
+            font-size: 0.875rem;
+            text-align: center;
+            margin-top: 0.75rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="goBack()">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-gray-800"></i>
+    </button>
+
+    <div class="card">
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('login')">Login</button>
+            <button class="tab-button" onclick="switchTab('signup')">Signup</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="loginForm" class="form" onsubmit="handleSignIn(event)">
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <div class="input-container">
+                    <i data-lucide="mail"></i>
+                    <input type="email" placeholder="you@example.com" class="input-field" id="loginEmail" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <div class="input-container">
+                    <i data-lucide="lock"></i>
+                    <input type="password" placeholder="••••••••" class="input-field" id="loginPassword" required>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-button" id="loginButton">Sign in</button>
+
+            <div id="loginError" class="error-message hidden"></div>
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form id="signupForm" class="form hidden" onsubmit="handleSignUp(event)">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <div class="input-container">
+                    <i data-lucide="user"></i>
+                    <input type="text" placeholder="John Doe" class="input-field" id="signupName" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <div class="input-container">
+                    <i data-lucide="mail"></i>
+                    <input type="email" placeholder="you@example.com" class="input-field" id="signupEmail" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nationality</label>
+                <div class="input-container">
+                    <i data-lucide="user"></i>
+                    <input type="text" placeholder="Indian" class="input-field" id="signupNationality" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <div class="input-container">
+                    <div class="phone-input">
+                        <input type="tel" placeholder="Phone Number" class="input-field" id="signupPhone" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <div class="input-container">
+                    <i data-lucide="lock"></i>
+                    <input type="password" placeholder="••••••••" class="input-field" id="signupPassword" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <div class="input-container">
+                    <i data-lucide="lock"></i>
+                    <input type="password" placeholder="••••••••" class="input-field" id="signupConfirmPassword" required>
+                </div>
+            </div>
+
+            <div class="terms">
+                <input type="checkbox" id="termsCheckbox" required>
+                <p>
+                    I agree to the <span>Terms of Service</span> and <span>Privacy Policy</span>
+                </p>
+            </div>
+
+            <button type="submit" class="submit-button" id="signupButton">Sign up</button>
+
+            <div id="signupError" class="error-message hidden"></div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/1.0.0/lucide.min.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Tab switching functionality
+        function switchTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const loginTab = document.querySelectorAll('.tab-button')[0];
+            const signupTab = document.querySelectorAll('.tab-button')[1];
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                loginTab.classList.add('active');
+                signupTab.classList.remove('active');
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                loginTab.classList.remove('active');
+                signupTab.classList.add('active');
+            }
+        }
+
+        // Back button functionality
+        function goBack() {
+            window.history.back();
+        }
+
+        // Login form submission
+        function handleSignIn(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorElement = document.getElementById('loginError');
+            const button = document.getElementById('loginButton');
+            
+            // Clear previous errors
+            errorElement.classList.add('hidden');
+            
+            // Simple validation
+            if (!email || !password) {
+                showError(errorElement, 'Please fill in all fields');
+                return;
+            }
+            
+            // Simulate API call
+            button.disabled = true;
+            button.textContent = 'Logging in...';
+            
+            setTimeout(() => {
+                // In a real implementation, this would be an API call
+                console.log('Login attempt with:', { email, password });
+                
+                // Simulate successful login
+                alert('Login successful ✅');
+                window.location.href = '/home';
+                
+                button.disabled = false;
+                button.textContent = 'Sign in';
+            }, 1500);
+        }
+
+        // Signup form submission
+        function handleSignUp(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const nationality = document.getElementById('signupNationality').value;
+            const phone = document.getElementById('signupPhone').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const errorElement = document.getElementById('signupError');
+            const button = document.getElementById('signupButton');
+            
+            // Clear previous errors
+            errorElement.classList.add('hidden');
+            
+            // Validation
+            if (!name || !email || !nationality || !phone || !password || !confirmPassword) {
+                showError(errorElement, 'Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError(errorElement, 'Passwords do not match');
+                return;
+            }
+            
+            if (!document.getElementById('termsCheckbox').checked) {
+                showError(errorElement, 'Please agree to the Terms of Service and Privacy Policy');
+                return;
+            }
+            
+            // Simulate API call
+            button.disabled = true;
+            button.textContent = 'Signing up...';
+            
+            setTimeout(() => {
+                // In a real implementation, this would be an API call
+                console.log('Signup attempt with:', { 
+                    name, email, nationality, phone, password 
+                });
+                
+                // Simulate successful signup and OTP sending
+                alert('OTP sent to your email!');
+                window.location.href = '/OTP-Verification';
+                
+                button.disabled = false;
+                button.textContent = 'Sign up';
+            }, 1500);
+        }
+
+        // Helper function to show errors
+        function showError(element, message) {
+            element.textContent = message;
+            element.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

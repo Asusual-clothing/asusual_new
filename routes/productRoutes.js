@@ -146,7 +146,12 @@ router.post("/add-product", uploads.any(), async (req, res) => {
 
     if (!color) color = [];
     if (!Array.isArray(color)) color = [color];
-    color = color.filter(c => c && c.trim() !== "");
+
+    // trim + lowercase + remove empty values
+    color = color
+      .map(c => c.trim().toLowerCase())
+      .filter(c => c !== "");
+
 
     if (!colorCode) colorCode = [];
     if (!Array.isArray(colorCode)) colorCode = [colorCode];
@@ -263,8 +268,8 @@ router.get("/", async (req, res) => {
     let cartCount = 0;
     if (userId) {
       user = await User.findById(userId, "name _id email");
-      const cart = await Cart.findOne({user: userId });
-       if (cart && Array.isArray(cart.items)) {
+      const cart = await Cart.findOne({ user: userId });
+      if (cart && Array.isArray(cart.items)) {
         // Total quantity of all items in the cart
         cartCount = cart.items.reduce((total, item) => total + item.quantity, 0);
       }
@@ -337,8 +342,19 @@ router.post("/edit-product/:id", checkAdminAuth, uploads.any(), async (req, res)
     }
 
     // 🧩 Parse color arrays
-    const colorArray = req.body.color ? JSON.parse(req.body.color) : [];
-    const deletedArray = req.body.deletedColors ? JSON.parse(req.body.deletedColors) : [];
+    // ✅ Parse, trim & lowercase colors
+    let colorArray = req.body.color ? JSON.parse(req.body.color) : [];
+
+    colorArray = colorArray
+      .map(c => c.trim().toLowerCase())
+      .filter(c => c !== "");
+    // ✅ Parse and clean deleted colors too
+    let deletedArray = req.body.deletedColors ? JSON.parse(req.body.deletedColors) : [];
+
+    deletedArray = deletedArray
+      .map(c => c.trim().toLowerCase())
+      .filter(c => c !== "");
+
 
     // 🧾 Build basic product fields
     const updateData = {

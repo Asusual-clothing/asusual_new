@@ -232,6 +232,7 @@ function initializeAnimations() {
       ease: "linear",
     });
   }
+  
 
 document.addEventListener("DOMContentLoaded", function () {
     const featuredContainer = document.querySelector('.featured-scroll-container');

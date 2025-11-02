@@ -42,7 +42,8 @@
   <link rel="stylesheet" href="/styles/loader.css" />
   <link rel="stylesheet" href="/styles/posterSlider.css" />
   <link rel="stylesheet" href="/styles/index-category.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="/styles/slider3d.css">
+  <link rel=" stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -442,7 +443,7 @@
 
 
 
-            <div class="pagenew">
+            <!-- <div class="pagenew">
               <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-black">
                 <div class="container mx-auto px-4 text-center">
                   <h2
@@ -483,8 +484,41 @@
                     <% }); %>
                 </ul>
               </div>
-            </div>
+            </div> -->
+            <div class="page3d">
+              <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-black">
+                <div class="container mx-auto px-4 text-center">
+                  <h2
+                    class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 to-gray-100 mb-4 tracking-tight">
+                    Featured Collection
+                  </h2>
 
+                  <div class="relative inline-block">
+                    <p class="text-lg md:text-xl font-medium text-gray-400 relative z-10 px-4">
+                      Discover our premium selection of high-quality products
+                    </p>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
+                    </div>
+                  </div>
+                </div>
+
+              <div id="contentContainer" class="trans3d">
+                <section id="carouselContainer" class="trans3d">
+                  <% for(let i=0; i <=7 && i < Products.length; i++) { %>
+                    <figure class="carouselItem trans3d">
+                      <a href="/products/<%= Products[i]._id %>">
+                      <div class="carouselItemInner trans3d">
+                          <img src="<%= Products[i].front_image %>" alt="<%= Products[i].name %>">
+                        </div>
+                      </a>
+                    </figure>
+                    <% } %>
+                </section>
+              </div>
+              
+              </div>
+            </div>
 
             <div class="featured-products-section" id="featured-products">
               <div class="relative py-12 bg-gradient-to-b from-[#360a0a] to-black">
@@ -739,6 +773,7 @@
               <script>
                 feather.replace();
               </script>
+              <script src="/scripts/slider3d.js"></script>
               <script src="/scripts/slider.js"></script>
 </body>
 

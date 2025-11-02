@@ -1,0 +1,115 @@
+/* 3D Carousel Styles */
+.page3d{ 
+	width:100%;
+	background-size:cover;
+	height:80vh;
+	overflow:hidden;
+	font-family: 'quicksandlight', Helvetica, Arial;
+	color:#FFFFFF;
+	text-shadow: -1px -1px 4px rgba(0, 0, 0, .35);
+    filter: dropshadow(color=#000000, offx=1, offy=1);
+    position: relative;
+    background: black;
+}
+
+/* hardware accelerator class */	
+.trans3d {
+	-webkit-transform-style: preserve-3d;
+	-webkit-transform: translate3d(0, 0, 0);
+	-moz-transform-style: preserve-3d;
+	-moz-transform: translate3d(0, 0, 0);
+	-ms-transform-style:preserve-3d;
+	-ms-transform: translate3d(0, 0, 0);
+	transform-style:preserve-3d;
+	transform: translate3d(0, 0, 0);
+}
+
+#contentContainer {
+	position:absolute;
+	margin-left:-500px;
+	margin-top:-233px;
+	left:50%;
+	top:50%;
+	width:1000px;
+	height:1000px;
+}
+
+#carouselContainer {
+	position:absolute;
+	margin-left:-500px;
+	margin-top:-500px;
+	left:50%;
+	top:50%;
+	width:1000px;
+	height:1000px;
+}
+
+.carouselItem {
+	width:400px;
+	height:200px;
+	position:absolute;
+	left:50%;
+	top:50%;
+	margin-left:-160px;
+	margin-top:-90px;
+	visibility:hidden;
+}
+
+.carouselItemInner {
+    width: 380px;
+    height: 500px;
+    position: absolute;
+    background-color: rgba(255, 255, 255, .9);
+    border: 5px solid rgba(255, 255, 255, .6);
+    left: 50%;
+    top: 50%;
+    margin-left: -150px;
+    margin-top: -200px;
+    text-align: center;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+}
+  
+.carouselItemInner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
+}
+
+.ninja-word {
+	text-shadow:
+	  0 0 5px #ff1c1c,
+	  0 0 10px #ff1c1c,
+	  0 0 20px #ff1c1c,
+	  0 0 40px #ff1c1c;
+	font-family: 'Orbitron', sans-serif;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .page3d {
+        height: 74vh;
+    }
+    
+    #contentContainer,
+    #carouselContainer {
+        width: 600px;
+        height: 600px;
+        margin-left: -300px;
+        margin-top: -157px;
+    }
+    
+    .carouselItemInner {
+        width: 120px;
+        height: 200px;
+        margin-left: -100px;
+        margin-top: -150px;
+    }
+    
+    .ninja-word {
+        font-size: 2rem !important;
+    }
+}

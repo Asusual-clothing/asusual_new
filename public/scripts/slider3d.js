@@ -46,7 +46,7 @@ class Carousel3D {
         this.rY = 360 / this.itemLength;
         // Adjust radius based on screen size (smaller = cards closer)
         if (window.innerWidth <= 768) {
-            this.radius = Math.round((90) / Math.tan(Math.PI / this.itemLength));
+            this.radius = Math.round((120) / Math.tan(Math.PI / this.itemLength));
         } else {
             this.radius = Math.round((500) / Math.tan(Math.PI / this.itemLength)); // desktop normal
         }
@@ -61,7 +61,7 @@ class Carousel3D {
         for (let i = 0; i < this.itemLength; i++) {
             const $item = this.item[i];
             const $block = $item.querySelector('.carouselItemInner');
-            const scaleVal = window.innerWidth <= 768 ? 0.55 : 0.75;
+            const scaleVal = window.innerWidth <= 768 ? 0.85 : 0.85;
 
             gsap.set($item, {
                 rotationY: this.rY * i,

@@ -313,8 +313,12 @@
 
                 const response = await fetch('/products/add-product', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'   // <--- Tell server it's AJAX
+                    }
                 });
+
 
                 const result = await response.json();
 

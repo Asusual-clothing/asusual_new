@@ -118,46 +118,39 @@ router.get("/add-product", checkAdminAuth, (req, res) => {
   });
 });
 
-
 router.post("/add-product", uploads.any(), async (req, res) => {
   try {
-    const { name, description, MRP, price, brand, bestseller, category, categoryType } = req.body;
+    const { name, description, MRP, price, brand, bestseller, categoryType } = req.body;
     let { color, colorCode } = req.body;
 
-    if (!name || !description || !price || !MRP || !category || !categoryType) {
+    const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"));
+
+    // Validation
+    if (!name || !description || !price || !MRP || !categoryType) {
       const msg = "Missing required fields or category type";
-      if (req.xhr || req.headers.accept.indexOf("json") > -1) {
-        return res.status(400).json({ success: false, message: msg });
-      } else {
-        req.flash("error_msg", msg);
-        return res.redirect("/products/add-product");
-      }
+      return isAjax
+        ? res.status(400).json({ success: false, message: msg })
+        : (req.flash("error_msg", msg), res.redirect("/products/add-product"));
     }
 
     if (!req.files || req.files.length === 0) {
       const msg = "Front and back images are required";
-      if (req.xhr || req.headers.accept.indexOf("json") > -1) {
-        return res.status(400).json({ success: false, message: msg });
-      } else {
-        req.flash("error_msg", msg);
-        return res.redirect("/products/add-product");
-      }
+      return isAjax
+        ? res.status(400).json({ success: false, message: msg })
+        : (req.flash("error_msg", msg), res.redirect("/products/add-product"));
     }
 
+    // Handle color arrays
     if (!color) color = [];
     if (!Array.isArray(color)) color = [color];
-
-    // trim + lowercase + remove empty values
-    color = color
-      .map(c => c.trim().toLowerCase())
-      .filter(c => c !== "");
-
+    color = color.map(c => c.trim().toLowerCase()).filter(c => c !== "");
 
     if (!colorCode) colorCode = [];
     if (!Array.isArray(colorCode)) colorCode = [colorCode];
 
-    const uploadToCloudinary = async (file) => {
-      const result = await new Promise((resolve, reject) => {
+    // Cloudinary upload util
+    const uploadToCloudinary = async (file) =>
+      await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           { resource_type: "auto" },
           (err, result) => (err ? reject(err) : resolve(result))
@@ -166,25 +159,32 @@ router.post("/add-product", uploads.any(), async (req, res) => {
         readableStream.push(file.buffer);
         readableStream.push(null);
         readableStream.pipe(uploadStream);
-      });
-      return result.secure_url;
-    };
+      }).then(r => r.secure_url);
 
+    // Upload required images
     const frontImageFile = req.files.find(f => f.fieldname === "front_images");
     const backImageFile = req.files.find(f => f.fieldname === "back_image");
+
     const front_image = await uploadToCloudinary(frontImageFile);
     const back_image = await uploadToCloudinary(backImageFile);
 
+    // General product images
     const generalImages = req.files.filter(f => f.fieldname === "images");
     const images = await Promise.all(generalImages.map(f => uploadToCloudinary(f)));
 
+    // Color-based images
     const colorImages = [];
     for (let i = 0; i < color.length; i++) {
       const files = req.files.filter(f => f.fieldname === `colorImages${i}[]`);
       const urls = await Promise.all(files.map(f => uploadToCloudinary(f)));
-      colorImages.push({ color: color[i], colorCode: colorCode[i] || "#000000", images: urls });
+      colorImages.push({
+        color: color[i],
+        colorCode: colorCode[i] || "#000000",
+        images: urls
+      });
     }
 
+    // Sizes
     const sizes = {
       xsmall: parseInt(req.body.sizes?.xsmall) || 0,
       small: parseInt(req.body.sizes?.small) || 0,
@@ -194,6 +194,7 @@ router.post("/add-product", uploads.any(), async (req, res) => {
       xxlarge: parseInt(req.body.sizes?.xxlarge) || 0,
     };
 
+    // Save product
     const product = new Product({
       name,
       description,
@@ -202,7 +203,6 @@ router.post("/add-product", uploads.any(), async (req, res) => {
       brand,
       color,
       colorImages,
-      category,
       categoryType,
       sizes,
       bestseller: bestseller === "true" || bestseller === "on",
@@ -213,26 +213,25 @@ router.post("/add-product", uploads.any(), async (req, res) => {
 
     await product.save();
 
-    if (req.xhr || req.headers.accept.indexOf("json") > -1) {
-      // AJAX request
+    if (isAjax) {
       return res.json({ success: true, message: "Product added successfully", product });
-    } else {
-      // Normal form submit
-      req.flash("success_msg", "Product added successfully!");
-      return res.redirect("/products/add-product");
     }
+
+    req.flash("success_msg", "Product added successfully!");
+    return res.redirect("/products/add-product");
+
   } catch (error) {
     console.error("Error adding product:", error);
 
     const msg = `Failed to add product: ${error.message}`;
-    if (req.xhr || req.headers.accept.indexOf("json") > -1) {
-      return res.status(500).json({ success: false, message: msg });
-    } else {
-      req.flash("error_msg", msg);
-      return res.redirect("/products/add-product");
-    }
+    const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"));
+
+    return isAjax
+      ? res.status(500).json({ success: false, message: msg })
+      : (req.flash("error_msg", msg), res.redirect("/products/add-product"));
   }
 });
+
 
 
 
@@ -240,7 +239,7 @@ router.get("/", async (req, res) => {
   try {
     const products = await Product.find()
       .sort({ createdAt: "desc" })
-      .populate("categoryType", "name") // 🟢 populate category type name
+      .populate("categoryType", "name")
       .lean();
 
     const notification = (await Notification.findOne({})) || { notification: "" };
@@ -258,7 +257,6 @@ router.get("/", async (req, res) => {
       ),
     ];
 
-    // 🟢 Get distinct category types for filter list
     const categoryTypes = [
       ...new Set(products.map((p) => p.categoryType?.name).filter(Boolean)),
     ];
@@ -295,7 +293,7 @@ router.get("/edit-product", checkAdminAuth, async (req, res) => {
   try {
     const products = await Product.find(
       {},
-      "name MRP price front_image category brand bestseller sizes description color categoryType colorImages "
+      "name MRP price front_image  brand bestseller sizes description color categoryType colorImages "
     )
       .populate("categoryType", "name _id")
       .lean();
@@ -363,7 +361,7 @@ router.post("/edit-product/:id", checkAdminAuth, uploads.any(), async (req, res)
       MRP: req.body.MRP,
       price: req.body.price,
       brand: req.body.brand || "AsUsual",
-      category: req.body.category || "",
+      // category: req.body.category || "",
       categoryType: req.body.categoryType || product.categoryType,
       bestseller: req.body.bestseller === "true",
       color: colorArray,

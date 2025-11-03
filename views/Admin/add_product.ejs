@@ -98,7 +98,7 @@
                                 </div>
 
 
-                                <div>
+                                <!-- <div>
                                     <label for="category"
                                         class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                                     <select id="category" name="category"
@@ -107,7 +107,7 @@
                                         <option value="Regular">Regular</option>
                                         <option value="Oversized">Oversized</option>
                                     </select>
-                                </div>
+                                </div> -->
                             </div>
                             <div>
                                 <label for="categoryType" class="block text-sm font-medium text-gray-700 mb-1">
@@ -314,9 +314,6 @@
                 const response = await fetch('/products/add-product', {
                     method: 'POST',
                     body: formData,
-                    headers: {
-                        'Accept': 'application/json'   // <--- Tell server it's AJAX
-                    }
                 });
 
 

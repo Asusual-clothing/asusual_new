@@ -106,17 +106,14 @@ async function handleQuantityIncrease(e) {
             const messageElem = e.target.parentElement.querySelector('.quantity-message');
             messageElem.style.display = 'none';
 
-            showNotification('Quantity updated successfully', 'success');
         } else {
             // Show message that maximum quantity reached
             const messageElem = e.target.parentElement.querySelector('.quantity-message');
             messageElem.textContent = `No more items available in this size`;
             messageElem.style.display = 'block';
-            showNotification('Maximum quantity reached for this size', 'warning');
         }
     } catch (error) {
         console.error('Error checking stock:', error);
-        showNotification('Error checking product availability', 'error');
     }
 }
 
@@ -138,9 +135,7 @@ async function handleQuantityDecrease(e) {
         const messageElem = e.target.parentElement.querySelector('.quantity-message');
         messageElem.style.display = 'none';
 
-        showNotification('Quantity updated successfully', 'success');
     } else {
-        showNotification('Quantity cannot be less than 1', 'warning');
     }
 }
 
@@ -167,7 +162,6 @@ async function handleRemoveItem(e) {
         if (data.success) {
             cartItem.remove();
             updateCart();
-            showNotification('Item removed from cart', 'success');
 
             // If cart is empty, reload page after a delay
             if (data.cartSummary && data.cartSummary.itemCount === 0) {
@@ -176,11 +170,11 @@ async function handleRemoveItem(e) {
                 }, 1500);
             }
         } else {
-            showNotification(data.message || 'Error removing item', 'error');
+            
+        console.error('Error removing item:');
         }
     } catch (error) {
         console.error('Error removing item:', error);
-        showNotification('Error removing item from cart', 'error');
     }
 }
 
@@ -268,7 +262,6 @@ async function handleOrderSubmit(e) {
 
     } catch (error) {
         console.error('Order Error:', error);
-        showNotification(error.message, 'error');
         button.disabled = false;
         button.innerHTML = originalButtonContent;
     }
@@ -444,7 +437,6 @@ async function updateQuantityInDatabase(productId, size, newQuantity) {
         const data = await response.json();
         if (!data.success) {
             console.error('Error updating quantity:', data.message);
-            showNotification(data.message || 'Error updating quantity', 'error');
 
             // Revert the quantity change in UI if backend update failed
             const cartItem = document.querySelector(`[data-product-id="${productId}"][data-size="${size}"]`);
@@ -457,7 +449,6 @@ async function updateQuantityInDatabase(productId, size, newQuantity) {
         }
     } catch (error) {
         console.error('Error updating quantity:', error);
-        showNotification('Error updating quantity in cart', 'error');
 
         // Revert the quantity change in UI
         const cartItem = document.querySelector(`[data-product-id="${productId}"][data-size="${size}"]`);

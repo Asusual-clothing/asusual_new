@@ -80,9 +80,10 @@
     }
 
     @media only screen and (max-width: 600px) {
-
+      
       .swiper-button-next,
-      .swiper-button-prev {
+      .swiper-button-prev,
+      .notification-bar {
         display: none;
       }
     }
@@ -266,7 +267,7 @@
   </div>
 
   <div class="homepage-content" id="homepage-content" style="display: none">
-    <div class="notification-bar">
+    <div class="notification-bar1">
       <span class="notification-text">
         <%= notification.notification || 'No new updates at the moment.' %>
       </span>1

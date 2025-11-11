@@ -357,7 +357,21 @@ body {
   /* font-weight: 600; */
   font-style: normal;
 }
-
+.notification-bar1 {
+  background: var(--primary-color);
+  color: var(--text-light);
+  padding: 10px;
+  font-size: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  font-weight: bold;
+  /* font-family: "Dancing Script", cursive; */
+  font-optical-sizing: auto;
+  /* font-weight: 600; */
+  font-style: normal;
+}
 .notification-text {
   display: inline-block;
   padding-left: 100%;

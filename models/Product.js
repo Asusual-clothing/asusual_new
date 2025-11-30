@@ -25,6 +25,10 @@ const productSchema = new mongoose.Schema({
     xlarge: { type: Number, default: 0 },
     xxlarge: { type: Number, default: 0 }
   },
+  star:{type:String},
+  washing:{type:String},
+  award:{type:String},
+  insideout:{type:String},
   back_image: { type: String, required: true },
   front_image: { type: String, required: true },
   bestseller: { type: Boolean, default: false },

@@ -120,7 +120,7 @@ router.get("/add-product", checkAdminAuth, (req, res) => {
 
 router.post("/add-product", uploads.any(), async (req, res) => {
   try {
-    const { name, description, MRP, price, brand, bestseller, categoryType } = req.body;
+    const { name, description, MRP, price, brand, bestseller, categoryType,star, washing, award, insideout } = req.body;
     let { color, colorCode } = req.body;
 
     const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"));
@@ -209,6 +209,10 @@ router.post("/add-product", uploads.any(), async (req, res) => {
       front_image,
       back_image,
       images,
+      star,
+      washing,
+      award,
+      insideout
     });
 
     await product.save();

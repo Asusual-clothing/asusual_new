@@ -378,6 +378,7 @@
             <div class="price-breakdown">
               <div class="price-line total-line">
                 <span>TOTAL PRICE:</span>
+                <%= discountAmount %>
                 <span>Rs <%= (subtotal + deliveryCost - (discountAmount || 0)).toFixed(2) %></span>
               </div>
             </div>

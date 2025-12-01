@@ -153,7 +153,6 @@ router.get("/", async (req, res) => {
 });
 
 
-
 router.post("/apply-coupon", async (req, res) => {
   try {
     const { couponCode } = req.body;
@@ -314,6 +313,8 @@ router.post("/apply-coupon", async (req, res) => {
     return res.redirect("/cart");
   }
 });
+
+
 
 
 

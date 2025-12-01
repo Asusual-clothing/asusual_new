@@ -297,7 +297,7 @@ router.get("/edit-product", checkAdminAuth, async (req, res) => {
   try {
     const products = await Product.find(
       {},
-      "name MRP price front_image  brand bestseller sizes description color categoryType colorImages "
+      "name MRP price front_image  brand bestseller sizes description color categoryType colorImages award insideout washing star"
     )
       .populate("categoryType", "name _id")
       .lean();
@@ -377,6 +377,10 @@ router.post("/edit-product/:id", checkAdminAuth, uploads.any(), async (req, res)
         xlarge: Number(sizes.xlarge) || 0,
         xxlarge: Number(sizes.xxlarge) || 0,
       },
+      award: req.body.award,
+      insideout:req.body.insideout,
+      washing: req.body.washing,
+      star: req.body.star,
     };
 
     // Helper: get files by fieldname

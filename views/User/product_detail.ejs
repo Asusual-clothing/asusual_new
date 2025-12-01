@@ -34,21 +34,48 @@
     .footer__columns {
       margin-top: 18px;
     }
-    .icon-svg {
-  width: 23px;      /* icon size */
-  height: 23px;
-  object-fit: contain;
-  margin-right: 12px; /* spacing between icons */
-  vertical-align: middle;
-  opacity: 0.9;
-  margin-top: 16px;
-    display: block; 
-  transition: opacity 0.2s ease;
-}
 
-.icon-svg:hover {
-  opacity: 1;
-}
+    .product-icons {
+      margin-top: 13px;
+    }
+
+    .icon-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top:20px;
+      margin-bottom: 8px;
+    }
+
+    .icon-row span {
+      font-size: 20px;
+      margin-left: 9px;
+      color: #ffffff;
+      line-height: normal;
+      /* FIX vertical shifting */
+      display: inline-block;
+    }
+
+
+    .icon-svg {
+      width: 26px;
+      height: 23px;
+    }
+
+    .icon-svg {
+      width: 23px;
+      height: 23px;
+      object-fit: contain;
+      opacity: 0.9;
+      display: inline-block;
+      /* IMPORTANT */
+      margin: 0;
+      /* REMOVE margin-top */
+    }
+
+    .icon-svg:hover {
+      opacity: 1;
+    }
 
 
     .active-thumb {
@@ -229,7 +256,7 @@
         <hr /> -->
 
           <!-- Colors -->
-           
+
           <h2>Available Colors:</h2>
           <div class="color-options">
             <% if (product.colorImages && product.colorImages.length> 0) { %>
@@ -295,10 +322,46 @@
             <%= product.description %>
           </p>
           <hr>
-          <img src="/assests/Star.svg" alt="Arrows Icon" class="icon-svg">
-          <img src="/assests/washing.svg" alt="Star Icon" class="icon-svg">
-          <img src="/assests/insideout.svg" alt="Star Icon" class="icon-svg">
-          <img src="/assests/award.svg" alt="Star Icon" class="icon-svg">
+          <div class="product-icons">
+
+            <% if (product.star) { %>
+              <div class="icon-row">
+                <img src="/assests/Star.svg" class="icon-svg">
+                <span>
+                  <%= product.star %>
+                </span>
+              </div>
+              <% } %>
+
+                <% if (product.washing) { %>
+                  <div class="icon-row">
+                    <img src="/assests/washing.svg" class="icon-svg">
+                    <span>
+                      <%= product.washing %>
+                    </span>
+                  </div>
+                  <% } %>
+
+                    <% if (product.insideout) { %>
+                      <div class="icon-row">
+                        <img src="/assests/insideout.svg" class="icon-svg">
+                        <span>
+                          <%= product.insideout %>
+                        </span>
+                      </div>
+                      <% } %>
+
+                        <% if (product.award) { %>
+                          <div class="icon-row">
+                            <img src="/assests/award.svg" class="icon-svg">
+                            <span>
+                              <%= product.award %>
+                            </span>
+                          </div>
+                          <% } %>
+
+          </div>
+
 
 
         </div>

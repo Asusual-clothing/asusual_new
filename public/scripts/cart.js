@@ -1,83 +1,33 @@
-// /scripts/cart.js - Updated with proper discount calculation
-
 document.addEventListener("DOMContentLoaded", function () {
-    // Initialize cart on page load
     updateCart();
 
-    // Event delegation for dynamic elements
-    document.addEventListener('click', async function (e) {
-        // Quantity increase
-        if (e.target.classList.contains('increase')) {
-            await handleQuantityIncrease(e);
-        }
+    const couponApplied = document.querySelector('.coupon-success');
 
-        // Quantity decrease
-        if (e.target.classList.contains('decrease')) {
-            await handleQuantityDecrease(e);
-        }
-
-        // Remove item
-        if (e.target.classList.contains('cart-remove')) {
-            await handleRemoveItem(e);
-        }
-
-        // Proceed to order
-        if (e.target.id === 'proceed-to-order') {
-            handleProceedToOrder();
-        }
-
-        // Cancel order
-        if (e.target.id === 'cancel-order') {
-            handleCancelOrder();
-        }
-    });
-
-    // Submit Order Form
-    const shippingFormElement = document.getElementById('shipping-form');
-    if (shippingFormElement) {
-        shippingFormElement.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            await handleOrderSubmit(e);
+    if (couponApplied) {
+        document.querySelectorAll('.cart-remove').forEach(btn => {
+            btn.style.opacity = "0.4";
+            btn.style.pointerEvents = "none";
+            btn.title = "Remove coupon to edit cart";
         });
     }
 
-    // Check for payment return on page load
+    document.addEventListener('click', async function (e) {
+        if (e.target.classList.contains('increase')) await handleQuantityIncrease(e);
+        if (e.target.classList.contains('decrease')) await handleQuantityDecrease(e);
+        if (e.target.classList.contains('cart-remove')) await handleRemoveItem(e);
+        if (e.target.id === 'proceed-to-order') handleProceedToOrder();
+        if (e.target.id === 'cancel-order') handleCancelOrder();
+    });
+
     checkPaymentReturn();
 });
-document.addEventListener("DOMContentLoaded", () => {
-    const freeItem = document.querySelector(".free-item");
 
-    if (freeItem) {
-        const cartId = freeItem.dataset.cartId;
-        const sizeDropdown = freeItem.querySelector(".free-item-size");
 
-        if (sizeDropdown) {
-            sizeDropdown.addEventListener("change", async (e) => {
-                const selectedSize = e.target.value;
 
-                if (!selectedSize) return alert("⚠️ Please select a valid size.");
+// ===============================
+// QUANTITY HANDLERS
+// ===============================
 
-                try {
-                    const res = await fetch("/cart/update-freeitem-size", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ cartId, size: selectedSize }),
-                    });
-
-                    const data = await res.json();
-                    console.log(data)
-                } catch (error) {
-                    console.error("Error saving free item size:", error);
-                    alert("⚠️ Failed to save free item size.");
-                }
-            });
-        }
-    }
-});
-
-// Handle quantity increase
 async function handleQuantityIncrease(e) {
     const quantityElem = e.target.parentElement.querySelector('.cart-quantity');
     const cartItem = e.target.closest('.cart-item');
@@ -88,36 +38,24 @@ async function handleQuantityIncrease(e) {
         const response = await fetch(`/cart/check-stock/${productId}/${encodeURIComponent(size)}`);
         const data = await response.json();
 
-
-        if (!data.success) {
-            throw new Error(data.error || 'Failed to check stock');
-        }
+        if (!data.success) throw new Error(data.error);
 
         const currentQuantity = parseInt(quantityElem.textContent);
 
-        // Only increase if stock is available
         if (data.availableStock > currentQuantity) {
             const newQuantity = currentQuantity + 1;
             quantityElem.textContent = newQuantity;
-            updateCart();
             await updateQuantityInDatabase(productId, size, newQuantity);
-
-            // Hide any previous message
-            const messageElem = e.target.parentElement.querySelector('.quantity-message');
-            messageElem.style.display = 'none';
-
+            await updateCart();
         } else {
-            // Show message that maximum quantity reached
-            const messageElem = e.target.parentElement.querySelector('.quantity-message');
-            messageElem.textContent = `No more items available in this size`;
-            messageElem.style.display = 'block';
+            alert("No more stock available for this size.");
         }
+
     } catch (error) {
-        console.error('Error checking stock:', error);
+        console.error(error);
     }
 }
 
-// Handle quantity decrease
 async function handleQuantityDecrease(e) {
     const quantityElem = e.target.parentElement.querySelector('.cart-quantity');
     const cartItem = e.target.closest('.cart-item');
@@ -128,367 +66,139 @@ async function handleQuantityDecrease(e) {
     if (currentQuantity > 1) {
         const newQuantity = currentQuantity - 1;
         quantityElem.textContent = newQuantity;
-        updateCart();
         await updateQuantityInDatabase(productId, size, newQuantity);
-
-        // Hide any previous message when decreasing
-        const messageElem = e.target.parentElement.querySelector('.quantity-message');
-        messageElem.style.display = 'none';
-
-    } else {
+        await updateCart();
     }
 }
 
-// Handle remove item
+// ===============================
+// REMOVE ITEM
+// ===============================
+
 async function handleRemoveItem(e) {
+      const couponApplied = document.querySelector('.coupon-success');
+
+    if (couponApplied) {
+        alert("⚠️ Please remove the applied coupon/offer before modifying cart items.");
+        return;
+    }
+
     const cartItem = e.target.closest('.cart-item');
     const productId = cartItem.dataset.productId;
-    const size = cartItem.querySelector('.cart-item-size').textContent.replace('Size: ', '').trim();
+    const size = cartItem.dataset.size;
 
     try {
         const response = await fetch('/cart/remove-item', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                productId,
-                size
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId, size })
         });
 
         const data = await response.json();
 
         if (data.success) {
             cartItem.remove();
-            updateCart();
-
-            // If cart is empty, reload page after a delay
-            if (data.cartSummary && data.cartSummary.itemCount === 0) {
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
-            }
-        } else {
-            
-        console.error('Error removing item:');
+            await updateCart();
+            if (data.cartSummary?.itemCount === 0) location.reload();
         }
+
     } catch (error) {
-        console.error('Error removing item:', error);
+        console.error(error);
     }
 }
 
-// Handle proceed to order
+// ===============================
+// ORDER FLOW
+// ===============================
+
 function handleProceedToOrder() {
-    const proceedBtn = document.getElementById('proceed-to-order');
-    const shippingForm = document.getElementById('shipping-form-container');
-
-    if (proceedBtn && shippingForm) {
-        proceedBtn.style.display = 'none';
-        shippingForm.style.display = 'block';
-    }
+    document.getElementById('proceed-to-order').style.display = 'none';
+    document.getElementById('shipping-form-container').style.display = 'block';
 }
 
-// Handle cancel order
 function handleCancelOrder() {
-    const proceedBtn = document.getElementById('proceed-to-order');
-    const shippingForm = document.getElementById('shipping-form-container');
-
-    if (proceedBtn && shippingForm) {
-        proceedBtn.style.display = 'block';
-        shippingForm.style.display = 'none';
-    }
+    document.getElementById('proceed-to-order').style.display = 'block';
+    document.getElementById('shipping-form-container').style.display = 'none';
 }
 
-// Handle order submission
-async function handleOrderSubmit(e) {
+// ===============================
+// PAYMENT SUBMISSION (BACKEND TOTAL ONLY)
+// ===============================
+
+async function handleOrderSubmit() {
     const button = document.getElementById('cashfree-payment-btn');
     const originalButtonContent = button.innerHTML;
     button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    button.innerHTML = "Processing...";
 
     try {
-        // Get shipping details
         const shippingAddress = {
-            line1: document.getElementById('shipping-line1').value,
-            line2: document.getElementById('shipping-line2').value,
-            city: document.getElementById('shipping-city').value,
-            state: document.getElementById('shipping-state').value,
-            postalCode: document.getElementById('shipping-postalCode').value,
-            country: document.getElementById('shipping-country').value,
-            contactNumber: document.getElementById('shipping-contactNumber').value
+            line1: shipping-line1.value,
+            line2: shipping-line2.value,
+            city: shipping-city.value,
+            state: shipping-state.value,
+            postalCode: shipping-postalCode.value,
+            country: shipping-country.value,
+            contactNumber: shipping-contactNumber.value
         };
 
-        // Validate shipping details
-        if (!shippingAddress.line1 || !shippingAddress.city ||
-            !shippingAddress.state || !shippingAddress.postalCode ||
-            !shippingAddress.country || !shippingAddress.contactNumber) {
-            throw new Error('Please fill in all required shipping details');
-        }
-
-        // Validate contact number format
-        const phoneRegex = /^\d{10}$/;
-        if (!phoneRegex.test(shippingAddress.contactNumber)) {
-            throw new Error('Please enter a valid 10-digit contact number');
-        }
-
-        // Get the FINAL discounted total amount
-        const totalAmount = getFinalDiscountedTotal();
-
-        if (totalAmount <= 0) {
-            throw new Error('Invalid order total');
-        }
-
-
-        // Process the order with the discounted amount
         const response = await fetch('/payment/process-order', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                shippingAddress,
-                amount: totalAmount
-            }),
-            credentials: 'include'
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ shippingAddress }) // ✅ NO AMOUNT SENT FROM FRONTEND
         });
 
         const result = await response.json();
 
-        if (!result.success) {
-            throw new Error(result.message || 'Failed to process order');
-        }
+        if (!result.success) throw new Error(result.message);
+
         window.location.href = result.checkoutPageUrl;
 
     } catch (error) {
-        console.error('Order Error:', error);
+        console.error(error);
         button.disabled = false;
         button.innerHTML = originalButtonContent;
     }
 }
 
-// Function to get the final discounted total including all discounts
-function getFinalDiscountedTotal() {
-    // Get the displayed total from the summary section
-    const totalLineElem = document.querySelector(".total-line span:last-child");
-    if (totalLineElem) {
-        const totalText = totalLineElem.textContent.replace('Rs ', '').trim();
-        return parseFloat(totalText);
-    }
+// ===============================
+// FETCH CART SUMMARY FROM BACKEND
+// ===============================
 
-    // Fallback calculation if DOM element not found
-    return calculateFinalTotal();
-}
-
-// Function to calculate final total with proper discount handling
-function calculateFinalTotal() {
-    let subtotal = 0;
-
-    // Calculate subtotal from regular items (excluding free items)
-    document.querySelectorAll(".cart-item:not(.free-item)").forEach(item => {
-        const quantityElem = item.querySelector(".cart-quantity");
-        const quantity = parseInt(quantityElem.textContent);
-        const price = parseFloat(item.dataset.price);
-        subtotal += price * quantity;
-    });
-
-    // Get shipping cost
-    const shippingOption = document.querySelector('select option');
-    let shipping = 0;
-    if (shippingOption) {
-        const shippingMatch = shippingOption.textContent.match(/Rs(\d+\.\d{2})/);
-        if (shippingMatch) {
-            shipping = parseFloat(shippingMatch[1]);
-        }
-    }
-
-    // Calculate discount amount from applied coupon/offer
-    const discountAmount = calculateDiscountAmount(subtotal);
-
-    // Final total = subtotal + shipping - discount
-    const finalTotal = Math.max(0, subtotal + shipping - discountAmount);
-
-    return finalTotal;
-}
-
-// Function to calculate discount amount based on applied coupon/offer
-function calculateDiscountAmount(subtotal) {
-    const couponElement = document.querySelector('.coupon-success');
-    if (!couponElement) return 0;
-
-    const couponText = couponElement.textContent;
-    let discountAmount = 0;
-
-    // Check for coupon discount
-    if (couponText.includes('Coupon:')) {
-        if (couponText.includes('% off')) {
-            // Percentage discount
-            const discountPercent = parseFloat(couponText.match(/(\d+)% off/)[1]);
-            discountAmount = subtotal * (discountPercent / 100);
-        } else if (couponText.includes('Rs')) {
-            // Flat discount
-            const flatDiscount = parseFloat(couponText.match(/Rs(\d+) off/)[1]);
-            discountAmount = Math.min(flatDiscount, subtotal);
-        }
-    }
-    // Check for offer discount
-    else if (couponText.includes('Offer:')) {
-        if (couponText.includes('Rs') && couponText.includes('off') && !couponText.includes('Free item')) {
-            // Flat discount offer
-            const flatDiscount = parseFloat(couponText.match(/Rs(\d+) off/)[1]);
-            discountAmount = Math.min(flatDiscount, subtotal);
-        } else if (couponText.includes('% off')) {
-            // Percentage discount offer
-            const discountPercent = parseFloat(couponText.match(/(\d+)% off/)[1]);
-            discountAmount = subtotal * (discountPercent / 100);
-        }
-        // For free_item offers, discount is 0 (free item is separate)
-    }
-
-    return discountAmount;
-}
-
-// Function to update cart totals with proper discount calculation
-function updateCart() {
-    let totalItems = 0;
-    let subtotal = 0;
-
-    // Get shipping cost from the select option
-    const shippingOption = document.querySelector('select option');
-    let shipping = 0;
-    if (shippingOption) {
-        const shippingMatch = shippingOption.textContent.match(/Rs(\d+\.\d{2})/);
-        if (shippingMatch) {
-            shipping = parseFloat(shippingMatch[1]);
-        }
-    }
-
-    // Calculate subtotal and update item totals (excluding free items)
-    document.querySelectorAll(".cart-item:not(.free-item)").forEach(item => {
-        const quantityElem = item.querySelector(".cart-quantity");
-        const quantity = parseInt(quantityElem.textContent);
-        const price = parseFloat(item.dataset.price);
-        const itemTotalElem = item.querySelector(".item-total");
-
-        const itemTotal = price * quantity;
-        if (itemTotalElem) {
-            itemTotalElem.textContent = itemTotal.toFixed(2);
-        }
-        totalItems += quantity;
-        subtotal += itemTotal;
-    });
-
-    // Calculate discount amount
-    const discountAmount = calculateDiscountAmount(subtotal);
-
-    // Update DOM elements
-    const totalItemsElem = document.getElementById("total-items");
-    const totalPriceElem = document.getElementById("total-price");
-    const totalLineElem = document.querySelector(".total-line span:last-child");
-
-    if (totalItemsElem) totalItemsElem.textContent = totalItems;
-    if (totalPriceElem) totalPriceElem.textContent = subtotal.toFixed(2);
-
-    // Calculate final total (subtotal + shipping - discount)
-    const finalTotal = Math.max(0, subtotal + shipping - discountAmount);
-
-    if (totalLineElem) {
-        totalLineElem.textContent = `Rs ${finalTotal.toFixed(2)}`;
-    }
-
-    // Update discount message
-    const discountMessage = document.querySelector('.discount-message');
-    if (discountAmount > 0) {
-        if (!discountMessage) {
-            const messageElement = document.createElement('p');
-            messageElement.className = 'discount-message';
-            messageElement.textContent = `You saved: Rs ${discountAmount.toFixed(2)}`;
-            document.querySelector('.summary-total').appendChild(messageElement);
-        } else {
-            discountMessage.textContent = `You saved: Rs ${discountAmount.toFixed(2)}`;
-        }
-    } else if (discountMessage) {
-        discountMessage.remove();
-    }
-
-    // Update items count in header
-    const itemsCountElem = document.querySelector('.cart-items-count');
-    if (itemsCountElem) {
-        const regularItems = document.querySelectorAll('.cart-item:not(.free-item)').length;
-        itemsCountElem.textContent = `${regularItems} items`;
-    }
-}
-
-// Update quantity in database
-async function updateQuantityInDatabase(productId, size, newQuantity) {
+async function updateCart() {
     try {
-        const response = await fetch('/cart/update-quantity', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                productId,
-                size,
-                quantity: newQuantity
-            })
-        });
-
+        const response = await fetch('/cart/summary');
         const data = await response.json();
-        if (!data.success) {
-            console.error('Error updating quantity:', data.message);
 
-            // Revert the quantity change in UI if backend update failed
-            const cartItem = document.querySelector(`[data-product-id="${productId}"][data-size="${size}"]`);
-            if (cartItem) {
-                const quantityElem = cartItem.querySelector('.cart-quantity');
-                const currentQuantity = parseInt(quantityElem.textContent);
-                quantityElem.textContent = currentQuantity - (newQuantity > currentQuantity ? -1 : 1);
-                updateCart();
-            }
-        }
+        if (!data.success) return;
+
+        document.getElementById("total-items").textContent = data.totalItems;
+        document.getElementById("total-price").textContent = data.subtotal;
+        document.querySelector(".total-line span:last-child").textContent = `Rs ${data.finalTotal}`;
+        document.querySelector(".cart-items-count").textContent = `${data.totalItems} items`;
+
     } catch (error) {
-        console.error('Error updating quantity:', error);
-
-        // Revert the quantity change in UI
-        const cartItem = document.querySelector(`[data-product-id="${productId}"][data-size="${size}"]`);
-        if (cartItem) {
-            const quantityElem = cartItem.querySelector('.cart-quantity');
-            const currentQuantity = parseInt(quantityElem.textContent);
-            quantityElem.textContent = currentQuantity - (newQuantity > currentQuantity ? -1 : 1);
-            updateCart();
-        }
+        console.error("Failed to update cart from backend");
     }
 }
 
-// Notification function
-function showNotification(message, type = 'success') {
-    const notificationBar = document.querySelector('.notification-bar');
-    if (notificationBar) {
-        const notificationText = notificationBar.querySelector('.notification-text');
-        if (notificationText) {
-            notificationText.textContent = message;
-        }
+// ===============================
+// UPDATE QUANTITY DB
+// ===============================
 
-        // Set background color based on type
-        notificationBar.style.backgroundColor =
-            type === 'success' ? '#4CAF50' :
-                type === 'error' ? '#f44336' :
-                    type === 'warning' ? '#ff9800' : '#2196F3';
-
-        notificationBar.style.display = 'block';
-
-        // Auto hide after 5 seconds
-        setTimeout(() => {
-            notificationBar.style.display = 'none';
-        }, 5000);
-    } else {
-        // Fallback: use alert if notification bar doesn't exist
-        console.log(`${type.toUpperCase()}: ${message}`);
-    }
+async function updateQuantityInDatabase(productId, size, quantity) {
+    await fetch('/cart/update-quantity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, size, quantity })
+    });
 }
 
-// Check for payment return on page load
+// ===============================
+// PAYMENT RETURN STATUS
+// ===============================
+
 function checkPaymentReturn() {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('paymentStatus');
@@ -496,27 +206,19 @@ function checkPaymentReturn() {
 
     if (paymentStatus && orderId) {
         if (paymentStatus === 'success') {
-            showNotification('Payment successful! Your order has been placed.', 'success');
-            setTimeout(() => {
-                window.location.href = `/order-success/${orderId}`;
-            }, 2000);
+            showNotification('Payment Successful', 'success');
+            setTimeout(() => location.href = `/order-success/${orderId}`, 2000);
         } else {
-            showNotification('Payment failed. Please try again.', 'error');
-            setTimeout(() => {
-                window.location.href = `/order-failed/${orderId}`;
-            }, 2000);
+            showNotification('Payment Failed', 'error');
+            setTimeout(() => location.href = `/order-failed/${orderId}`, 2000);
         }
     }
 }
 
-// Export functions for potential reuse
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        updateCart,
-        showNotification,
-        handleQuantityIncrease,
-        handleQuantityDecrease,
-        handleRemoveItem,
-        getFinalDiscountedTotal
-    };
+// ===============================
+// NOTIFICATION
+// ===============================
+
+function showNotification(message, type = 'success') {
+    alert(message);
 }

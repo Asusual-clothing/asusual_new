@@ -236,77 +236,90 @@ router.post("/apply-coupon", async (req, res) => {
     }
 
     // ---------------- OFFER LOGIC ----------------
+    // ---------------- OFFER LOGIC (Exact combination match) ----------------
     if (offer) {
       let discountAmount = 0;
 
-      // Check eligible products
-      let eligibleProducts = cart.items.filter((item) =>
-        offer.productIds.some(
-          (p) => p._id.toString() === item.product._id.toString()
-        )
-      );
+      // Build a map of cart productId -> { item, quantity, price }
+      const cartMap = new Map();
+      for (const item of cart.items) {
+        if (!item.product) continue;
+        const pid = item.product._id ? item.product._id.toString() : item.product.toString();
+        const price = (item.product && (item.product.price !== undefined)) ? Number(item.product.price) : 0;
+        if (!cartMap.has(pid)) cartMap.set(pid, { items: [], totalQty: 0, price });
+        const entry = cartMap.get(pid);
+        entry.items.push(item);
+        entry.totalQty += Number(item.quantity || 0);
+      }
 
-      if (eligibleProducts.length === 0) {
-        req.session.couponMessage = "This offer is not applicable to your cart items";
+      // Ensure every required product in offer.productIds exists in cart (quantity >= 1)
+      const missingRequired = [];
+      const matchedCartEntries = []; // will contain { productId, totalQty, items }
+      for (const p of offer.productIds) {
+        const offerPid = p._id ? p._id.toString() : p.toString();
+        const entry = cartMap.get(offerPid);
+        if (!entry || entry.totalQty <= 0) {
+          missingRequired.push(offerPid);
+        } else {
+          matchedCartEntries.push({ productId: offerPid, totalQty: entry.totalQty, price: entry.price, items: entry.items });
+        }
+      }
+
+      if (missingRequired.length > 0) {
+        req.session.couponMessage = "This offer requires specific products to be in the cart.";
         return res.redirect("/cart");
       }
 
-      const totalQty = eligibleProducts.reduce((sum, item) => sum + item.quantity, 0);
-      if (totalQty < offer.minQuantity) {
-        req.session.couponMessage = `Add at least ${offer.minQuantity} items to avail this offer`;
+      // Now check total matched quantity meets offer.minQuantity
+      const matchedTotalQty = matchedCartEntries.reduce((s, e) => s + e.totalQty, 0);
+      if (matchedTotalQty < (offer.minQuantity || 0)) {
+        req.session.couponMessage = `Add at least ${offer.minQuantity} of the required items to avail this offer`;
         return res.redirect("/cart");
       }
 
-      const subtotal = eligibleProducts.reduce(
-        (total, item) => total + item.product.price * item.quantity,
-        0
-      );
-      switch (offer.offerType) {
-        case "free_item":
-          if (offer.freeProductId) {
-            const freeProductId = offer.freeProductId._id || offer.freeProductId;
-            cart.freeItem = new mongoose.Types.ObjectId(freeProductId);
-            cart.markModified('freeItem'); // ensure it saves
+      // Calculate subtotal ONLY on matched required products
+      // (use their actual quantities in cart)
+      const offerSubtotal = matchedCartEntries.reduce((sum, e) => {
+        return sum + e.price * e.totalQty;
+      }, 0);
 
-            cart.discountAmount = 0;
-            cart.couponLocked = true;
+      // Clear previous freeItem/discount (we will set new ones)
+      cart.freeItem = undefined;
+      cart.discountAmount = 0;
 
-            // Save offer ID in appliedCoupon and mark type
-            cart.appliedCoupon = offer._id;
-            cart.CouponType = "Offer";
-
-            req.session.couponMessage = `Offer "${offer.name}" applied — you got a free item!`;
-          }
-          break;
-
-        case "flat_discount":
-          discountAmount = Math.min(offer.offerValue, subtotal);
-          cart.discountAmount = discountAmount;
-          cart.couponLocked = true;
-          cart.freeItem = undefined;
-
-          cart.appliedCoupon = offer._id;
-          cart.CouponType = "Offer";
-
-          req.session.couponMessage = `Offer "${offer.name}" applied — ₹${discountAmount} off!`;
-          break;
-
-        case "percentage_discount":
-          discountAmount = subtotal * (offer.offerValue / 100);
-          cart.discountAmount = discountAmount;
-          cart.couponLocked = true;
-          cart.freeItem = undefined;
-
-          cart.appliedCoupon = offer._id;
-          cart.CouponType = "Offer";
-
-          req.session.couponMessage = `Offer "${offer.name}" applied — ${offer.offerValue}% off!`;
-          break;
+      // Apply offer based on type
+      if (offer.offerType === "free_item") {
+        if (offer.freeProductId) {
+          cart.freeItem = offer.freeProductId._id ? offer.freeProductId._id : offer.freeProductId;
+          cart.markModified && cart.markModified("freeItem");
+          cart.discountAmount = 0;
+          req.session.couponMessage = `Offer "${offer.name}" applied — you got a free item!`;
+        } else {
+          req.session.couponMessage = `Offer "${offer.name}" has no free product configured.`;
+          return res.redirect("/cart");
+        }
+      } else if (offer.offerType === "flat_discount") {
+        discountAmount = Math.min(Number(offer.offerValue || 0), offerSubtotal);
+        cart.discountAmount = discountAmount;
+        req.session.couponMessage = `Offer "${offer.name}" applied — ₹${discountAmount.toFixed(2)} off!`;
+      } else if (offer.offerType === "percentage_discount") {
+        discountAmount = offerSubtotal * (Number(offer.offerValue || 0) / 100);
+        cart.discountAmount = discountAmount;
+        req.session.couponMessage = `Offer "${offer.name}" applied — ${Number(offer.offerValue || 0)}% off!`;
+      } else {
+        req.session.couponMessage = "Unknown offer type";
+        return res.redirect("/cart");
       }
-      // Save cart once after the switch
+
+      // Finalize cart fields and save
+      cart.couponLocked = true;
+      cart.appliedCoupon = offer._id;
+      cart.CouponType = "Offer";
+
       await cart.save();
       return res.redirect("/cart");
     }
+
   } catch (error) {
     console.error("Error applying code:", error);
     req.session.couponMessage = "Failed to apply offer/coupon";

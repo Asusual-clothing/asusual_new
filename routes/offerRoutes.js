@@ -167,7 +167,7 @@ router.post("/delete/:id", async (req, res) => {
   }
 });
 
-router.get('/categorycoupon', async (req, res) => {
+router.get('/categorycoupon',checkAdminAuth, async (req, res) => {
   const categories = await Category.find();
   const categoryCoupons = await CategoryCoupon.find()
     .populate('categoryId')
@@ -180,7 +180,7 @@ router.get('/categorycoupon', async (req, res) => {
   });
 
 });
-router.get('/categorycoupon/edit/:id', async (req, res) => {
+router.get('/categorycoupon/edit/:id',checkAdminAuth, async (req, res) => {
   const categories = await Category.find();
   const coupon = await CategoryCoupon.findById(req.params.id).populate('categoryId');
 

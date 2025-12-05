@@ -5,6 +5,7 @@ const User = require("../models/UserSchema");
 const Cart = require("../models/CartSchema");
 const Admin = require("../models/AdminSchema");
 const CustomTshirt = require("../models/CustomTshirtSchema");
+const CategoryCoupon = require("../models/categoryCoupon")
 const Poster = require("../models/posterSchema");
 const Order = require("../models/OrderSchema");
 const Contact = require("../models/Contact");
@@ -157,6 +158,9 @@ router.post("/apply-coupon", async (req, res) => {
   try {
     const { couponCode } = req.body;
 
+    // ======================================================
+    // ⚠️ Validate Input
+    // ======================================================
     if (!couponCode || typeof couponCode !== "string" || couponCode.trim() === "") {
       req.session.couponMessage = "Please enter a valid code";
       return res.redirect("/cart");
@@ -170,28 +174,9 @@ router.post("/apply-coupon", async (req, res) => {
       return res.redirect("/auth/login");
     }
 
-    // Find coupon or offer
-    let coupon = await Coupon.findOne({
-      code: trimmedCode,
-      active: true,
-      expiryDate: { $gte: new Date() },
-    });
-
-    let offer = null;
-    if (!coupon) {
-      offer = await Offer.findOne({
-        name: trimmedCode,
-        active: true,
-        expiryDate: { $gte: new Date() },
-      }).populate(["productIds", "freeProductId", "freeProductIds"]);
-    }
-
-    if (!coupon && !offer) {
-      req.session.couponMessage = "Invalid or expired code";
-      return res.redirect("/cart");
-    }
-
-    // Find user cart
+    // ======================================================
+    // 🛒 Load User Cart
+    // ======================================================
     const cart = await Cart.findOne({ user: userId })
       .populate("items.product")
       .populate("appliedCoupon")
@@ -202,127 +187,188 @@ router.post("/apply-coupon", async (req, res) => {
       return res.redirect("/cart");
     }
 
-    // ---------------- COUPON LOGIC ----------------
+    // Helper: cart subtotal
+    const getSubtotal = () => {
+      return cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    };
+
+    // Helper: save and redirect
+    const finalize = (message) => {
+      req.session.couponMessage = message;
+      return res.redirect("/cart");
+    };
+
+    // ======================================================
+    // 🔍 FIND COUPON / CATEGORY COUPON / OFFER
+    // ======================================================
+    const now = new Date();
+
+    const [coupon, categoryCouponRaw, offerRaw] = await Promise.all([
+      Coupon.findOne({
+        code: trimmedCode,
+        active: true,
+        expiryDate: { $gte: now }
+      }),
+
+      CategoryCoupon.findOne({
+        name: trimmedCode,
+        active: true,
+        expiryDate: { $gte: now }
+      }).populate("categoryId"),
+
+      Offer.findOne({
+        name: trimmedCode,
+        active: true,
+        expiryDate: { $gte: now }
+      }).populate(["productIds", "freeProductId", "freeProductIds"])
+    ]);
+
+    let categoryCoupon = null;
+    let offer = null;
+
+    if (!coupon) categoryCoupon = categoryCouponRaw;
+    if (!coupon && !categoryCouponRaw) offer = offerRaw;
+
+    if (!coupon && !categoryCoupon && !offer) {
+      return finalize("Invalid or expired code");
+    }
+
+    // ======================================================
+    // 🎯 NORMAL COUPON LOGIC
+    // ======================================================
     if (coupon) {
+      const subtotal = getSubtotal();
+
+      // Check one-time-use
       if (coupon.useonce) {
         const user = await User.findById(userId);
         if (user.useoncecoupon.includes(coupon.code)) {
-          req.session.couponMessage = "This coupon can only be used once per customer";
-          return res.redirect("/cart");
+          return finalize("This coupon can only be used once per customer");
         }
       }
 
-      const subtotal = cart.items.reduce(
-        (total, item) => total + item.product.price * item.quantity,
-        0
-      );
-
-      let discountAmount = 0;
-      if (coupon.discountType === "percentage") {
-        discountAmount = subtotal * (coupon.discountValue / 100);
-      } else {
-        discountAmount = Math.min(coupon.discountValue, subtotal);
-      }
+      const discountAmount =
+        coupon.discountType === "percentage"
+          ? subtotal * (coupon.discountValue / 100)
+          : Math.min(coupon.discountValue, subtotal);
 
       cart.appliedCoupon = coupon._id;
       cart.CouponType = "Coupon";
       cart.discountAmount = discountAmount;
       cart.couponLocked = false;
-      cart.freeItem = undefined; // remove any previous free item
-      await cart.save();
-
-      req.session.couponMessage = `Coupon "${coupon.code}" applied successfully!`;
-      return res.redirect("/cart");
-    }
-
-    // ---------------- OFFER LOGIC ----------------
-    // ---------------- OFFER LOGIC (Exact combination match) ----------------
-    if (offer) {
-      let discountAmount = 0;
-
-      // Build a map of cart productId -> { item, quantity, price }
-      const cartMap = new Map();
-      for (const item of cart.items) {
-        if (!item.product) continue;
-        const pid = item.product._id ? item.product._id.toString() : item.product.toString();
-        const price = (item.product && (item.product.price !== undefined)) ? Number(item.product.price) : 0;
-        if (!cartMap.has(pid)) cartMap.set(pid, { items: [], totalQty: 0, price });
-        const entry = cartMap.get(pid);
-        entry.items.push(item);
-        entry.totalQty += Number(item.quantity || 0);
-      }
-
-      // Ensure every required product in offer.productIds exists in cart (quantity >= 1)
-      const missingRequired = [];
-      const matchedCartEntries = []; // will contain { productId, totalQty, items }
-      for (const p of offer.productIds) {
-        const offerPid = p._id ? p._id.toString() : p.toString();
-        const entry = cartMap.get(offerPid);
-        if (!entry || entry.totalQty <= 0) {
-          missingRequired.push(offerPid);
-        } else {
-          matchedCartEntries.push({ productId: offerPid, totalQty: entry.totalQty, price: entry.price, items: entry.items });
-        }
-      }
-
-      if (missingRequired.length > 0) {
-        req.session.couponMessage = "This offer requires specific products to be in the cart.";
-        return res.redirect("/cart");
-      }
-
-      // Now check total matched quantity meets offer.minQuantity
-      const matchedTotalQty = matchedCartEntries.reduce((s, e) => s + e.totalQty, 0);
-      if (matchedTotalQty < (offer.minQuantity || 0)) {
-        req.session.couponMessage = `Add at least ${offer.minQuantity} of the required items to avail this offer`;
-        return res.redirect("/cart");
-      }
-
-      // Calculate subtotal ONLY on matched required products
-      // (use their actual quantities in cart)
-      const offerSubtotal = matchedCartEntries.reduce((sum, e) => {
-        return sum + e.price * e.totalQty;
-      }, 0);
-
-      // Clear previous freeItem/discount (we will set new ones)
       cart.freeItem = undefined;
-      cart.discountAmount = 0;
-
-      // Apply offer based on type
-      if (offer.offerType === "free_item") {
-        if (offer.freeProductId) {
-          cart.freeItem = offer.freeProductId._id ? offer.freeProductId._id : offer.freeProductId;
-          cart.markModified && cart.markModified("freeItem");
-          cart.discountAmount = 0;
-          req.session.couponMessage = `Offer "${offer.name}" applied — you got a free item!`;
-        } else {
-          req.session.couponMessage = `Offer "${offer.name}" has no free product configured.`;
-          return res.redirect("/cart");
-        }
-      } else if (offer.offerType === "flat_discount") {
-        discountAmount = Math.min(Number(offer.offerValue || 0), offerSubtotal);
-        cart.discountAmount = discountAmount;
-        req.session.couponMessage = `Offer "${offer.name}" applied — ₹${discountAmount.toFixed(2)} off!`;
-      } else if (offer.offerType === "percentage_discount") {
-        discountAmount = offerSubtotal * (Number(offer.offerValue || 0) / 100);
-        cart.discountAmount = discountAmount;
-        req.session.couponMessage = `Offer "${offer.name}" applied — ${Number(offer.offerValue || 0)}% off!`;
-      } else {
-        req.session.couponMessage = "Unknown offer type";
-        return res.redirect("/cart");
-      }
-
-      // Finalize cart fields and save
-      cart.couponLocked = true;
-      cart.appliedCoupon = offer._id;
-      cart.CouponType = "Offer";
 
       await cart.save();
-      return res.redirect("/cart");
+
+      return finalize(`Coupon "${coupon.code}" applied successfully!`);
     }
+
+    // ======================================================
+    // 🎯 CATEGORY COUPON LOGIC
+    // ======================================================
+    if (categoryCoupon) {
+      const requiredCategoryId = String(categoryCoupon.categoryId._id);
+
+      let eligibleSubtotal = 0;
+
+      cart.items.forEach(item => {
+        if (item.product && String(item.product.categoryType) === requiredCategoryId) {
+          eligibleSubtotal += item.product.price * item.quantity;
+        }
+      });
+
+      if (eligibleSubtotal <= 0) {
+        return finalize("This coupon is not applicable to items in your cart.");
+      }
+
+      const discountAmount =
+        categoryCoupon.offerType === "percentage_discount"
+          ? eligibleSubtotal * (categoryCoupon.offerValue / 100)
+          : Math.min(categoryCoupon.offerValue, eligibleSubtotal);
+
+      cart.appliedCoupon = categoryCoupon._id;
+      cart.CouponType = "CategoryCoupon";
+      cart.discountAmount = discountAmount;
+      cart.couponLocked = false;
+      cart.freeItem = undefined;
+
+      await cart.save();
+
+      return finalize(
+        `Category Coupon "${categoryCoupon.name}" applied successfully — You saved ₹${discountAmount.toFixed(
+          2
+        )} on ${categoryCoupon.categoryId.name}!`
+      );
+    }
+
+    // ======================================================
+    // 🎯 OFFER LOGIC
+    // ======================================================
+
+    const cartMap = new Map();
+    for (const item of cart.items) {
+      if (!item.product) continue;
+      const pid = item.product._id.toString();
+      const price = Number(item.product.price);
+
+      if (!cartMap.has(pid)) {
+        cartMap.set(pid, { totalQty: 0, price });
+      }
+      cartMap.get(pid).totalQty += item.quantity;
+    }
+
+    const missingRequired = [];
+    const matchedEntries = [];
+
+    for (const p of offer.productIds) {
+      const pid = p._id.toString();
+      const entry = cartMap.get(pid);
+
+      if (!entry || entry.totalQty <= 0) missingRequired.push(pid);
+      else matchedEntries.push(entry);
+    }
+
+    if (missingRequired.length > 0) {
+      return finalize("This offer requires specific products to be in the cart.");
+    }
+
+    const matchedQty = matchedEntries.reduce((s, e) => s + e.totalQty, 0);
+    if (matchedQty < (offer.minQuantity || 0)) {
+      return finalize(`Add at least ${offer.minQuantity} of the required items to avail this offer`);
+    }
+
+    const offerSubtotal = matchedEntries.reduce((s, e) => s + e.price * e.totalQty, 0);
+
+    let discountAmount = 0;
+
+    if (offer.offerType === "free_item") {
+      if (!offer.freeProductId) {
+        return finalize(`Offer "${offer.name}" has no free product configured.`);
+      }
+      cart.freeItem = offer.freeProductId._id;
+      discountAmount = 0;
+    } else if (offer.offerType === "flat_discount") {
+      discountAmount = Math.min(offer.offerValue, offerSubtotal);
+    } else if (offer.offerType === "percentage_discount") {
+      discountAmount = offerSubtotal * (offer.offerValue / 100);
+    }
+
+    cart.appliedCoupon = offer._id;
+    cart.CouponType = "Offer";
+    cart.discountAmount = discountAmount;
+    cart.couponLocked = true;
+
+    await cart.save();
+
+    return finalize(
+      offer.offerType === "free_item"
+        ? `Offer "${offer.name}" applied — you got a free item!`
+        : `Offer "${offer.name}" applied — ₹${discountAmount} off!`
+    );
 
   } catch (error) {
-    console.error("Error applying code:", error);
-    req.session.couponMessage = "Failed to apply offer/coupon";
+    console.error("Error applying coupon:", error);
+    req.session.couponMessage = "Something went wrong while applying coupon";
     return res.redirect("/cart");
   }
 });

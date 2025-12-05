@@ -3,62 +3,12 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Edit Offer - <%= offer.name %>
-  </title>
+  <title>Edit Offer - <%= offer.name %></title>
+
+  <!-- Tailwind -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #fafafa;
-      padding: 20px;
-    }
-
-    h1 {
-      color: #333;
-    }
-
-    form {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      width: 650px;
-      margin-top: 20px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    select,
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    .product-selector {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      gap: 10px;
-    }
-
     .product-selector img {
       height: 50px;
       width: 50px;
@@ -66,78 +16,114 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
+
+    .product-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 
-<body>
-  <div>
+<body class="bg-gray-100 flex">
 
-    <%- include('../partials/admin-navbar', { activePage: activePage }) %>
+  <!-- LEFT SIDEBAR (PARTIAL) -->
+  <%- include('../partials/admin-navbar', { activePage: activePage }) %>
+  
+  <!-- MAIN CONTENT -->
+  <div class="flex-1 p-10">
+
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">Edit Offer</h1>
+
     <%- include('../partials/flash') %>
 
-      <h1>Edit Offer</h1>
+    <form action="/offers/edit/<%= offer._id %>" method="POST"
+      class="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
 
-      <form action="/offers/edit/<%= offer._id %>" method="POST">
-        <label for="name">Offer Name</label>
-        <input type="text" id="name" name="name" value="<%= offer.name %>" required />
+      <!-- Offer Name -->
+      <label class="font-semibold">Offer Name</label>
+      <input type="text" name="name" value="<%= offer.name %>" required
+        class="w-full p-2 border rounded mt-1" />
 
-        <label>Offer Products</label>
-        <div id="productContainer">
-          <% offer.productIds.forEach((prod, index)=> { %>
-            <div class="product-selector">
-              <select name="productIds[]" required>
-                <% products.forEach(product=> { %>
-                  <option value="<%= product._id %>" <%=prod._id.toString()===product._id.toString() ? 'selected' : ''
-                    %>>
-                    <%= product.name %> - ₹<%= product.price %>
-                  </option>
-                  <% }) %>
-              </select>
-              <img src="<%= prod.front_image %>" alt="<%= prod.name %>" />
-              <button type="button" onclick="removeProduct(this)">❌</button>
-            </div>
-            <% }) %>
-        </div>
+      <!-- Products -->
+      <label class="font-semibold mt-4 block">Offer Products</label>
+      <div id="productContainer">
+        <% offer.productIds.forEach((prod) => { %>
+          <div class="product-selector">
+            <select name="productIds[]" required class="p-2 border rounded w-full">
+              <% products.forEach(product=> { %>
+                <option value="<%= product._id %>"
+                  <%= prod._id.toString() === product._id.toString() ? "selected" : "" %>>
+                  <%= product.name %> - ₹<%= product.price %>
+                </option>
+              <% }) %>
+            </select>
 
-        <button type="button" onclick="addProduct()">➕ Add Product</button>
+            <img src="<%= prod.front_image %>" alt="<%= prod.name %>" />
 
-        <label for="minQuantity">Minimum Quantity</label>
-        <input type="number" id="minQuantity" name="minQuantity" value="<%= offer.minQuantity %>" required />
+            <button type="button" onclick="removeProduct(this)"
+              class="px-2 text-red-600 text-xl">❌</button>
+          </div>
+        <% }) %>
+      </div>
 
-        <label for="offerType">Offer Type</label>
-        <select id="offerType" name="offerType" required onchange="toggleOfferValue()">
-          <option value="free_item" <%=offer.offerType==="free_item" ? "selected" : "" %>>Free Item</option>
-          <option value="flat_discount" <%=offer.offerType==="flat_discount" ? "selected" : "" %>>Flat Discount</option>
-          <option value="percentage_discount" <%=offer.offerType==="percentage_discount" ? "selected" : "" %>>Percentage
-            Discount</option>
-        </select>
+      <button type="button" onclick="addProduct()"
+        class="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+        ➕ Add Product
+      </button>
 
-        <div id="offerValueContainer" style="<%= offer.offerType === 'free_item' ? 'display:none;' : '' %>">
-          <label for="offerValue">Offer Value (₹ or %)</label>
-          <input type="number" id="offerValue" name="offerValue" value="<%= offer.offerValue || '' %>" />
-        </div>
+      <!-- Minimum Quantity -->
+      <label class="font-semibold mt-4 block">Minimum Quantity</label>
+      <input type="number" name="minQuantity" value="<%= offer.minQuantity %>" required
+        class="w-full p-2 border rounded" />
 
-        <label for="freeProductId">Free Product (optional)</label>
-        <select id="freeProductId" name="freeProductId">
-          <option value="">-- None --</option>
-          <% products.forEach(product=> { %>
-            <option value="<%= product._id %>" <%=offer.freeProductId &&
-              offer.freeProductId._id.toString()===product._id.toString() ? "selected" : "" %>>
-              <%= product.name %>
-            </option>
-            <% }) %>
-        </select>
+      <!-- Offer Type -->
+      <label class="font-semibold mt-4 block">Offer Type</label>
+      <select id="offerType" name="offerType" required onchange="toggleOfferValue()"
+        class="w-full p-2 border rounded">
+        <option value="free_item" <%= offer.offerType === "free_item" ? "selected" : "" %>>Free Item</option>
+        <option value="flat_discount" <%= offer.offerType === "flat_discount" ? "selected" : "" %>>Flat Discount</option>
+        <option value="percentage_discount" <%= offer.offerType === "percentage_discount" ? "selected" : "" %>>Percentage Discount</option>
+      </select>
 
-        <label for="expiryDate">Expiry Date</label>
-        <input type="date" id="expiryDate" name="expiryDate"
-          value="<%= new Date(offer.expiryDate).toISOString().split('T')[0] %>" required />
+      <!-- Offer Value (hidden if free item) -->
+      <div id="offerValueContainer" class="mt-3"
+        style="<%= offer.offerType === 'free_item' ? 'display:none;' : '' %>">
+        <label class="font-semibold">Offer Value</label>
+        <input type="number" name="offerValue" value="<%= offer.offerValue || '' %>"
+          class="w-full p-2 border rounded" />
+      </div>
 
-        <button type="submit">💾 Save Changes</button>
-      </form>
+      <!-- Free Product -->
+      <label class="font-semibold mt-4 block">Free Product (optional)</label>
+      <select name="freeProductId" class="w-full p-2 border rounded">
+        <option value="">-- None --</option>
+        <% products.forEach(product=> { %>
+          <option value="<%= product._id %>"
+            <%= offer.freeProductId && offer.freeProductId._id.toString() === product._id.toString() ? "selected" : "" %>>
+            <%= product.name %>
+          </option>
+        <% }) %>
+      </select>
 
+      <!-- Expiry Date -->
+      <label class="font-semibold mt-4 block">Expiry Date</label>
+      <input type="date" name="expiryDate"
+        value="<%= new Date(offer.expiryDate).toISOString().split('T')[0] %>"
+        required class="w-full p-2 border rounded" />
+
+      <!-- Submit -->
+      <button type="submit"
+        class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded w-full">
+        💾 Save Changes
+      </button>
+
+    </form>
   </div>
+
   <script>
-    const products = <% - JSON.stringify(products) %>;
+    const products = <%- JSON.stringify(products) %>;
 
     function addProduct() {
       const container = document.getElementById("productContainer");
@@ -147,14 +133,13 @@
       const select = document.createElement("select");
       select.name = "productIds[]";
       select.required = true;
-
+      select.className = "p-2 border rounded w-full";
       select.innerHTML = products.map(p =>
         `<option value="${p._id}">${p.name} - ₹${p.price}</option>`
       ).join("");
 
       const img = document.createElement("img");
       img.src = products[0].front_image;
-      img.alt = products[0].name;
 
       select.addEventListener("change", () => {
         const selected = products.find(p => p._id === select.value);
@@ -164,11 +149,13 @@
       const removeBtn = document.createElement("button");
       removeBtn.type = "button";
       removeBtn.textContent = "❌";
+      removeBtn.className = "px-2 text-red-600 text-xl";
       removeBtn.onclick = () => div.remove();
 
       div.appendChild(select);
       div.appendChild(img);
       div.appendChild(removeBtn);
+
       container.appendChild(div);
     }
 
@@ -178,10 +165,10 @@
 
     function toggleOfferValue() {
       const type = document.getElementById("offerType").value;
-      const valueContainer = document.getElementById("offerValueContainer");
-      valueContainer.style.display = type === "free_item" ? "none" : "block";
+      document.getElementById("offerValueContainer").style.display =
+        type === "free_item" ? "none" : "block";
     }
   </script>
-</body>
 
+</body>
 </html>

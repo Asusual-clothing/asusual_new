@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 
 const CategoryCouponSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  categoryId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true }],
-  minQuantity: { type: Number, required: true },
+  name: { type: String, required: true, unique: true},
+  categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
   offerType: {
     type: String,
     enum: [ 'flat_discount', 'percentage_discount'],

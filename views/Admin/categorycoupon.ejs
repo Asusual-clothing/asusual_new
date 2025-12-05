@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Offer | Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
+    <meta name="keywords"
+        content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
+
+    <link rel="icon" href="/assests/favicon.png" type="image/x-icon" sizes="any">
+    <link rel="icon" href="/assests/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/assests/apple-touch-icon.png">
+    <link rel="manifest" href="/assests/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ✅ YOUR FULL CSS (UNCHANGED) -->
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: #4f46e5;
+            color: white;
+            width: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .sidebar-subtitle {
+            color: #c7d2fe;
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #e0e7ff;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #fecaca;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-x: auto;
+        }
+
+        .top-bar {
+            background-color: white;
+            padding: 16px 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--dark);
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .page-subtitle {
+            color: var(--gray);
+            font-size: 1rem;
+            margin-top: 8px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--light);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background-color: #fff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .product-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+        }
+
+        .product-selector:last-child {
+            margin-bottom: 0;
+        }
+
+        .product-selector img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .product-dropdown {
+            flex: 1;
+        }
+
+        .remove-btn {
+            background: var(--danger);
+            border: none;
+            color: white;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #dc2626;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #059669;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            background-color: #f3f4f6;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #d97706;
+        }
+
+        .btn-info {
+            background-color: var(--info);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        .table th {
+            background-color: #f9fafb;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .product-item img {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: #d1d5db;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--dark);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content-area {
+                padding: 16px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .product-selector {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .product-dropdown {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('../partials/admin-navbar', { activePage: activePage }) %>
+        <%- include('../partials/flash') %>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="top-bar">
+                    <h2 class="text-lg font-semibold">Admin Panel</h2>
+                </div>
+
+                <div class="content-area">
+                    <div class="container">
+
+                        <div class="page-header">
+                            <div>
+                                <h1 class="page-title">Create Category Coupon</h1>
+                                <p class="page-subtitle">Apply discount on entire product category</p>
+                            </div>
+                        </div>
+
+                        <!-- ✅ FORM (EXACT SAME STRUCTURE AS YOU GAVE) -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fas fa-gift"></i>
+                                    Offer Details
+                                </h2>
+                            </div>
+
+                            <div class="card-body">
+                                <form action="/offers/categorycoupon" method="POST">
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Coupon Name</label>
+                                            <input type="text" name="name" class="form-control" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">Expiry Date</label>
+                                            <input type="date" name="expiryDate" class="form-control" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Select Category</label>
+                                        <select name="categoryId" class="form-control" required>
+                                            <option value="">-- Select Category --</option>
+                                            <% categories.forEach(cat=> { %>
+                                                <option value="<%= cat._id %>">
+                                                    <%= cat.name %>
+                                                </option>
+                                                <% }) %>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Offer Type</label>
+                                            <select name="offerType" class="form-control" required>
+                                                <option value="flat_discount">Flat Discount</option>
+                                                <option value="percentage_discount">Percentage Discount</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">Offer Value</label>
+                                            <input type="number" name="offerValue" class="form-control" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary" style="width:100%">
+                                            Create Category Coupon
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                        <!-- ✅ CATEGORY COUPON LIST -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fas fa-tags"></i>
+                                    Category Coupons
+                                </h2>
+                            </div>
+
+                            <div class="card-body" style="padding:0;">
+                                <% if (categoryCoupons.length> 0) { %>
+                                    <div class="table-container">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Category</th>
+                                                    <th>Type</th>
+                                                    <th>Value</th>
+                                                    <th>Expiry</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <% categoryCoupons.forEach(coupon=> { %>
+                                                    <tr>
+                                                        <td><strong>
+                                                                <%= coupon.name %>
+                                                            </strong></td>
+                                                        <td>
+                                                            <%= coupon.categoryId.name %>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge badge-info">
+                                                                <%= coupon.offerType.replace('_',' ') %>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                         <% if (coupon.offerType === 'flat_discount') { %>
+                                                                    ₹<%= coupon.offerValue %>
+                                                                        <% } else { %>
+                                                                            <%= coupon.offerValue %>%
+                                                                                <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <%= coupon.expiryDate.toISOString().substring(0,10) %>
+                                                        </td>
+
+                                                        <td>
+                                                            <span
+                                                                class="badge <%= coupon.active ? 'badge-success' : 'badge-danger' %>">
+                                                                <%= coupon.active ? 'Active' : 'Inactive' %>
+                                                            </span>
+                                                        </td>
+
+                                                        <td>
+                                                            <div class="actions">
+
+                                                                <!-- ✅ EDIT -->
+                                                                <form
+                                                                    action="/offers/categorycoupon/edit/<%= coupon._id %>"
+                                                                    method="GET">
+                                                                    <button class="btn btn-info btn-sm">
+                                                                        <i class="fas fa-edit"></i>
+                                                                    </button>
+                                                                </form>
+
+                                                                <!-- ✅ TOGGLE -->
+                                                                <form
+                                                                    action="/offers/categorycoupon/toggle/<%= coupon._id %>"
+                                                                    method="POST">
+                                                                    <button
+                                                                        class="btn <%= coupon.active ? 'btn-warning' : 'btn-secondary' %> btn-sm">
+                                                                        <i
+                                                                            class="fas <%= coupon.active ? 'fa-pause' : 'fa-play' %>"></i>
+                                                                    </button>
+                                                                </form>
+
+                                                                <!-- ✅ DELETE -->
+                                                                <form
+                                                                    action="/offers/categorycoupon/delete/<%= coupon._id %>"
+                                                                    method="POST"
+                                                                    onsubmit="return confirm('Delete this coupon?')">
+                                                                    <button class="btn btn-danger btn-sm">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <% } else { %>
+                                        <div class="empty-state">
+                                            <i class="fas fa-tags"></i>
+                                            <h3>No Category Coupons Found</h3>
+                                        </div>
+                                        <% } %>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function handleLogout() {
+                    window.location.href = '/admin/logout';
+                }
+            </script>
+</body>
+
+</html>

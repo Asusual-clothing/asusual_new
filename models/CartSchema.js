@@ -33,7 +33,7 @@ const CartSchema = new mongoose.Schema({
   },
   CouponType:{
     type:String,
-    enum:['Coupon', 'Offer']
+    enum:['Coupon', 'Offer', 'CategoryCoupon']
   },
   discountAmount: {
     type: Number,

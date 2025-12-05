@@ -542,66 +542,8 @@
 </head>
 <body>
   <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <h1 class="sidebar-title">Admin Dashboard</h1>
-      <p class="sidebar-subtitle">AsUsual</p>
-    </div>
-    
-    <div class="sidebar-nav">
-      <a href="/products/add-product" class="nav-link <%= activePage === 'add-product' ? 'active' : '' %>">
-        <i class="fas fa-plus"></i>
-        <span>Add Product</span>
-      </a>
-      
-      <a href="/products/edit-product" class="nav-link <%= activePage === 'edit-product' ? 'active' : '' %>">
-        <i class="fas fa-edit"></i>
-        <span>Edit Quantity</span>
-      </a>
-      
-      <a href="/posters/edit-poster" class="nav-link <%= activePage === 'edit-poster' ? 'active' : '' %>">
-        <i class="fas fa-image"></i>
-        <span>Edit Posters</span>
-      </a>
-      
-      <a href="/coupons" class="nav-link <%= activePage === 'coupons' ? 'active' : '' %>">
-        <i class="fas fa-tag"></i>
-        <span>Add Coupon</span>
-      </a>
-      
-      <a href="/admin/contacts" class="nav-link <%= activePage === 'contacts' ? 'active' : '' %>">
-        <i class="fas fa-envelope"></i>
-        <span>Contact Requests</span>
-      </a>
-      
-      <a href="/orders" class="nav-link <%= activePage === 'orders' ? 'active' : '' %>">
-        <i class="fas fa-shopping-bag"></i>
-        <span>Orders</span>
-      </a>
-      
-      <a href="/admin/testimonials" class="nav-link <%= activePage === 'testimonials' ? 'active' : '' %>">
-        <i class="fas fa-comment"></i>
-        <span>Testimonials</span>
-      </a>
-      
-      <a href="/admin/delivery-cost" class="nav-link <%= activePage === 'delivery-cost' ? 'active' : '' %>">
-        <i class="fas fa-truck"></i>
-        <span>Delivery Charge</span>
-      </a>
-      
-      <a href="/offers" class="nav-link <%= activePage === 'offers' ? 'active' : '' %>">
-        <i class="fas fa-gift"></i>
-        <span>Offers</span>
-      </a>
-    </div>
-    
-    <div class="sidebar-footer">
-      <button class="logout-btn" onclick="handleLogout()">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Logout</span>
-      </button>
-    </div>
-  </div>
+
+  <%- include('../partials/admin-navbar', { activePage: activePage }) %>
   <%- include('../partials/flash') %>
 
   <!-- Main Content -->

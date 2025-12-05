@@ -3,7 +3,8 @@ const router = express.Router();
 const Offer = require("../models/OfferSchema");
 const Product = require("../models/Product");
 const Admin = require("../models/AdminSchema")
-
+const CategoryCoupon = require("../models/categoryCoupon")
+const Category = require("../models/Category")
 const checkAdminAuth = async (req, res, next) => {
   try {
     const adminId = req.session.adminId || req.cookies.adminId;
@@ -27,7 +28,7 @@ const checkAdminAuth = async (req, res, next) => {
 };
 
 // 🟢 GET: Show Offer Creation Page + List All Offers
-router.get("/",checkAdminAuth, async (req, res) => {
+router.get("/", checkAdminAuth, async (req, res) => {
   try {
     const products = await Product.find({}, "name price front_image");
     const offers = await Offer.find()
@@ -84,7 +85,7 @@ router.post("/", async (req, res) => {
 });
 
 // 🟡 GET: Edit Offer Page
-router.get("/edit/:id",checkAdminAuth, async (req, res) => {
+router.get("/edit/:id", checkAdminAuth, async (req, res) => {
   try {
     const offer = await Offer.findById(req.params.id)
       .populate("productIds", "name price front_image")
@@ -99,7 +100,7 @@ router.get("/edit/:id",checkAdminAuth, async (req, res) => {
       .sort({ createdAt: -1 });
 
     // Render same form but prefilled
-    res.render("Admin/edit-offer", { offer, products, offers,activePage: "offers" });
+    res.render("Admin/edit-offer", { offer, products, offers, activePage: "offers" });
   } catch (err) {
     console.error("Error loading edit page:", err);
     res.status(500).send("Server Error");
@@ -165,5 +166,76 @@ router.post("/delete/:id", async (req, res) => {
     res.status(500).send("Error deleting offer");
   }
 });
+
+router.get('/categorycoupon', async (req, res) => {
+  const categories = await Category.find();
+  const categoryCoupons = await CategoryCoupon.find()
+    .populate('categoryId')
+    .sort({ createdAt: -1 });
+
+  res.render('Admin/categorycoupon', {
+    categories,
+    categoryCoupons,
+    activePage: 'categorycoupon'
+  });
+
+});
+router.get('/categorycoupon/edit/:id', async (req, res) => {
+  const categories = await Category.find();
+  const coupon = await CategoryCoupon.findById(req.params.id).populate('categoryId');
+
+  if (!coupon) {
+    req.flash('error', 'Coupon not found');
+    return res.redirect('/categorycoupon');
+  }
+
+  res.render('Admin/editcategorycoupon', {
+    categories,
+    coupon,               // ✔ send the specific coupon
+    activePage: 'categorycoupon'
+  });
+});
+
+
+
+router.post('/categorycoupon', async (req, res) => {
+  await CategoryCoupon.create(req.body);
+  req.flash('success', 'Category Coupon Created');
+  res.redirect('/offers/categorycoupon');
+});
+
+router.post('/categorycoupon/edit/:id', async (req, res) => {
+  const { name, categoryId, offerType, offerValue, expiryDate } = req.body;
+
+  await CategoryCoupon.findByIdAndUpdate(req.params.id, {
+    name,
+    categoryId,
+    offerType,
+    offerValue,
+    expiryDate
+  });
+
+  req.flash('success', 'Coupon Updated');
+  res.redirect('/offers/categorycoupon');
+});
+// Toggle
+router.post('/categorycoupon/toggle/:id', async (req, res) => {
+  const coupon = await CategoryCoupon.findById(req.params.id);
+  console.log(coupon.active)
+  coupon.active = !coupon.active;
+  console.log(coupon.active)
+  
+  await coupon.save();
+
+  res.redirect('/offers/categorycoupon');
+});
+
+// Delete
+router.post('/categorycoupon/delete/:id', async (req, res) => {
+  await CategoryCoupon.findByIdAndDelete(req.params.id);
+  res.redirect('/offers/categorycoupon');
+});
+
+
 
 module.exports = router;

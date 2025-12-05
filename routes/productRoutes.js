@@ -120,12 +120,12 @@ router.get("/add-product", checkAdminAuth, (req, res) => {
 
 router.post("/add-product", uploads.any(), async (req, res) => {
   try {
-    const { name, description, MRP, price, brand, bestseller, categoryType,star, washing, award, insideout } = req.body;
+    const { name, description, MRP, price, brand, bestseller, categoryType, star, washing, award, insideout } = req.body;
     let { color, colorCode } = req.body;
 
     const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"));
 
-    // Validation
+    // Basic validation
     if (!name || !description || !price || !MRP || !categoryType) {
       const msg = "Missing required fields or category type";
       return isAjax
@@ -133,24 +133,23 @@ router.post("/add-product", uploads.any(), async (req, res) => {
         : (req.flash("error_msg", msg), res.redirect("/products/add-product"));
     }
 
-    if (!req.files || req.files.length === 0) {
-      const msg = "Front and back images are required";
-      return isAjax
-        ? res.status(400).json({ success: false, message: msg })
-        : (req.flash("error_msg", msg), res.redirect("/products/add-product"));
-    }
+    // LOG incoming body/files for debugging
+    console.log(">>> REQ.BODY COLORS:", req.body.color);
+    console.log(">>> REQ.BODY COLORCODES:", req.body.colorCode);
+    console.log(">>> REQ.FILES fieldnames:", req.files.map(f => f.fieldname));
 
-    // Handle color arrays
+    // Handle color inputs
     if (!color) color = [];
     if (!Array.isArray(color)) color = [color];
-    color = color.map(c => c.trim().toLowerCase()).filter(c => c !== "");
+    color = color.map(c => (typeof c === "string" ? c.trim().toLowerCase() : "")).filter(c => c !== "");
 
     if (!colorCode) colorCode = [];
     if (!Array.isArray(colorCode)) colorCode = [colorCode];
 
-    // Cloudinary upload util
-    const uploadToCloudinary = async (file) =>
-      await new Promise((resolve, reject) => {
+    // Upload helper (same as yours)
+    const uploadToCloudinary = async (file) => {
+      if (!file) return null;
+      return await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           { resource_type: "auto" },
           (err, result) => (err ? reject(err) : resolve(result))
@@ -160,27 +159,57 @@ router.post("/add-product", uploads.any(), async (req, res) => {
         readableStream.push(null);
         readableStream.pipe(uploadStream);
       }).then(r => r.secure_url);
+    };
 
-    // Upload required images
+    // Required product images (same)
     const frontImageFile = req.files.find(f => f.fieldname === "front_images");
     const backImageFile = req.files.find(f => f.fieldname === "back_image");
+
+    if (!frontImageFile || !backImageFile) {
+      const msg = "Front and back product images are required";
+      return isAjax
+        ? res.status(400).json({ success: false, message: msg })
+        : (req.flash("error_msg", msg), res.redirect("/products/add-product"));
+    }
 
     const front_image = await uploadToCloudinary(frontImageFile);
     const back_image = await uploadToCloudinary(backImageFile);
 
-    // General product images
+    // General images
     const generalImages = req.files.filter(f => f.fieldname === "images");
     const images = await Promise.all(generalImages.map(f => uploadToCloudinary(f)));
 
-    // Color-based images
+    // Color-wise images
     const colorImages = [];
+
     for (let i = 0; i < color.length; i++) {
-      const files = req.files.filter(f => f.fieldname === `colorImages${i}[]`);
-      const urls = await Promise.all(files.map(f => uploadToCloudinary(f)));
+      // try both naming patterns (be forgiving)
+      const frontFiles = req.files.filter(f =>
+        f.fieldname === `colorFrontImages${i}[]` || f.fieldname === `colorFrontImages${i}`
+      );
+
+      const backFiles = req.files.filter(f =>
+        f.fieldname === `colorBackImages${i}[]` || f.fieldname === `colorBackImages${i}` ||
+        f.fieldname === `backColorImage${i}` || f.fieldname === `backColorImage${i}[]`
+      );
+
+      const extraFiles = req.files.filter(f =>
+        f.fieldname === `colorImages${i}[]` || f.fieldname === `colorImages${i}`
+      );
+
+      const frontImg = frontFiles.length ? await uploadToCloudinary(frontFiles[0]) : null;
+      const backImg = backFiles.length ? await uploadToCloudinary(backFiles[0]) : null;
+      const extraImages = extraFiles.length ? await Promise.all(extraFiles.map(f => uploadToCloudinary(f))) : [];
+
+      // If you require front/back for each color, enforce here:
+      // if (!frontImg || !backImg) { /* return error or handle accordingly */ }
+
       colorImages.push({
         color: color[i],
         colorCode: colorCode[i] || "#000000",
-        images: urls
+        frontImage: frontImg || "",
+        backImage: backImg || "",
+        images: extraImages
       });
     }
 
@@ -194,7 +223,7 @@ router.post("/add-product", uploads.any(), async (req, res) => {
       xxlarge: parseInt(req.body.sizes?.xxlarge) || 0,
     };
 
-    // Save product
+    // Save product (note: if schema requires non-empty strings, pass "" instead of null)
     const product = new Product({
       name,
       description,
@@ -202,13 +231,13 @@ router.post("/add-product", uploads.any(), async (req, res) => {
       price,
       brand,
       color,
-      colorImages,
       categoryType,
       sizes,
       bestseller: bestseller === "true" || bestseller === "on",
       front_image,
       back_image,
       images,
+      colorImages,
       star,
       washing,
       award,
@@ -217,24 +246,22 @@ router.post("/add-product", uploads.any(), async (req, res) => {
 
     await product.save();
 
-    if (isAjax) {
-      return res.json({ success: true, message: "Product added successfully", product });
-    }
+    if (isAjax) return res.json({ success: true, message: "Product added successfully", product });
 
     req.flash("success_msg", "Product added successfully!");
     return res.redirect("/products/add-product");
 
   } catch (error) {
     console.error("Error adding product:", error);
-
     const msg = `Failed to add product: ${error.message}`;
-    const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"));
 
+    const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"));
     return isAjax
       ? res.status(500).json({ success: false, message: msg })
       : (req.flash("error_msg", msg), res.redirect("/products/add-product"));
   }
 });
+
 
 
 
@@ -324,48 +351,34 @@ router.get("/edit-product", checkAdminAuth, async (req, res) => {
 
 router.post("/edit-product/:id", checkAdminAuth, uploads.any(), async (req, res) => {
   const { id } = req.params;
-  try {
-    const sizes = req.body.sizes || {};
-    console.log("🟢 Edit request for product:", id);
-    console.log("Received body:", req.body);
-    console.log("Parsed sizes:", req.body.sizes);
 
-    // ✅ Validate Product ID
+  try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       req.flash("error_msg", "Invalid product ID");
       return res.redirect("/products/edit-product");
     }
 
-    // ✅ Find existing product
     const product = await Product.findById(id);
     if (!product) {
       req.flash("error_msg", "Product not found");
       return res.redirect("/products/edit-product");
     }
 
-    // 🧩 Parse color arrays
-    // ✅ Parse, trim & lowercase colors
+    // Parse colors
     let colorArray = req.body.color ? JSON.parse(req.body.color) : [];
+    colorArray = colorArray.map((c) => c.trim().toLowerCase()).filter(c => c);
 
-    colorArray = colorArray
-      .map(c => c.trim().toLowerCase())
-      .filter(c => c !== "");
-    // ✅ Parse and clean deleted colors too
     let deletedArray = req.body.deletedColors ? JSON.parse(req.body.deletedColors) : [];
+    deletedArray = deletedArray.map((c) => c.trim().toLowerCase());
 
-    deletedArray = deletedArray
-      .map(c => c.trim().toLowerCase())
-      .filter(c => c !== "");
+    const sizes = req.body.sizes || {};
 
-
-    // 🧾 Build basic product fields
     const updateData = {
       name: req.body.name,
       description: req.body.description,
       MRP: req.body.MRP,
       price: req.body.price,
       brand: req.body.brand || "AsUsual",
-      // category: req.body.category || "",
       categoryType: req.body.categoryType || product.categoryType,
       bestseller: req.body.bestseller === "true",
       color: colorArray,
@@ -378,97 +391,124 @@ router.post("/edit-product/:id", checkAdminAuth, uploads.any(), async (req, res)
         xxlarge: Number(sizes.xxlarge) || 0,
       },
       award: req.body.award,
-      insideout:req.body.insideout,
+      insideout: req.body.insideout,
       washing: req.body.washing,
       star: req.body.star,
     };
 
-    // Helper: get files by fieldname
-    const getFilesByField = (fieldName) =>
-      Array.isArray(req.files)
-        ? req.files.filter((file) => file.fieldname === fieldName)
-        : [];
+    const getFilesBy = (field) => req.files.filter(f => f.fieldname === field);
 
-    // 🟡 FRONT IMAGE
-    const frontFiles = getFilesByField("front_image");
-    updateData.front_image = frontFiles.length > 0
+    // FRONT IMAGE
+    const frontFiles = getFilesBy("front_image");
+    updateData.front_image = frontFiles.length
       ? await uploadImage(frontFiles[0], product.front_image)
       : product.front_image;
 
-    // 🟡 BACK IMAGE
-    const backFiles = getFilesByField("back_image");
-    updateData.back_image = backFiles.length > 0
+    // BACK IMAGE
+    const backFiles = getFilesBy("back_image");
+    updateData.back_image = backFiles.length
       ? await uploadImage(backFiles[0], product.back_image)
       : product.back_image;
 
-    // 🟡 GALLERY IMAGES
-    const galleryFiles = getFilesByField("images");
-    if (galleryFiles.length > 0) {
-      // delete old gallery
-      for (const imgUrl of product.images || []) {
-        const publicId = extractPublicIdFromUrl(imgUrl);
-        if (publicId) await cloudinary.uploader.destroy(publicId);
+    // GENERAL IMAGES
+    const galleryFiles = getFilesBy("images");
+    if (galleryFiles.length) {
+      // delete old
+      for (const img of product.images) {
+        const id = extractPublicIdFromUrl(img);
+        await cloudinary.uploader.destroy(id);
       }
-      const uploaded = await Promise.all(galleryFiles.map((file) => uploadImage(file)));
-      updateData.images = uploaded;
+      updateData.images = await Promise.all(galleryFiles.map((f) => uploadImage(f)));
     } else {
       updateData.images = product.images;
     }
 
-    const updatedColorImages = {};
+    // --------------------------
+    // COLOR IMAGE HANDLING START
+    // --------------------------
 
-    // Keep existing colors (excluding deleted)
-    for (const entry of product.colorImages || []) {
-      if (!deletedArray.includes(entry.color)) {
-        updatedColorImages[entry.color] = entry.images;
-      } else {
-        console.log(`🗑️ Removing images for deleted color: ${entry.color}`);
+    const newColorImages = {};
+
+    // keep existing colors (excluding deleted)
+    for (const entry of product.colorImages) {
+      if (deletedArray.includes(entry.color)) {
+        // delete all cloud images for this color
         for (const img of entry.images) {
-          const publicId = extractPublicIdFromUrl(img);
-          if (publicId) await cloudinary.uploader.destroy(publicId);
+          const id = extractPublicIdFromUrl(img);
+          if (id) await cloudinary.uploader.destroy(id);
         }
+        if (entry.frontImage) {
+          const id = extractPublicIdFromUrl(entry.frontImage);
+          if (id) await cloudinary.uploader.destroy(id);
+        }
+        if (entry.backImage) {
+          const id = extractPublicIdFromUrl(entry.backImage);
+          if (id) await cloudinary.uploader.destroy(id);
+        }
+        continue;
       }
+      newColorImages[entry.color] = {
+        images: entry.images,
+        frontImage: entry.frontImage || null,
+        backImage: entry.backImage || null,
+        colorCode: entry.colorCode,
+      };
     }
 
-    // Upload new colorImages
+    // handle updated/new colors
     for (const color of colorArray) {
-      const files = getFilesByField(`colorImages_${color}`);
-      if (files.length > 0) {
-        const uploaded = await Promise.all(files.map((f) => uploadImage(f)));
-        updatedColorImages[color] = uploaded;
-      } else if (updatedColorImages[color]) {
-        console.log(`ℹ️ Keeping existing images for ${color}`);
-      } else {
-        updatedColorImages[color] = [];
-      }
+      const gallery = getFilesBy(`colorImages_${color}`);
+      const front = getFilesBy(`colorFront_${color}`);
+      const back = getFilesBy(`colorBack_${color}`);
+
+      const old = newColorImages[color] || { images: [], frontImage: null, backImage: null };
+
+      // Upload gallery images OR keep old
+      const galleryUploaded = gallery.length
+        ? await Promise.all(gallery.map(f => uploadImage(f)))
+        : old.images;
+
+      const frontUploaded = front.length
+        ? await uploadImage(front[0], old.frontImage)
+        : old.frontImage;
+
+      const backUploaded = back.length
+        ? await uploadImage(back[0], old.backImage)
+        : old.backImage;
+
+      newColorImages[color] = {
+        images: galleryUploaded,
+        frontImage: frontUploaded,
+        backImage: backUploaded,
+        colorCode: req.body[`colorCode_${color}`] || old.colorCode || "#000000",
+      };
     }
 
-    // Convert map → array for schema
-    updateData.colorImages = Object.entries(updatedColorImages).map(([color, images]) => {
-      const colorCode = req.body[`colorCode_${color}`] || "#000000";
-      return { color, images, colorCode };
-    });
+    // convert final map → array
+    updateData.colorImages = Object.entries(newColorImages).map(([color, data]) => ({
+      color,
+      images: data.images,
+      frontImage: data.frontImage,
+      backImage: data.backImage,
+      colorCode: data.colorCode,
+    }));
 
-    console.log("✅ Final colorImages array:", updateData.colorImages);
+    // -------------------------
+    // COLOR IMAGE HANDLING END
+    // -------------------------
 
-    // 🟢 Update product in DB
-    await Product.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
-    });
+    await Product.findByIdAndUpdate(id, updateData, { new: true });
 
-    console.log("✅ Product successfully updated:", id);
     req.flash("success_msg", "Product updated successfully!");
-    return res.redirect("/products/edit-product");
-  } catch (error) {
-    console.error("❌ Error updating product:", error);
-    req.flash(
-      "error_msg",
-      `Failed to update product: ${error.message.replace(/'/g, "\\'")}`
-    );
-    return res.redirect(`/products/edit-product/${id}`);
+    res.redirect("/products/edit-product");
+
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Update failed: " + err.message);
+    res.redirect("/products/edit-product/" + id);
   }
 });
+
 
 
 // Product details

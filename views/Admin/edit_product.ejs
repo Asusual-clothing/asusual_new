@@ -132,7 +132,26 @@
                                                                                 value="<%= (product.colorImages.find(c=>c.color === col)?.colorCode) || '#000000' %>"
                                                                                 class="w-10 h-8 border rounded" />
                                                                         </div>
+                                                                        <div>
+                                                                            <label
+                                                                                class="block text-sm text-gray-600">Front
+                                                                                Image for <%= col %>:</label>
+                                                                            <input type="file"
+                                                                                name="colorFront_<%= col %>"
+                                                                                accept="image/*"
+                                                                                class="w-full mt-1 border border-gray-300 rounded-md p-2 text-black" />
+                                                                        </div>
 
+                                                                        <!-- 🎨 BACK IMAGE FOR COLOR -->
+                                                                        <div>
+                                                                            <label
+                                                                                class="block text-sm text-gray-600">Back
+                                                                                Image for <%= col %>:</label>
+                                                                            <input type="file"
+                                                                                name="colorBack_<%= col %>"
+                                                                                accept="image/*"
+                                                                                class="w-full mt-1 border border-gray-300 rounded-md p-2 text-black" />
+                                                                        </div>
                                                                         <!-- 🖼️ File upload -->
                                                                         <div>
                                                                             <label
@@ -376,23 +395,29 @@
             const input = document.getElementById(`newColor-${productId}`);
             const colorContainer = document.getElementById(`colors-container-${productId}`);
             const hiddenInput = document.getElementById(`colorInput-${productId}`);
-            const color = input.value.trim();
 
+            let color = input.value.trim().toLowerCase();
             if (!color) return alert("Enter a color name!");
 
-            const currentColors = JSON.parse(hiddenInput.value || "[]");
-            if (currentColors.includes(color)) return alert("Color already exists!");
+            // Current colors in hidden field
+            let currentColors = JSON.parse(hiddenInput.value || "[]");
 
+            if (currentColors.includes(color)) {
+                return alert("Color already exists!");
+            }
+
+            // Add new color
             currentColors.push(color);
             hiddenInput.value = JSON.stringify(currentColors);
 
+            // Create new color block
             const div = document.createElement("div");
             div.className = "border rounded-md p-3 bg-gray-50 space-y-2";
             div.id = `color-block-${productId}-${color}`;
 
             div.innerHTML = `
 <div class="flex justify-between items-center">
-  <span class="font-semibold text-black">${color}</span>
+  <span class="font-semibold text-black capitalize">${color}</span>
   <button type="button" class="text-red-500 hover:text-red-700"
     onclick="removeColor('${productId}', '${color}')">
     <i class='fas fa-times'></i>
@@ -410,19 +435,40 @@
   />
 </div>
 
+<!-- 🖼️ FRONT IMAGE -->
 <div>
-  <label class="block text-sm text-gray-600">Upload Images for ${color}:</label>
+  <label class="block text-sm text-gray-600">Front Image for ${color}:</label>
+  <input
+    type="file"
+    name="colorFront_${color}"
+    accept="image/*"
+    class="w-full mt-1 border border-gray-300 rounded-md p-2 text-black"
+  />
+</div>
+
+<!-- 🖼️ BACK IMAGE -->
+<div>
+  <label class="block text-sm text-gray-600">Back Image for ${color}:</label>
+  <input
+    type="file"
+    name="colorBack_${color}"
+    accept="image/*"
+    class="w-full mt-1 border border-gray-300 rounded-md p-2 text-black"
+  />
+</div>
+
+<!-- 🖼️ GALLERY IMAGES -->
+<div>
+  <label class="block text-sm text-gray-600">Gallery Images for ${color}:</label>
   <input
     type="file"
     name="colorImages_${color}"
-    id="colorImages-${productId}-${color}"
     multiple
     accept="image/*"
     class="w-full mt-1 border border-gray-300 rounded-md p-2 text-black"
   />
 </div>
 `;
-
 
             colorContainer.appendChild(div);
             input.value = "";

@@ -8,6 +8,8 @@ const productSchema = new mongoose.Schema({
   color: [{ type: String, required: true }],
   colorImages: [
     {
+      frontImage:{type: String, required: true},
+      backImage:{type: String, required: true},
       color: { type: String, required: true }, // e.g., "Red"
       images: [{ type: String, required: true }], // e.g., ["img1.jpg", "img2.jpg"]
       colorCode:{type:String, required:true}

@@ -70,11 +70,10 @@
                                         <div class="color-input flex flex-col gap-2 border p-2 rounded-lg">
                                             <div class="flex gap-2 items-center">
                                                 <input type="text" name="color[]" placeholder="Color name (e.g. Red)"
-                                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                                    class="w-full px-4 py-2 border border-gray-300 rounded-md" />
 
-                                                <!-- Add this color picker -->
                                                 <input type="color" name="colorCode[]" value="#000000"
-                                                    class="w-10 h-10 border rounded cursor-pointer">
+                                                    class="w-10 h-10 border rounded cursor-pointer" />
 
                                                 <button type="button"
                                                     class="removeColor hidden text-red-600 hover:text-red-800">
@@ -82,17 +81,26 @@
                                                 </button>
                                             </div>
 
+                                            <!-- color-specific images (index 0) -->
+                                            <label class="text-sm text-gray-600 font-medium">Front Image</label>
+                                            <input type="file" name="colorFrontImages0[]" accept="image/*"
+                                                class="block w-full text-sm text-gray-500">
+
+                                            <label class="text-sm text-gray-600 font-medium">Back Image</label>
+                                            <input type="file" name="colorBackImages0[]" accept="image/*"
+                                                class="block w-full text-sm text-gray-500">
+
+                                            <label class="text-sm text-gray-600 font-medium">Extra Images (max
+                                                5)</label>
                                             <input type="file" name="colorImages0[]" multiple accept="image/*"
-                                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0">
+                                                class="block w-full text-sm text-gray-500">
 
                                             <p class="text-xs text-gray-400">Upload up to 5 images for this color</p>
                                         </div>
-
                                     </div>
 
-
                                     <button type="button" id="addColorBtn"
-                                        class="mt-2 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition">
+                                        class="mt-2 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700">
                                         <i class="fas fa-plus mr-1"></i> Add Color
                                     </button>
                                 </div>
@@ -285,7 +293,7 @@
 
         // Handle product form submission
         // Dynamic Color Fields
-        let colorIndex = 1;
+        let colorIndex = 1; // 0 is used by initial block
 
         document.getElementById("addColorBtn").addEventListener("click", () => {
             const container = document.getElementById("colorContainer");
@@ -293,32 +301,35 @@
             const div = document.createElement("div");
             div.className = "color-input flex flex-col gap-2 border p-2 rounded-lg";
 
+            // NOTE: names must match backend expectations exactly
             div.innerHTML = `
       <div class="flex gap-2 items-center">
-        <!-- Color name -->
         <input type="text" name="color[]" placeholder="Color name (e.g. Red)"
-          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+          class="w-full px-4 py-2 border border-gray-300 rounded-md">
 
-        <!-- Color picker -->
         <input type="color" name="colorCode[]" value="#000000"
           class="w-10 h-10 border rounded cursor-pointer">
 
-        <!-- Remove button -->
         <button type="button" class="removeColor text-red-600 hover:text-red-800">
           <i class="fas fa-minus-circle"></i>
         </button>
       </div>
 
-      <!-- File input -->
-      <input type="file" name="colorImages${colorIndex}[]" multiple accept="image/*"
-        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0">
+      <label class="text-sm text-gray-600 font-medium">Front Image</label>
+      <input type="file" name="colorFrontImages${colorIndex}[]" accept="image/*">
+
+      <label class="text-sm text-gray-600 font-medium">Back Image</label>
+      <input type="file" name="colorBackImages${colorIndex}[]" accept="image/*">
+
+      <label class="text-sm text-gray-600 font-medium">Extra Images (max 5)</label>
+      <input type="file" name="colorImages${colorIndex}[]" multiple accept="image/*">
 
       <p class="text-xs text-gray-400">Upload up to 5 images for this color</p>
     `;
 
             container.appendChild(div);
             colorIndex++;
-        });
+        }); 
         // Remove color field
         document.getElementById("colorContainer").addEventListener("click", (e) => {
             if (e.target.closest(".removeColor")) {

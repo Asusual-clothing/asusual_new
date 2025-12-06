@@ -240,7 +240,7 @@
 
           // Try to parse the products data safely
           try {
-            allProducts = <% - typeof products !== 'undefined' ? JSON.stringify(products) : '[]' %>;
+            allProducts = <%- typeof products !== 'undefined' ? JSON.stringify(products) : '[]' %>;
           } catch (e) {
             console.error("Error parsing products:", e);
             allProducts = [];

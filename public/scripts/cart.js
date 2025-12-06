@@ -126,10 +126,52 @@ function handleCancelOrder() {
 // ===============================
 // PAYMENT SUBMISSION (BACKEND TOTAL ONLY)
 // ===============================
+// Validate required shipping fields
+function validateShippingForm() {
+    const requiredFields = [
+        "shipping-line1",
+        "shipping-city",
+        "shipping-state",
+        "shipping-postalCode",
+        "shipping-country",
+        "shipping-contactNumber"
+    ];
+
+    for (let id of requiredFields) {
+        const input = document.getElementById(id);
+
+        if (!input || input.value.trim() === "") {
+            alert(`Please fill out the ${input.previousElementSibling.innerText.replace("*", "")} field.`);
+            input.focus();
+            return false;
+        }
+    }
+
+    // Extra validation
+    const postal = document.getElementById("shipping-postalCode").value;
+    if (!/^\d{6}$/.test(postal)) {
+        alert("Please enter a valid 6-digit postal code.");
+        return false;
+    }
+
+    const contact = document.getElementById("shipping-contactNumber").value;
+    if (!/^\d{10}$/.test(contact)) {
+        alert("Please enter a valid 10-digit contact number.");
+        return false;
+    }
+
+    return true; // All good
+}
 
 async function handleOrderSubmit() {
     const button = document.getElementById('cashfree-payment-btn');
     const originalButtonContent = button.innerHTML;
+
+    // ❗ STOP if validation fails
+    if (!validateShippingForm()) {
+        return;
+    }
+
     button.disabled = true;
     button.innerHTML = "Processing...";
 
@@ -144,26 +186,30 @@ async function handleOrderSubmit() {
             contactNumber: document.getElementById('shipping-contactNumber').value
         };
 
-
         const response = await fetch('/payment/process-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ shippingAddress }) // ✅ NO AMOUNT SENT FROM FRONTEND
+            body: JSON.stringify({ shippingAddress })
         });
 
         const result = await response.json();
 
-        if (!result.success) throw new Error(result.message);
+        if (!result.success) {
+            alert(result.message || "Something went wrong!");
+            throw new Error(result.message);
+        }
 
         window.location.href = result.checkoutPageUrl;
 
     } catch (error) {
         console.error(error);
+        alert(error.message || "Something went wrong!");
         button.disabled = false;
         button.innerHTML = originalButtonContent;
     }
 }
+
 
 // ===============================
 // FETCH CART SUMMARY FROM BACKEND

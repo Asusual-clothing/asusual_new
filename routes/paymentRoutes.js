@@ -75,6 +75,7 @@ router.post("/process-order", async (req, res) => {
         );
       } catch (err) {
         // Duplicate pending order — fetch the existing one
+        console.log("not working efficiently", err)
         if (err.code === 11000) {
           pendingOrder = await Order.findOne({
             user: userId,

@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.target.classList.contains('cart-remove')) await handleRemoveItem(e);
         if (e.target.id === 'proceed-to-order') handleProceedToOrder();
         if (e.target.id === 'cancel-order') handleCancelOrder();
+        if (e.target.id === 'cashfree-payment-btn') handleOrderSubmit();
+
     });
 
     checkPaymentReturn();
@@ -76,7 +78,7 @@ async function handleQuantityDecrease(e) {
 // ===============================
 
 async function handleRemoveItem(e) {
-      const couponApplied = document.querySelector('.coupon-success');
+    const couponApplied = document.querySelector('.coupon-success');
 
     if (couponApplied) {
         alert("⚠️ Please remove the applied coupon/offer before modifying cart items.");
@@ -133,14 +135,15 @@ async function handleOrderSubmit() {
 
     try {
         const shippingAddress = {
-            line1: shipping-line1.value,
-            line2: shipping-line2.value,
-            city: shipping-city.value,
-            state: shipping-state.value,
-            postalCode: shipping-postalCode.value,
-            country: shipping-country.value,
-            contactNumber: shipping-contactNumber.value
+            line1: document.getElementById('shipping-line1').value,
+            line2: document.getElementById('shipping-line2').value,
+            city: document.getElementById('shipping-city').value,
+            state: document.getElementById('shipping-state').value,
+            postalCode: document.getElementById('shipping-postalCode').value,
+            country: document.getElementById('shipping-country').value,
+            contactNumber: document.getElementById('shipping-contactNumber').value
         };
+
 
         const response = await fetch('/payment/process-order', {
             method: 'POST',

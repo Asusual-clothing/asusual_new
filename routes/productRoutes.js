@@ -517,11 +517,10 @@ router.post("/edit-product/:id", checkAdminAuth, uploads.any(), async (req, res)
 router.get("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
-    const product = await Product.findById(productId);
+    const selectedColor = req.query.color;   // ✅ GET color from URL
 
-    if (!product) {
-      return res.status(404).send("Product not found");
-    }
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).send("Product not found");
 
     const userId = req.session.userId || req.cookies.userId;
     let user = { name: "Guest" };
@@ -529,12 +528,9 @@ router.get("/:id", async (req, res) => {
 
     if (userId) {
       user = await User.findById(userId, "name _id");
-
-      // Fetch user's cart and calculate cartCount
       const cart = await Cart.findOne({ user: userId });
-      if (cart && Array.isArray(cart.items)) {
-        // Total quantity of all items in the cart
-        cartCount = cart.items.reduce((total, item) => total + item.quantity, 0);
+      if (cart) {
+        cartCount = cart.items.reduce((t, i) => t + i.quantity, 0);
       }
     }
 
@@ -542,13 +538,15 @@ router.get("/:id", async (req, res) => {
       product,
       user,
       productId: product._id,
-      cartCount, // ✅ Pass the total quantity
+      cartCount,
+      selectedColor  // ✅ Pass to EJS
     });
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
   }
 });
+
 
 // Delete product
 router.post("/delete/:id", async (req, res) => {

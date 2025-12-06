@@ -43,7 +43,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top:20px;
+      margin-top: 20px;
       margin-bottom: 8px;
     }
 
@@ -260,11 +260,14 @@
           <h2>Available Colors:</h2>
           <div class="color-options">
             <% if (product.colorImages && product.colorImages.length> 0) { %>
-              <% product.colorImages.forEach((item)=> { %>
-                <div class="color-circle" data-color="<%= item.color.trim() %>" data-code="<%= item.colorCode %>"
+              <% product.colorImages.forEach((item, index)=> { %>
+                <div class="color-circle 
+  <%= selectedColor && selectedColor.toLowerCase() === item.color.toLowerCase() ? 'selected' : '' %>"
+                  data-color="<%= item.color.trim() %>" data-code="<%= item.colorCode %>"
                   title="<%= item.color.trim() %> (<%= item.colorCode %>)"
                   style="background-color: <%= item.colorCode %>;"></div>
                 <% }) %>
+
                   <% } else { %>
                     <p>No colors available.</p>
                     <% } %>
@@ -303,7 +306,8 @@
               <input type="hidden" name="userId" value="<%= user?._id || '' %>" />
               <input type="hidden" name="productId" value="<%= product.id %>" />
               <input type="hidden" id="selected-size" name="size" value="" />
-              <input type="hidden" id="selected-color" name="color" value="" />
+              <input type="hidden" id="selected-color" name="color" value="<%= selectedColor || '' %>" />
+
 
               <div class="quantity-controls">
                 <button type="button" onclick="changeQuantity(-1)">-</button>
@@ -371,11 +375,14 @@
 
         <!-- ================= JS SECTION ================= -->
         <script>
+
+
           document.addEventListener("DOMContentLoaded", function () {
             const mainImage = document.getElementById("mainImage");
             const changeImageContainer = document.querySelector(".change_image");
             const colorImageData = <%- JSON.stringify(product.colorImages || []) %>;
             let currentImages = <%- JSON.stringify(product.images || []) %>;
+
 
             // Preload all variant images
             function preloadImages(images) {
@@ -385,7 +392,6 @@
               });
             }
 
-            colorImageData.forEach(item => preloadImages(item.images));
 
             // Loader overlay
             const loaderOverlay = document.createElement("div");
@@ -395,41 +401,55 @@
             displayImage.appendChild(loaderOverlay);
 
             function renderGallery(images) {
-              if (!images || !images.length) return;
-              loaderOverlay.style.display = "flex";
-              const temp = new Image();
-              temp.src = images[0];
-              temp.onload = function () {
-                mainImage.src = images[0];
-                loaderOverlay.style.display = "none";
-              };
-              changeImageContainer.innerHTML = "";
-              images.forEach((img, i) => {
-                const thumb = document.createElement("img");
-                thumb.src = img;
-                thumb.className = `thumb-img ${i === 0 ? "active-thumb" : ""}`;
-                thumb.addEventListener("click", function () {
-                  mainImage.src = img;
-                  document.querySelectorAll(".thumb-img").forEach(t => t.classList.remove("active-thumb"));
-                  this.classList.add("active-thumb");
-                });
-                changeImageContainer.appendChild(thumb);
+              mainImage.src = images[0];
+              document.querySelectorAll(".thumb-img").forEach((t, index) => {
+                t.src = images[index] || "";
+                t.style.display = images[index] ? "block" : "none";
               });
             }
 
+            changeImageContainer.innerHTML = "";
+            currentImages.forEach((img, i) => {
+              const thumb = document.createElement("img");
+              thumb.src = img;
+              thumb.className = `thumb-img ${i === 0 ? "active-thumb" : ""}`;
+              thumb.addEventListener("click", function () {
+                mainImage.src = img;
+                document.querySelectorAll(".thumb-img").forEach(t => t.classList.remove("active-thumb"));
+                this.classList.add("active-thumb");
+              });
+              changeImageContainer.appendChild(thumb);
+            });
+
+
             renderGallery(currentImages);
 
-            // Color Selection
             document.querySelectorAll(".color-circle").forEach(circle => {
               circle.addEventListener("click", function () {
+
                 document.querySelectorAll(".color-circle").forEach(c => c.classList.remove("selected"));
                 this.classList.add("selected");
-                document.getElementById("selected-color").value = this.dataset.color;
-                const match = colorImageData.find(c => c.color.toLowerCase() === this.dataset.color.toLowerCase());
-                if (match && match.images.length) renderGallery(match.images);
-                else renderGallery(currentImages);
+
+                const selectedColor = this.dataset.color.trim().toLowerCase();
+                document.getElementById("selected-color").value = selectedColor;
+
+                const match = colorImageData.find(
+                  c => c.color.trim().toLowerCase() === selectedColor
+                );
+
+                if (match && match.images && match.images.length > 0) {
+                  renderGallery(match.images);
+                } else {
+                  renderGallery(currentImages);
+                }
               });
             });
+
+            // 🔥 New Code: Auto-trigger color selection when page loads
+            const preselected = document.querySelector(".color-circle.selected");
+            if (preselected) {
+              preselected.click();
+            }
 
             // Size Logic
             function selectSize(size) {

@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require('pg-sdk-node');
 
 // Models
+const CategoryCoupon = require("../models/categoryCoupon")
 const Product = require("../models/Product");
 const User = require("../models/UserSchema");
 const Cart = require("../models/CartSchema");
@@ -25,7 +26,6 @@ router.post("/process-order", async (req, res) => {
   try {
     const userId = req.user?._id || req.session.userId;
     const { shippingAddress } = req.body;
-
     if (!userId) {
       return res.status(401).json({ success: false, message: "Not authenticated" });
     }
@@ -60,7 +60,6 @@ router.post("/process-order", async (req, res) => {
       cart: cart._id,
       createdAt: { $gte: new Date(Date.now() - 10 * 60 * 1000) }
     });
-
     if (!pendingOrder) {
       try {
         pendingOrder = await createOrder(
@@ -195,10 +194,13 @@ async function createOrder(
   }));
 
   let freeItem = null;
-  let freeitemSize=null;
+  let freeItemSize = null;
   let couponType = null;
+
   let offerUsed = null;
   let couponUsed = null;
+  let categoryCouponUsed = null;
+  let categoryCouponType = null; // flat_discount | percentage_discount
 
   // 🟩 CASE 1: Offer Applied
   if (cart.appliedCoupon && cart.CouponType === "Offer") {
@@ -207,17 +209,14 @@ async function createOrder(
     if (offer) {
       offerUsed = offer._id;
 
-      // ✅ Offer Type: Free Item
       if (offer.offerType === "free_item") {
         freeItem = offer.freeProductId || cart.freeItem || null;
-        freeitemSize= cart.freeItemSize || null;
+        freeItemSize = cart.freeItemSize || null;
         couponType = "free_item";
       }
-      // ✅ Offer Type: Flat Discount
       else if (offer.offerType === "flat_discount") {
         couponType = "flat_discount";
       }
-      // ✅ Offer Type: Percentage Discount
       else if (offer.offerType === "percentage_discount") {
         couponType = "percentage_discount";
       }
@@ -232,7 +231,6 @@ async function createOrder(
       couponUsed = coupon._id;
       couponType = coupon.discountType; // 'flat' or 'percentage'
 
-      // Handle one-time coupon
       if (coupon.useonce) {
         await User.findByIdAndUpdate(userId, {
           $addToSet: { useoncecoupon: coupon.code },
@@ -241,23 +239,48 @@ async function createOrder(
     }
   }
 
-  // 🟨 Create new order object
+  // 🟧 CASE 3: CATEGORY COUPON APPLIED
+  else if (cart.appliedCoupon && cart.CouponType === "CategoryCoupon") {
+    const categoryCoupon = await CategoryCoupon.findById(cart.appliedCoupon);
+
+    if (categoryCoupon) {
+      categoryCouponUsed = categoryCoupon._id;
+      categoryCouponType = categoryCoupon.offerType;  // flat_discount or percentage_discount
+
+      couponType = categoryCoupon.offerType; // store same in main couponType if needed
+    }
+  }
+
+  // 🟨 Create order
   const newOrder = new Order({
     user: userId,
     cart: cart._id,
     items: orderItems,
-    freeItemSize:freeitemSize,
+
+    // Pricing
     subtotal,
     discountAmount,
     shippingFee,
     totalAmount,
+
+    // Payment
     paymentMethod,
     paymentStatus,
+
     shippingAddress,
+
+    // Free item (if any)
     freeItem,
+    freeItemSize,
+
+    // Coupon / Offer Tracking
     offerUsed,
     couponUsed,
-    couponType
+    couponType,
+
+    // Category Coupon Tracking
+    categoryCouponUsed,
+    categoryCouponType
   });
 
   await newOrder.save();

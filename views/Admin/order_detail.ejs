@@ -24,238 +24,273 @@
         <!-- Sidebar - Same as dashboard -->
 
         <%- include('../partials/admin-navbar', { activePage: activePage }) %>
-        <%- include('../partials/flash') %>
+            <%- include('../partials/flash') %>
 
-            <!-- Main Content -->
-            <div class="flex-1 p-8">
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-semibold text-gray-800">Order Details</h2>
-                        <a href="/orders"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition flex items-center gap-2">
-                            <i class="fas fa-arrow-left"></i> Back to Orders
-                        </a>
-                    </div>
+                <!-- Main Content -->
+                <div class="flex-1 p-8">
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-semibold text-gray-800">Order Details</h2>
+                            <a href="/orders"
+                                class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition flex items-center gap-2">
+                                <i class="fas fa-arrow-left"></i> Back to Orders
+                            </a>
+                        </div>
 
-                    <!-- Order Summary -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <!-- Order Information -->
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="text-lg font-medium text-gray-800 mb-3 border-b pb-2">Order Information</h4>
-                            <div class="space-y-2">
-                                <% if (order.user) { %>
-                                    <p class="text-sm"><span class="font-medium">Customer:</span>
-                                        <%= order.user.name %>
-                                    </p>
-                                    <p class="text-sm"><span class="font-medium">Customer's email:</span>
-                                        <%= order.user.email %>
-                                    </p>
-                                    <% } %>
-                                        <p class="text-sm"><span class="font-medium">Order #:</span>
-                                            <%= order._id.toString() %>
+                        <!-- Order Summary -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <!-- Order Information -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="text-lg font-medium text-gray-800 mb-3 border-b pb-2">Order Information</h4>
+                                <div class="space-y-2">
+                                    <% if (order.user) { %>
+                                        <p class="text-sm"><span class="font-medium">Customer:</span>
+                                            <%= order.user.name %>
                                         </p>
-                                        <p class="text-sm"><span class="font-medium">Date:</span>
-                                            <%= new Date(order.createdAt).toLocaleString('en-IN', { day: 'numeric' ,
-                                                month: 'short' , year: 'numeric' , hour: '2-digit' , minute: '2-digit'
-                                                }) %>
+                                        <p class="text-sm"><span class="font-medium">Customer's email:</span>
+                                            <%= order.user.email %>
                                         </p>
-                                        <p class="text-sm flex items-center">
-                                            <span class="font-medium">Status:</span>
-                                            <span class="ml-2 px-2 py-1 rounded-full text-xs font-medium 
+                                        <% } %>
+                                            <p class="text-sm"><span class="font-medium">Order #:</span>
+                                                <%= order._id.toString() %>
+                                            </p>
+                                            <p class="text-sm"><span class="font-medium">Date:</span>
+                                                <%= new Date(order.createdAt).toLocaleString('en-IN', { day: 'numeric' ,
+                                                    month: 'short' , year: 'numeric' , hour: '2-digit' ,
+                                                    minute: '2-digit' }) %>
+                                            </p>
+                                            <p class="text-sm flex items-center">
+                                                <span class="font-medium">Status:</span>
+                                                <span class="ml-2 px-2 py-1 rounded-full text-xs font-medium 
                 <%= order.status.toLowerCase() === 'completed' ? 'bg-green-100 text-green-800' : 
                    order.status.toLowerCase() === 'processing' ? 'bg-blue-100 text-blue-800' :
                    order.status.toLowerCase() === 'cancelled' ? 'bg-red-100 text-red-800' :
                    'bg-yellow-100 text-yellow-800' %>">
-                                                <%= order.status %>
-                                            </span>
-                                        </p>
-                                        <p class="text-sm"><span class="font-medium">Payment Method:</span>
-                                            <%= order.paymentMethod %>
-                                        </p>
-                                        <p class="text-sm"><span class="font-medium">Payment Status:</span>
-                                            <%= order.paymentStatus %>
-                                        </p>
-
-                                        <!-- Show Offer / Coupon Information -->
-                                        <% if (order.offerUsed || order.couponUsed) { %>
-                                            <div class="mt-3 border-t border-gray-200 pt-3">
-                                                <% if (order.offerUsed) { %>
-                                                    <p class="text-sm">
-                                                        <span class="font-medium">Offer Used:</span>
-                                                        <%= order.offerUsed.name %>
-                                                    </p>
-                                                    <p class="text-sm">
-                                                        <span class="font-medium">Offer Type:</span>
-                                                        <%= order.offerUsed.offerType %>
-                                                    </p>
-                                                    <% } %>
-
-                                                        <% if (order.couponUsed) { %>
-                                                            <p class="text-sm">
-                                                                <span class="font-medium">Coupon Used:</span>
-                                                                <%= order.couponUsed.code %>
-                                                            </p>
-                                                            <p class="text-sm">
-                                                                <span class="font-medium">Coupon Type:</span>
-                                                                <%= order.couponUsed.discountType %>
-                                                            </p>
-                                                            <p class="text-sm">
-                                                                <span class="font-medium">Coupon Value:</span>
-                                                                <%= order.couponUsed.discountType==='percentage' ?
-                                                                    order.couponUsed.discountValue + '%' : '₹' +
-                                                                    order.couponUsed.discountValue %>
-                                                            </p>
-                                                            <% } %>
-                                            </div>
-                                            <% } %>
-
-                            </div>
-                        </div>
-
-
-                        <!-- Shipping Address -->
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="text-lg font-medium text-gray-800 mb-3 border-b pb-2">Shipping Address</h4>
-                            <div class="space-y-2">
-                                <p class="text-sm">
-                                    <%= order.shippingAddress.line1 %>
-                                </p>
-                                <% if (order.shippingAddress.line2) { %>
-                                    <p class="text-sm">
-                                        <%= order.shippingAddress.line2 %>
-                                    </p>
-                                    <% } %>
-                                        <p class="text-sm">
-                                            <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>
-                                        </p>
-                                        <p class="text-sm">
-                                            <%= order.shippingAddress.postalCode %>, <%= order.shippingAddress.country
-                                                    %>
-                                        </p>
-                                        <p class="text-sm"><span class="font-medium">Phone:</span>
-                                            <%= order.shippingAddress.contactNumber %>
-                                        </p>
-                                        <% if (order.trackingNumber) { %>
-                                            <p class="text-sm"><span class="font-medium">Tracking #:</span>
-                                                <%= order.trackingNumber %>
+                                                    <%= order.status %>
+                                                </span>
                                             </p>
-                                            <% } %>
-                            </div>
-                        </div>
-                    </div>
+                                            <p class="text-sm"><span class="font-medium">Payment Method:</span>
+                                                <%= order.paymentMethod %>
+                                            </p>
+                                            <p class="text-sm"><span class="font-medium">Payment Status:</span>
+                                                <%= order.paymentStatus %>
+                                            </p>
 
-                    <!-- Order Items -->
-                    <div class="mb-8">
-                        <h4 class="text-lg font-medium text-gray-800 mb-4">Order Items</h4>
-                        <div class="divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden">
-                            <% order.items.forEach(item=> { %>
-                                <div class="p-4 flex flex-col sm:flex-row gap-4 hover:bg-gray-50">
-                                    <img src="<%= item.product.images[0] %>" alt="<%= item.product.name %>"
-                                        class="w-20 h-20 object-cover rounded-md border border-gray-200">
-                                    <div class="flex-1">
-                                        <a href="/products/<%= item.product._id.toString() %>"
-                                            class="text-indigo-600 hover:text-indigo-800 font-medium">
-                                            <%= item.product.name %>
-                                        </a>
-                                        <div class="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
-                                            <p><span class="font-medium">Size:</span>
-                                                <%= item.size %>
-                                            </p>
-                                            <p><span class="font-medium">Color:</span>
-                                                <%= item.color %>
-                                            </p>
-                                            <p><span class="font-medium">Qty:</span>
-                                                <%= item.quantity %>
-                                            </p>
-                                            <p><span class="font-medium">Price:</span> ₹<%=
-                                                    item.priceAtPurchase.toFixed(2) %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="font-medium text-gray-900 sm:text-right">
-                                        ₹<%= (item.priceAtPurchase * item.quantity).toFixed(2) %>
-                                    </div>
-                                </div>
-                                <% }) %>
-                        </div>
-                        <!-- Free Item Section -->
-                        <% if (order.freeItem) { %>
-                            <div class="mb-8 border border-green-200 rounded-lg overflow-hidden">
-                                <div class="bg-green-50 p-4">
-                                    <h4 class="text-lg font-semibold text-green-800 mb-3">🎁 Free Item</h4>
-                                    <div class="flex flex-col sm:flex-row gap-4 items-start">
-                                        <% if (order.freeItem.images && order.freeItem.images.length> 0) { %>
-                                            <img src="<%= order.freeItem.images[0] %>" alt="<%= order.freeItem.name %>"
-                                                class="w-20 h-20 object-cover rounded-md border border-gray-200">
-                                            <% } else { %>
-                                                <div
-                                                    class="w-20 h-20 flex items-center justify-center bg-gray-100 rounded-md border border-gray-200">
-                                                    <i class="fas fa-gift text-gray-400 text-xl"></i>
+                                            <!-- Show Offer / Coupon Information -->
+                                            <% if (order.offerUsed || order.couponUsed || order.categoryCouponUsed) { %>
+                                                <div class="mt-3 border-t border-gray-200 pt-3">
+
+                                                    <% if (order.offerUsed) { %>
+                                                        <p class="text-sm">
+                                                            <span class="font-medium">Offer Used:</span>
+                                                            <%= order.offerUsed.name %>
+                                                        </p>
+                                                        <p class="text-sm">
+                                                            <span class="font-medium">Offer Type:</span>
+                                                            <%= order.offerUsed.offerType %>
+                                                        </p>
+                                                        <% } %>
+
+                                                            <% if (order.couponUsed) { %>
+                                                                <p class="text-sm">
+                                                                    <span class="font-medium">Coupon Used:</span>
+                                                                    <%= order.couponUsed.code %>
+                                                                </p>
+                                                                <p class="text-sm">
+                                                                    <span class="font-medium">Coupon Type:</span>
+                                                                    <%= order.couponUsed.discountType %>
+                                                                </p>
+                                                                <p class="text-sm">
+                                                                    <span class="font-medium">Coupon Value:</span>
+                                                                    <%= order.couponUsed.discountType==='percentage' ?
+                                                                        order.couponUsed.discountValue + '%' : '₹' +
+                                                                        order.couponUsed.discountValue %>
+                                                                </p>
+                                                                <% } %>
+
+                                                                    <% if (order.categoryCouponUsed) { %>
+                                                                        <p class="text-sm">
+                                                                            <span class="font-medium">Category
+                                                                                Coupon:</span>
+                                                                            <%= order.categoryCouponUsed.name %>
+                                                                        </p>
+
+                                                                        <p class="text-sm">
+                                                                            <span class="font-medium">Category Coupon
+                                                                                Type:</span>
+                                                                            <%= order.categoryCouponUsed.offerType %>
+                                                                        </p>
+
+                                                                        <p class="text-sm">
+                                                                            <span class="font-medium">Category Coupon
+                                                                                Value:</span>
+                                                                            <%= order.categoryCouponUsed.offerType==='percentage_discount'
+                                                                                ? order.categoryCouponUsed.offerValue
+                                                                                + '%' : '₹' +
+                                                                                order.categoryCouponUsed.offerValue %>
+                                                                        </p>
+
+                                                                        <p class="text-sm">
+                                                                            <span class="font-medium">Applied On
+                                                                                Category:</span>
+                                                                            <%= order.categoryCouponUsed.categoryId?.name
+                                                                                %>
+                                                                                <!-- If categoryId is populated, show name. Otherwise show ID -->
+                                                                        </p>
+                                                                        <% } %>
+
                                                 </div>
                                                 <% } %>
 
-                                                    <div>
-                                                        <p class="font-medium text-gray-900">
-                                                            <%= order.freeItem.name %>
-                                                        </p>
-                                                        <p><span class="font-medium">Size:</span>
-                                                            <%= order.freeItemSize %>
-                                                        </p>
-                                                        <p class="text-sm text-gray-600">Free with this order</p>
-                                                        <% if (order.offerUsed) { %>
-                                                            <p class="text-xs text-green-700 mt-1">
-                                                                Offer Used: <%= order.offerUsed.name %> (<%=
-                                                                        order.offerUsed.offerType %>)
-                                                            </p>
-                                                            <% } %>
-                                                    </div>
-                                    </div>
+
                                 </div>
                             </div>
-                            <% } %>
 
-                    </div>
 
-                    <!-- Order Totals -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h4 class="text-lg font-medium text-gray-800 mb-4">Order Summary</h4>
-                        <div class="space-y-3 max-w-md ml-auto">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Subtotal:</span>
-                                <span class="font-medium">₹<%= order.subtotal.toFixed(2) %></span>
+                            <!-- Shipping Address -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="text-lg font-medium text-gray-800 mb-3 border-b pb-2">Shipping Address</h4>
+                                <div class="space-y-2">
+                                    <p class="text-sm">
+                                        <%= order.shippingAddress.line1 %>
+                                    </p>
+                                    <% if (order.shippingAddress.line2) { %>
+                                        <p class="text-sm">
+                                            <%= order.shippingAddress.line2 %>
+                                        </p>
+                                        <% } %>
+                                            <p class="text-sm">
+                                                <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>
+                                            </p>
+                                            <p class="text-sm">
+                                                <%= order.shippingAddress.postalCode %>, <%=
+                                                        order.shippingAddress.country %>
+                                            </p>
+                                            <p class="text-sm"><span class="font-medium">Phone:</span>
+                                                <%= order.shippingAddress.contactNumber %>
+                                            </p>
+                                            <% if (order.trackingNumber) { %>
+                                                <p class="text-sm"><span class="font-medium">Tracking #:</span>
+                                                    <%= order.trackingNumber %>
+                                                </p>
+                                                <% } %>
+                                </div>
                             </div>
-                            <% if (order.discountAmount> 0) { %>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">Discount:</span>
-                                    <span class="font-medium text-red-600">-₹<%= order.discountAmount.toFixed(2) %>
-                                            </span>
+                        </div>
+
+                        <!-- Order Items -->
+                        <div class="mb-8">
+                            <h4 class="text-lg font-medium text-gray-800 mb-4">Order Items</h4>
+                            <div class="divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden">
+                                <% order.items.forEach(item=> { %>
+                                    <div class="p-4 flex flex-col sm:flex-row gap-4 hover:bg-gray-50">
+                                        <img src="<%= item.product.images[0] %>" alt="<%= item.product.name %>"
+                                            class="w-20 h-20 object-cover rounded-md border border-gray-200">
+                                        <div class="flex-1">
+                                            <a href="/products/<%= item.product._id.toString() %>"
+                                                class="text-indigo-600 hover:text-indigo-800 font-medium">
+                                                <%= item.product.name %>
+                                            </a>
+                                            <div class="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
+                                                <p><span class="font-medium">Size:</span>
+                                                    <%= item.size %>
+                                                </p>
+                                                <p><span class="font-medium">Color:</span>
+                                                    <%= item.color %>
+                                                </p>
+                                                <p><span class="font-medium">Qty:</span>
+                                                    <%= item.quantity %>
+                                                </p>
+                                                <p><span class="font-medium">Price:</span> ₹<%=
+                                                        item.priceAtPurchase.toFixed(2) %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="font-medium text-gray-900 sm:text-right">
+                                            ₹<%= (item.priceAtPurchase * item.quantity).toFixed(2) %>
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                            </div>
+                            <!-- Free Item Section -->
+                            <% if (order.freeItem) { %>
+                                <div class="mb-8 border border-green-200 rounded-lg overflow-hidden">
+                                    <div class="bg-green-50 p-4">
+                                        <h4 class="text-lg font-semibold text-green-800 mb-3">🎁 Free Item</h4>
+                                        <div class="flex flex-col sm:flex-row gap-4 items-start">
+                                            <% if (order.freeItem.images && order.freeItem.images.length> 0) { %>
+                                                <img src="<%= order.freeItem.images[0] %>"
+                                                    alt="<%= order.freeItem.name %>"
+                                                    class="w-20 h-20 object-cover rounded-md border border-gray-200">
+                                                <% } else { %>
+                                                    <div
+                                                        class="w-20 h-20 flex items-center justify-center bg-gray-100 rounded-md border border-gray-200">
+                                                        <i class="fas fa-gift text-gray-400 text-xl"></i>
+                                                    </div>
+                                                    <% } %>
+
+                                                        <div>
+                                                            <p class="font-medium text-gray-900">
+                                                                <%= order.freeItem.name %>
+                                                            </p>
+                                                            <p><span class="font-medium">Size:</span>
+                                                                <%= order.freeItemSize %>
+                                                            </p>
+                                                            <p class="text-sm text-gray-600">Free with this order</p>
+                                                            <% if (order.offerUsed) { %>
+                                                                <p class="text-xs text-green-700 mt-1">
+                                                                    Offer Used: <%= order.offerUsed.name %> (<%=
+                                                                            order.offerUsed.offerType %>)
+                                                                </p>
+                                                                <% } %>
+                                                        </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <% } %>
+
+                        </div>
+
+                        <!-- Order Totals -->
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-medium text-gray-800 mb-4">Order Summary</h4>
+                            <div class="space-y-3 max-w-md ml-auto">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Subtotal:</span>
+                                    <span class="font-medium">₹<%= order.subtotal.toFixed(2) %></span>
+                                </div>
+                                <% if (order.discountAmount> 0) { %>
                                     <div class="flex justify-between">
-                                        <span class="text-gray-600">Shipping:</span>
-                                        <span class="font-medium">₹<%= order.shippingFee.toFixed(2) %></span>
+                                        <span class="text-gray-600">Discount:</span>
+                                        <span class="font-medium text-red-600">-₹<%= order.discountAmount.toFixed(2) %>
+                                        </span>
                                     </div>
-                                    <div class="flex justify-between border-t border-gray-200 pt-3 mt-3">
-                                        <span class="text-lg font-medium">Total:</span>
-                                        <span class="text-lg font-bold">₹<%= order.totalAmount.toFixed(2) %></span>
-                                    </div>
+                                    <% } %>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Shipping:</span>
+                                            <span class="font-medium">₹<%= order.shippingFee.toFixed(2) %></span>
+                                        </div>
+                                        <div class="flex justify-between border-t border-gray-200 pt-3 mt-3">
+                                            <span class="text-lg font-medium">Total:</span>
+                                            <span class="text-lg font-bold">₹<%= order.totalAmount.toFixed(2) %></span>
+                                        </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Actions -->
+                        <div class="flex justify-end gap-3 mt-6">
+                            <% if (order.status==='Pending' ) { %>
+                                <button class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
+                                    Cancel Order
+                                </button>
+                                <% } %>
+                                    <a href="/orders"
+                                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+                                        Back to Orders
+                                    </a>
                         </div>
                     </div>
-
-                    <!-- Order Actions -->
-                    <div class="flex justify-end gap-3 mt-6">
-                        <% if (order.status==='Pending' ) { %>
-                            <button class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
-                                Cancel Order
-                            </button>
-                            <% } %>
-                                <a href="/orders"
-                                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
-                                    Back to Orders
-                                </a>
-                    </div>
                 </div>
-            </div>
     </div>
 </body>
 

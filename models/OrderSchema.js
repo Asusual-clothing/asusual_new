@@ -93,6 +93,12 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Coupon'
   },
+  categoryCouponUsed:{type: mongoose.Schema.Types.ObjectId,
+    ref:'CategoryCoupon'
+  },
+  categoryCouponType:{ type:String,
+    enum: ['free_item', 'flat_discount', 'percentage_discount','percentage', 'flat'],
+  },
   couponType:{
     type:String,
     enum: ['free_item', 'flat_discount', 'percentage_discount','percentage', 'flat'],

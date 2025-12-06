@@ -195,7 +195,7 @@ router.get("/all-orders", async (req, res) => {
     req.flash("error_msg", "Please log in to view your orders");
     return res.redirect("/auth/signup");
   }
-  userId= req.user._id;
+  userId = req.user._id;
   try {
     const orders = await Order.find({ user: req.user._id })
       .sort({ createdAt: -1 })
@@ -209,8 +209,8 @@ router.get("/all-orders", async (req, res) => {
         select: "name images price",
         model: "Product",
       });
-      let  cartCount;
-       if (userId) {
+    let cartCount;
+    if (userId) {
       user = await User.findById(userId, "name _id");
 
       // Fetch user's cart and calculate cartCount
@@ -232,7 +232,7 @@ router.get("/all-orders", async (req, res) => {
     res.render("User/userallorders", {
       orders: ordersWithStatus,
       user: req.user,
-      cartCount:cartCount,
+      cartCount: cartCount,
     });
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -274,6 +274,11 @@ router.get("/:id", checkAdminAuth, async (req, res) => {
       .populate("freeItem", "name images price description")
       .populate("offerUsed", "name offerType")
       .populate("couponUsed", "code discountType discountValue")
+      .populate({
+        path: "categoryCouponUsed",
+        populate: { path: "categoryId", select: "name" }
+      })
+
       .lean();
 
     if (!order) {

@@ -17,7 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.target.classList.contains('cart-remove')) await handleRemoveItem(e);
         if (e.target.id === 'proceed-to-order') handleProceedToOrder();
         if (e.target.id === 'cancel-order') handleCancelOrder();
-        if (e.target.id === 'cashfree-payment-btn') handleOrderSubmit();
+        if (e.target.closest('#cashfree-payment-btn')) handleOrderSubmit();
+
 
     });
 

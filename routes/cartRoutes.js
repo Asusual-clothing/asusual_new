@@ -171,7 +171,7 @@ router.post("/apply-coupon", async (req, res) => {
 
     if (!userId) {
       req.session.couponMessage = "Please login to apply offers or coupons";
-      return res.redirect("/auth/login");
+      return res.redirect("/signup");
     }
 
     // ======================================================
@@ -615,7 +615,7 @@ router.get("/remove-coupon", async (req, res) => {
     const userId = req.user?._id || req.session.userId;
     if (!userId) {
       req.session.couponMessage = "Not authorized";
-      return res.redirect("/auth/login");
+      return res.redirect("/signup");
     }
 
     const cart = await Cart.findOne({ user: userId });

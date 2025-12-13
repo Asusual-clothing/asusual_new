@@ -4,6 +4,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '839270315677643');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=839270315677643&ev=PageView&noscript=1"
+  /></noscript>
   <meta name="description"
     content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!" />
   <meta name="keywords"
@@ -477,6 +492,33 @@
 
   <script src="/scripts/cart.js"></script>
   <script src="/scripts/script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let checkoutSent = false;
+      let checkoutEventId = null;
+      const checkoutButtons = [
+        document.getElementById("proceed-to-order"),
+        document.getElementById("cashfree-payment-btn")
+      ];
+
+      checkoutButtons.forEach(btn => {
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          if (checkoutSent || typeof fbq !== "function") return;
+          checkoutSent = true;
+          checkoutEventId = (typeof crypto !== "undefined" && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
+          const totalEl = document.querySelector(".cart-summary .total-line span:last-child");
+          const total = parseFloat((totalEl?.textContent || "").replace(/[^0-9.]/g, "")) || 0;
+          fbq("track", "InitiateCheckout", {
+            value: total,
+            currency: "INR",
+            event_id: checkoutEventId
+          });
+          window.__checkoutEventId = checkoutEventId;
+        }, { once: true });
+      });
+    });
+  </script>
   <script src="https://unpkg.com/feather-icons"></script>
   <script>
     feather.replace();

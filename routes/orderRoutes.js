@@ -13,6 +13,8 @@ const Subscription = require("../models/subscription");
 const Testimonial = require("../models/Testimonial");
 const DeliveryCost = require("../models/Deliveryschema");
 const Coupon = require("../models/CouponSchema");
+const { sendCapiEvent } = require("../config/capi");
+const { v4: uuidv4 } = require("uuid");
 
 // Middleware
 const checkAdminAuth = async (req, res, next) => {
@@ -82,6 +84,11 @@ router.post("/place-order", async (req, res) => {
     const shippingFee = deliverySetting ? deliverySetting.cost : 0;
     const discountAmount = cart.discountAmount || 0;
     const totalAmount = subtotal - discountAmount + shippingFee;
+    const contents = cart.items.map((item) => ({
+      id: item.product._id.toString(),
+      quantity: item.quantity,
+      item_price: Number(item.product.price) || 0
+    }));
 
     const newOrder = new Order({
       user: userId,
@@ -104,6 +111,21 @@ router.post("/place-order", async (req, res) => {
     }
 
     await newOrder.save();
+    let purchaseEventId = "";
+    if ((req.body.paymentMethod || "").toUpperCase() === "COD") {
+      purchaseEventId = uuidv4();
+      await sendCapiEvent({
+        event_name: "Purchase",
+        contents,
+        value: totalAmount,
+        currency: "INR",
+        user: req.user || {},
+        sourceUrl: `${process.env.BASE_URL || ""}${req.originalUrl}`,
+        ip: req.ip,
+        ua: req.get("user-agent"),
+        event_id: purchaseEventId
+      });
+    }
 
     cart.items = [];
     cart.appliedCoupon = null;
@@ -114,6 +136,7 @@ router.post("/place-order", async (req, res) => {
       success: true,
       orderId: newOrder._id,
       message: "Order created successfully",
+      eventId: purchaseEventId
     });
   } catch (error) {
     console.error("Error creating order:", error);

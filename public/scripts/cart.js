@@ -177,6 +177,8 @@ async function handleOrderSubmit() {
     button.innerHTML = "Processing...";
 
     try {
+        const eventId = window.__checkoutEventId || (typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
+        window.__checkoutEventId = eventId;
         const shippingAddress = {
             line1: document.getElementById('shipping-line1').value,
             line2: document.getElementById('shipping-line2').value,
@@ -189,9 +191,12 @@ async function handleOrderSubmit() {
 
         const response = await fetch('/payment/process-order', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                ...(eventId ? { 'x-fb-event-id': eventId } : {})
+            },
             credentials: 'include',
-            body: JSON.stringify({ shippingAddress })
+            body: JSON.stringify({ shippingAddress, event_id: eventId })
         });
 
         const result = await response.json();

@@ -16,6 +16,7 @@ const DeliveryCost = require("../models/Deliveryschema");
 const Coupon = require("../models/CouponSchema");
 const Offer = require("../models/OfferSchema")
 const mongoose = require("mongoose")
+const { sendCapiEvent } = require("../config/capi")
 // Middleware to attach user to request
 const attachUser = async (req, res, next) => {
   try {
@@ -28,6 +29,8 @@ const attachUser = async (req, res, next) => {
     next(error);
   }
 };
+
+router.use(attachUser);
 
 
 // View cart
@@ -377,8 +380,6 @@ router.post("/apply-coupon", async (req, res) => {
 
 
 
-router.use(attachUser);
-
 // Add to cart
 router.post("/add-to-cart", async (req, res) => {
   const { productId, quantity, size, action, color } = req.body;
@@ -391,6 +392,29 @@ router.post("/add-to-cart", async (req, res) => {
   }
 
   try {
+    const product = await Product.findById(productId)
+    const qty = parseInt(quantity, 10) || 1
+    if (product) {
+      const eventId = req.body.event_id || req.headers["x-fb-event-id"];
+      if (eventId) {
+      await sendCapiEvent({
+        event_name: "AddToCart",
+        contents: [{
+          id: product._id.toString(),
+          quantity: qty,
+          item_price: Number(product.price) || 0
+        }],
+        value: (Number(product.price) || 0) * qty,
+        currency: "INR",
+        user: req.user || {},
+        sourceUrl: `${process.env.BASE_URL || ""}${req.originalUrl}`,
+        ip: req.ip,
+        ua: req.get("user-agent"),
+        event_id: eventId
+      })
+      }
+    }
+
     let cart = await Cart.findOne({ user: userId });
 
     if (cart) {
@@ -493,115 +517,109 @@ router.get("/check-stock/:productId/:size", async (req, res) => {
 });
 
 
-// View cart
-router.get("/", async (req, res) => {
-  try {
-    let user = { name: "Guest" };
-    let userId = null;
-
-    if (req.user) {
-      user = req.user;
-      userId = req.user._id;
-    } else {
-      userId = req.session.userId;
-      if (userId) {
-        user = await User.findById(userId, "name");
-      }
-    }
-
-    let cart = await Cart.findOne({ user: userId })
-      .populate("items.product")
-      .populate("appliedCoupon")
-      .populate("freeItem");
-
-    const deliveryCostDoc = await DeliveryCost.findOne().sort({ updatedAt: -1 });
-    const deliveryCost = deliveryCostDoc ? deliveryCostDoc.cost : 5.0;
-
-    let discountAmount = 0;
-    const couponMessage = req.session.couponMessage;
-    delete req.session.couponMessage;
-
-    if (cart) {
-      if (!cart.items) cart.items = [];
-
-      // Add stock info for each cart item
-      for (const item of cart.items) {
-        if (item.product) {
-          const sizeKey = item.size.toLowerCase();
-          item.availableStock = item.product.sizes[sizeKey] || 0;
-        }
-      }
-
-      if (cart.appliedCoupon) {
-        const now = new Date();
-        const userDoc = await User.findById(userId);
-
-        const couponInvalid =
-          !cart.appliedCoupon.active ||
-          cart.appliedCoupon.expiryDate < now ||
-          (cart.appliedCoupon.useonce &&
-            userDoc.useoncecoupon.includes(cart.appliedCoupon.code));
-
-        if (couponInvalid) {
-          req.session.couponMessage = "The applied coupon is no longer valid.";
-          cart.appliedCoupon = undefined;
-          cart.discountAmount = 0;
-
-          // Remove free item if coupon invalid
-          if (cart.freeItem) {
-            cart.freeItem = undefined;
-          }
-
-          await cart.save();
-        } else {
-          discountAmount = cart.discountAmount || 0;
-
-          // Prevent removal of other items when freeItem exists
-          cart.itemsLocked = !!cart.freeItem;
-        }
-      }
-
-      // Remove orphaned free items if coupon removed
-      if (!cart.appliedCoupon && cart.freeItem) {
-        cart.freeItem = undefined;
-        await cart.save();
-      }
-    } else {
-      cart = { items: [] };
-    }
-
-    let subtotal = 0;
-    if (cart.items && cart.items.length > 0) {
-      subtotal = cart.items.reduce((sum, item) => {
-        return sum + (item.product ? item.product.price * item.quantity : 0);
-      }, 0);
-    }
-
-    const cartCount = cart.items ? cart.items.length : 0;
-
-    res.render("User/cart", {
-      user,
-      cart,
-      cartCount,
-      deliveryCost,
-      discountAmount,
-      subtotal,
-      message: couponMessage,
-      error: null,
-    });
-  } catch (error) {
-    console.error("Error loading cart:", error);
-    res.status(500).render("cart", {
-      user: { name: "Guest" },
-      cart: { items: [] },
-      cartCount: 0,
-      deliveryCost: 5.0,
-      discountAmount: 0,
-      subtotal: 0,
-      error: "Failed to load cart",
-    });
-  }
-});
+// router.get("/", async (req, res) => {
+//   try {
+//     let user = { name: "Guest" };
+//     let userId = null;
+//
+//     if (req.user) {
+//       user = req.user;
+//       userId = req.user._id;
+//     } else {
+//       userId = req.session.userId;
+//       if (userId) {
+//         user = await User.findById(userId, "name");
+//       }
+//     }
+//
+//     let cart = await Cart.findOne({ user: userId })
+//       .populate("items.product")
+//       .populate("appliedCoupon")
+//       .populate("freeItem");
+//
+//     const deliveryCostDoc = await DeliveryCost.findOne().sort({ updatedAt: -1 });
+//     const deliveryCost = deliveryCostDoc ? deliveryCostDoc.cost : 5.0;
+//
+//     let discountAmount = 0;
+//     const couponMessage = req.session.couponMessage;
+//     delete req.session.couponMessage;
+//
+//     if (cart) {
+//       if (!cart.items) cart.items = [];
+//
+//       for (const item of cart.items) {
+//         if (item.product) {
+//           const sizeKey = item.size.toLowerCase();
+//           item.availableStock = item.product.sizes[sizeKey] || 0;
+//         }
+//       }
+//
+//       if (cart.appliedCoupon) {
+//         const now = new Date();
+//         const userDoc = await User.findById(userId);
+//
+//         const couponInvalid =
+//           !cart.appliedCoupon.active ||
+//           cart.appliedCoupon.expiryDate < now ||
+//           (cart.appliedCoupon.useonce &&
+//             userDoc.useoncecoupon.includes(cart.appliedCoupon.code));
+//
+//         if (couponInvalid) {
+//           req.session.couponMessage = "The applied coupon is no longer valid.";
+//           cart.appliedCoupon = undefined;
+//           cart.discountAmount = 0;
+//
+//           if (cart.freeItem) {
+//             cart.freeItem = undefined;
+//           }
+//
+//           await cart.save();
+//         } else {
+//           discountAmount = cart.discountAmount || 0;
+//           cart.itemsLocked = !!cart.freeItem;
+//         }
+//       }
+//
+//       if (!cart.appliedCoupon && cart.freeItem) {
+//         cart.freeItem = undefined;
+//         await cart.save();
+//       }
+//     } else {
+//       cart = { items: [] };
+//     }
+//
+//     let subtotal = 0;
+//     if (cart.items && cart.items.length > 0) {
+//       subtotal = cart.items.reduce((sum, item) => {
+//         return sum + (item.product ? item.product.price * item.quantity : 0);
+//       }, 0);
+//     }
+//
+//     const cartCount = cart.items ? cart.items.length : 0;
+//
+//     res.render("User/cart", {
+//       user,
+//       cart,
+//       cartCount,
+//       deliveryCost,
+//       discountAmount,
+//       subtotal,
+//       message: couponMessage,
+//       error: null,
+//     });
+//   } catch (error) {
+//     console.error("Error loading cart:", error);
+//     res.status(500).render("cart", {
+//       user: { name: "Guest" },
+//       cart: { items: [] },
+//       cartCount: 0,
+//       deliveryCost: 5.0,
+//       discountAmount: 0,
+//       subtotal: 0,
+//       error: "Failed to load cart",
+//     });
+//   }
+// });
 
 
 

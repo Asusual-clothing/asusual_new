@@ -3,6 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '839270315677643');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=839270315677643&ev=PageView&noscript=1"
+  /></noscript>
     <meta name="description" content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!">
   <meta name="keywords" content="asusual, asusua, asusual clothing, oversized t shirts india, ASUSUAL clothing, graphic tees india, cotton t shirts online, trendy streetwear india, buy t shirts online india">
   <title>Order Successful</title>
@@ -23,5 +38,19 @@
       Return to Home
     </a>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof fbq === "function") {
+        const params = new URLSearchParams(window.location.search);
+        const eventId = params.get("event_id") || undefined;
+        fbq("track", "Purchase", {
+          content_ids: ["<%= orderId %>"],
+          content_type: "order",
+          currency: "INR",
+          event_id: eventId
+        });
+      }
+    });
+  </script>
 </body>
 </html>

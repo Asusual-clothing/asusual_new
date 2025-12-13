@@ -14,6 +14,7 @@ const Order = require("../models/OrderSchema");
 const DeliveryCost = require("../models/Deliveryschema");
 const Coupon = require("../models/CouponSchema");
 const Offer = require("../models/OfferSchema")
+const { sendCapiEvent } = require("../config/capi")
 // Initialize PhonePe client
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -52,6 +53,23 @@ router.post("/process-order", async (req, res) => {
     const shippingFee = deliverySetting ? deliverySetting.cost : 0;
     const discountAmount = cart.discountAmount || 0;
     const totalAmount = subtotal - discountAmount + shippingFee;
+    const contents = cart.items.map((item) => ({
+      id: item.product._id.toString(),
+      quantity: item.quantity,
+      item_price: Number(item.product.price) || 0
+    }));
+    const initEventId = req.body.event_id || req.headers["x-fb-event-id"] || uuidv4();
+    await sendCapiEvent({
+      event_name: "InitiateCheckout",
+      contents,
+      value: totalAmount,
+      currency: "INR",
+      user: req.user || {},
+      sourceUrl: `${process.env.BASE_URL || ""}${req.originalUrl}`,
+      ip: req.ip,
+      ua: req.get("user-agent"),
+      event_id: initEventId
+    });
 
     // Try to find a recent pending order (within 10 mins)
     let pendingOrder = await Order.findOne({
@@ -104,11 +122,14 @@ router.post("/process-order", async (req, res) => {
     pendingOrder.paymentId = merchantOrderId;
     await pendingOrder.save();
 
+    res.setHeader("x-fb-event-id", initEventId || "");
+
     return res.json({
       success: true,
       checkoutPageUrl: response.redirectUrl,
       orderId: pendingOrder._id,
       message: "Redirect to payment gateway",
+      eventId: initEventId || ""
     });
 
   } catch (error) {
@@ -160,7 +181,25 @@ router.get("/payment-callback", async (req, res) => {
       const cart = await Cart.findOne({ user: order.user });
       if (cart) await cart.deleteOne();
 
-      return res.redirect(`${process.env.BASE_URL}/payment/order-success/${orderId}`);
+      const contents = order.items.map((item) => ({
+        id: item.product.toString(),
+        quantity: item.quantity,
+        item_price: Number(item.priceAtPurchase) || 0
+      }));
+      const purchaseEventId = uuidv4();
+      await sendCapiEvent({
+        event_name: "Purchase",
+        contents,
+        value: Number(order.totalAmount) || 0,
+        currency: "INR",
+        user: await User.findById(order.user, "email phone"),
+        sourceUrl: `${process.env.BASE_URL || ""}${req.originalUrl}`,
+        ip: req.ip,
+        ua: req.get("user-agent"),
+        event_id: purchaseEventId
+      });
+
+      return res.redirect(`${process.env.BASE_URL}/payment/order-success/${orderId}?event_id=${encodeURIComponent(purchaseEventId)}`);
     } else {
       order.paymentStatus = "Failed";
       await order.save();

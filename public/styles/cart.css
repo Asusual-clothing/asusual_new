@@ -379,3 +379,18 @@ button.loading::after {
     width: 100%;
   }
 }
+@media (max-width: 380px) {
+      .cart-item-quantity {
+        margin-left: 215px;
+        margin-top: -27px;
+      }
+      .cart-remove {
+      right: 0px;
+      }
+}
+@media (max-width: 340px) {
+      .cart-item-quantity {
+      margin-left: 175px;
+      margin-top: -27px
+      }
+}

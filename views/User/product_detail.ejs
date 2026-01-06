@@ -5,20 +5,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '839270315677643');
-  fbq('track', 'PageView');
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '839270315677643');
+    fbq('track', 'PageView');
   </script>
   <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=839270315677643&ev=PageView&noscript=1"
-  /></noscript>
+      src="https://www.facebook.com/tr?id=839270315677643&ev=PageView&noscript=1" /></noscript>
   <meta name="description"
     content="Buy high-quality oversized t-shirts in India. AsUsual offers trendy unisex graphic tees, cotton t-shirts for men & women. Free shipping on all orders. Shop now!" />
   <meta name="keywords"
@@ -280,7 +282,7 @@
   <%= selectedColor && selectedColor.toLowerCase() === item.color.toLowerCase() ? 'selected' : '' %>"
                   data-color="<%= item.color.trim() %>" data-code="<%= item.colorCode %>"
                   title="<%= item.color.trim() %> (<%= item.colorCode %>)"
-                  style="background-color: <%= item.colorCode %>;"></div>
+                  style="background-color: <%= item.colorCode %>"></div>
                 <% }) %>
 
                   <% } else { %>
@@ -417,12 +419,25 @@
             displayImage.appendChild(loaderOverlay);
 
             function renderGallery(images) {
+              activeColorImages = images; // 🔒 lock current color images
               mainImage.src = images[0];
-              document.querySelectorAll(".thumb-img").forEach((t, index) => {
-                t.src = images[index] || "";
-                t.style.display = images[index] ? "block" : "none";
+
+              changeImageContainer.innerHTML = "";
+              images.forEach((img, i) => {
+                const thumb = document.createElement("img");
+                thumb.src = img;
+                thumb.className = `thumb-img ${i === 0 ? "active-thumb" : ""}`;
+
+                thumb.addEventListener("click", () => {
+                  mainImage.src = activeColorImages[i]; // ✅ always same color
+                  document.querySelectorAll(".thumb-img").forEach(t => t.classList.remove("active-thumb"));
+                  thumb.classList.add("active-thumb");
+                });
+
+                changeImageContainer.appendChild(thumb);
               });
             }
+
 
             changeImageContainer.innerHTML = "";
             currentImages.forEach((img, i) => {
